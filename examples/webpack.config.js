@@ -1,4 +1,3 @@
-const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
 
@@ -26,7 +25,7 @@ module.exports = {
   resolve: {
     alias: {
       'vue': 'vue/dist/vue.js',
-      'vue-in-viewport-mixin': path.join(__dirname, '..', 'index.coffee')
+      'vue-visual': path.join(__dirname, '..', 'index.coffee')
     }
   },
 
