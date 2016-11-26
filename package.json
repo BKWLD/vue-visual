@@ -1,0 +1,43 @@
+{
+  "name": "vue-visual",
+  "version": "0.0.1",
+  "description": "Vue 2 image and video loader supporting lazy loading, cover videos, and more",
+  "main": "index.js",
+  "scripts": {
+    "test": "yarn run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BKWLD/vue-visual.git"
+  },
+  "keywords": [
+    "vue",
+    "lazy-load",
+    "cover-video"
+  ],
+  "author": "Bukwild",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BKWLD/vue-visual/issues"
+  },
+  "homepage": "https://github.com/BKWLD/vue-visual#readme",
+  "dependencies": {
+    "vue-in-viewport-mixin": "^1.0.2"
+  },
+  "devDependencies": {
+    "chromedriver": "^2.25.1",
+    "coffee-loader": "^0.7.2",
+    "coffee-script": "^1.11.1",
+    "cross-spawn": "^5.0.1",
+    "css-loader": "^0.26.0",
+    "express": "^4.14.0",
+    "express-urlrewrite": "^1.2.0",
+    "nightwatch": "^0.9.9",
+    "selenium-server": "^2.53.1",
+    "vue": "^2.1.0",
+    "vue-loader": "^10.0.0",
+    "vue-template-compiler": "^2.1.0",
+    "webpack": "^1.13.3",
+    "webpack-dev-middleware": "^1.8.4"
+  }
+}
