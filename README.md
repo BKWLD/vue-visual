@@ -15,7 +15,7 @@ Vue 2 image and video loader supporting lazy loading, cover videos, and more
 
 ## Usage
 
-#### Create a simple image tag
+### Create a simple image tag
 
 ```html
 <visual src='image.png'></visual>
@@ -42,6 +42,9 @@ This renders:
 	<img src="image.png" class='visual-asset'>
 </div>
 ```
+
+The folliwing CSS is also injected into the page at runtime.
+
 ```css
 .visual {
 	overflow: hidden;
@@ -73,7 +76,7 @@ Then, when the image is loaded:
 ```
 
 
-#### Lazy load a simple image tag
+### Lazy load a simple image tag
 
 ```html
 <visual
@@ -104,7 +107,7 @@ And finally, upon load:
 ```
 
 
-#### Declare a Vue transition for when load finishes
+### Declare a Vue transition for when load finishes
 
 ```html
 <visual
@@ -128,7 +131,7 @@ This functions like the `load='now'` example above, except that, internally, the
 Then the image will fade in once it's done loading.
 
 
-#### Use a low rez poster image
+### Use a low rez poster image
 
 ```html
 <visual
