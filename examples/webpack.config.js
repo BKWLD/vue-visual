@@ -18,14 +18,20 @@ module.exports = {
   module: {
     loaders: [
       { test: /\.vue$/, loader: 'vue' },
-      { test: /\.coffee$/, loader: 'coffee-loader' }
+      { test: /\.coffee$/, loader: 'coffee-loader' },
+			{ test: /\.jade$/, loader: 'apply-loader!jade-loader' }
     ]
   },
+	vue: {
+		loaders: {
+			stylus: 'style-loader!css-loader!stylus-loader'
+		}
+	},
 
   resolve: {
     alias: {
       'vue': 'vue/dist/vue.js',
-      'vue-visual': path.join(__dirname, '..', 'index.coffee')
+      'vue-visual': path.join(__dirname, '..', 'index.vue')
     }
   },
 

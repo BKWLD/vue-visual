@@ -7,9 +7,9 @@ Vue 2 image and video loader supporting lazy loading, cover videos, and more
 1. Install the package: `npm install --save vue-visual` or `yarn add vue-visual`
 2. Register the component:
 	```js
-	import Vue from 'vue'
-	import vueVisual from 'vue-visual'
-	Vue.component('visual', vueVisual)
+	Vue = require('vue')
+	VueVisual = require('vue-visual')
+	Vue.component('visual', VueVisual())
 
 	// Assuming you are using webpack, require the CSS file
 	require('vue-visual/index.css')
@@ -354,7 +354,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Rendering
 
-- `render (string)` - By default, the asset is rendered into the DOM immediately.  If set to `loaded`, it will be rendered only after it finishes loaded.  This works well when paired with a transition.  Will be automatically set to `loaded` if any `load` value is set. Different render values can be set for each asset type:
+- `render (string)` - By default, the asset is rendered into the DOM immediately.  If set to `loaded`, it will be rendered only after it finishes loading.  This works well when paired with a transition.  Will be automatically set to `loaded` if any `load` value is set. Different render values can be set for each asset type:
 	- `render-poster (string)`
 	- `render-image (string)`
 	- `render-video (string)` - Also applies to the `fallback`
