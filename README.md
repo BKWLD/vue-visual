@@ -304,11 +304,96 @@ Mobile devices like iOS and Android phones do not support autoplaying videos.  Y
 	video-load='visible'
 	autoplay='visible'
 	autopause='visible'
-	loop
-	muted
+	loop='true'
+	muted='true'
 
 	fallback='fallback.gif'>
+
+	<h1>I am the title of a marquee</h1>
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+
 </visual>
 ```
 
 This creates a Visual component with a 16:9 aspect ratio and immediately loads a low rez poster image.  Once it loads completely, it will fade in.  When the Visual enters the viewport, the `src` image will load in.  When it completes, if the Visual is still in the viewport, the `video` will load.  Once enough has loaded that it can play without interuption, it will play (looping) until it is scrolled out of the viewport.  Finally, in the event that the user's device doesn't support autoplaying video, instead of loading a video, after the `src` loads, the `fallback` gif would have been loaded instead.
+
+In addition, the `<h1>` and `<p>` will be inserted inside the component via the default Vue slot.
+
+
+## Props
+
+A list of the [component properties](http://vuejs.org/v2/guide/components.html#Props) that may be set on the Visual component.
+
+
+### Assets
+
+- `src (string|object)` : An image to load.  If a string, the URL of an image.  If an object, a list of image URLs keyed to `max-width`-style breakpoints:
+	```
+	:src='{ 500: 'image-mobile.png', 768: 'image-tablet.png' }'
+	```
+
+- `poster (string|object)` : An image that is loaded before `src`, `video`, or `fallback`.  See `src` for object schema.
+
+- `video (string|array)` : A video that is loaded after the src is loaded if the device supports video.    If a string, should be the URL to a source video.  If an array, a list of video URLs that will be added as difference `<source>`s.
+
+- `fallback (string|object)` : An image that is loaded after the `src` when the user's device doesn't support video or doesn't support auto-playing video and `require-autoplay` is truthy.  See `src` for object schema.
+
+
+### Dimensions
+
+- `width (number|string)` : This width will be applied to the container, `.visual`, div.  May also be a string matching one of the asset properties (`poster`, `src`, `video`, `fallback`) to use the native width of the asset.  Note, these values cannot be read until the asset has loaded, so the Visual will be dimension-less until load has completed.
+
+- `height (number|string)` : See `width`
+
+- `aspect` (number|string) : Force the Visual to a specific aspect ratio.  This works by making the asset `position:absolute` and then using an inner div with a `padding-top` set to a percentage.  Can be set as a number like `:aspect='16/9'` or as a string like `aspect='16:9'`.  May also use any of the asset properties (`poster`, `src`, `video`, `fallback`) to use the native aspect ratio of the asset.  Note, these values cannot be read until the asset has loaded, so the Visual will be dimension-less until load has completed.
+
+
+### Rendering
+
+- `bkgd (string)` - May be `cover` or `contain`. When set, image assets as a `background-image` with either `background-size: cover` or `background-size: contain`. Video assets will be made to mimic this display style by using javascript to transform the offset of the asset, masking clipped regions with `overflow: hidden`.
+
+- `bkgd-pos (string)` - *Default `center center`.*  This sets the `background-position` when the Visual is using `bkgd` rendering.  The effect will also be applied to Videos.
+
+
+### Loading
+
+- `load (string)` - By default, the asset is rendered into the DOM immediately.  If set to `now`, the asset is loaded immediately but is not rendered into the DOM until load has completed (or the video can play without interuption).  If set to `visible`, will not begin loading until the Visual enters the viewport.  Different loading values can be set for each asset type:
+	- `load-poster (string)`
+	- `load-src (string)`
+	- `load-video (string)`
+
+- `offset (number|object)` - A number that either expands (if positive) or contracts (if negative) the effective bounds of the Visual as it is interpreted by any `visible` setting (i.e. `load`, `autoplay`, `autopause`).  For example, `<visual load='visible' offset=100></visual>` will make a Visual that is far below the viewport begin loading when it reaches 100px below the viewport. May also be set to an object like so: `<visual load='visible' :offset='{ top: 20, bottom: 50 }'></visual>`.  Different offset values can be set for each asset type:
+	- `offset-poster (string)`
+	- `offset-src (string)`
+	- `offset-video (string)`
+
+
+### Transition
+
+- `transition (string)` - *Default: `visual-fade`.* A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied to the `v-if` directives that are applied to assets that have `load` setting.  The Visual component ships with a `visual-fade` transition that fades in assets over previously loaded assets. Different transition values can be set for each asset type:
+	- `transition-poster (string)`
+	- `transition-src (string)`
+	- `transition-video (string)`
+
+
+### Video
+
+- `autoplay (string)` - If `now`, begins playing immediately.  If `visible`, begins playing when the Visual enters the viewport, as modified by the `offset` prop.
+
+- `autopause  (string)` - If `visible`, begins playing when the Visual enters the viewport, as modified by the `offset` prop.
+
+- `loop (boolean)` - Sets `<video>` `loop`
+
+- `muted (boolean)` - Sets `<video>` `muted`
+
+- `controls (boolean)` - Sets `<video>` `controls`
+
+- `require-autoplay (boolean)` - If falsey, the `fallback` is shown only if the user's device lacks video support.  If truthy, the `fallback`, will be shown also when a device cannot autoplay videos (like most mobile phones).
+
+
+### Accessibility
+
+- `alt (string)` - Sets the <img> `alt` attribute or `aria-label` value, depending on context.
+
+
+## Slots
