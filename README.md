@@ -325,7 +325,7 @@ In addition, the `<h1>` and `<p>` will be inserted inside the component via the 
 A list of the [component properties](http://vuejs.org/v2/guide/components.html#Props) that may be set on the Visual component.
 
 
-### Assets
+#### Assets
 
 - `image (string|object)` : An image to load.  If a string, the URL of an image.  If an object, a list of image URLs keyed to `max-width`-style breakpoints:
 	```
@@ -343,7 +343,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 - `fallback (string|object)` : An image that is loaded after the `image` when the user's device doesn't support video or doesn't support auto-playing video and `require-autoplay` is truthy.  See `image` for object schema.
 
 
-### Dimensions
+#### Dimensions
 
 - `width (number|string)` : This width will be applied to the container, `.visual`, div.  May also be a string matching one of the asset properties (`poster`, `image`, `video`, `fallback`) to use the native width of the asset.  Note, these values cannot be read until the asset has loaded, so the Visual will be dimension-less until load has completed.
 
@@ -352,7 +352,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 - `aspect` (number|string) : Force the Visual to a specific aspect ratio.  This works by making the asset `position:absolute` and then using an inner div with a `padding-top` set to a percentage.  Can be set as a number like `:aspect='16/9'` or as a string like `aspect='16:9'`.  May also use any of the asset properties (`poster`, `image`, `video`, `fallback`) to use the native aspect ratio of the asset.  Note, these values cannot be read until the asset has loaded, so the Visual will be dimension-less until load has completed.
 
 
-### Rendering
+#### Rendering
 
 - `render (string)` - By default, the asset is rendered into the DOM immediately.  If set to `loaded`, it will be rendered only after it finishes loaded.  This works well when paired with a transition.  Will be automatically set to `loaded` if any `load` value is set. Different render values can be set for each asset type:
 	- `render-poster (string)`
@@ -364,7 +364,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 - `background-position (string)` - *Default `center center`.*  This sets the CSS `background-position` when the Visual is using `background` rendering.  The effect will also be applied to Videos.
 
 
-### Loading
+#### Loading
 
 - `load (string)` - By default, the assets are loaded immediately.  If set to `visible`, they won't be loaded until the Visual enters the viewport.  If set to falsey, will not be loaded at all.  You must call `startLoad()` on the component to initiate loading.  `render` will automatically be set to `loaded` if any value is set.  Different loading values can be set for each asset type:
 	- `load-poster (string)`
@@ -377,7 +377,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 	- `offset-video (string)` - Also applies to the `fallback`
 
 
-### Transition
+#### Transition
 
 - `transition (string)` - *Default: `visual-fade`.* A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied to the `v-if` directives that are applied to assets that have `load` setting.  The Visual component ships with a `visual-fade` transition that fades in assets over previously loaded assets. Different transition values can be set for each asset type:
 	- `transition-poster (string)`
@@ -385,7 +385,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 	- `transition-video (string)` - Also applies to the `fallback`
 
 
-### Video
+#### Video
 
 - `autoplay (string)` - If `now`, begins playing immediately.  If `visible`, begins playing when the Visual enters the viewport, as modified by the `offset` prop.
 
@@ -400,7 +400,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 - `require-autoplay (boolean)` - If falsey, the `fallback` is shown only if the user's device lacks video support.  If truthy, the `fallback`, will be shown also when a device cannot autoplay videos (like most mobile phones).
 
 
-### Accessibility
+#### Accessibility
 
 - `alt (string)` - Sets the <img> `alt` attribute or `aria-label` value, depending on context.
 
