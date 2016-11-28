@@ -354,10 +354,10 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 ### Rendering
 
-- `render (string)` - By default, the asset is rendered into the DOM immediately.  If set to `loaded`, it will be rendered only after it finishes loaded.  This works well when paired with a transition. Different render values can be set for each asset type:
-- `render-poster (string)`
-- `render-image (string)`
-- `render-video (string)` - Also applies to the `fallback`
+- `render (string)` - By default, the asset is rendered into the DOM immediately.  If set to `loaded`, it will be rendered only after it finishes loaded.  This works well when paired with a transition.  Will be automatically set to `loaded` if any `load` value is set. Different render values can be set for each asset type:
+	- `render-poster (string)`
+	- `render-image (string)`
+	- `render-video (string)` - Also applies to the `fallback`
 
 - `background (string)` - May be `cover` or `contain`. When set, image assets as a CSS `background-image` with either `background-size: cover` or `background-size: contain` depending on the value of the prop. Video assets will be made to mimic this display style by using javascript to transform the offset of the asset, masking clipped regions with `overflow: hidden`.
 
@@ -366,7 +366,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 ### Loading
 
-- `load (string)` - By default, the assets are loaded immediately.  If set to `visible`, they won't be loaded until the Visual enters the viewport.  If set to falsey, will not be loaded at all.  You must call `startLoad()` on the component to initiate loading.  Different loading values can be set for each asset type:
+- `load (string)` - By default, the assets are loaded immediately.  If set to `visible`, they won't be loaded until the Visual enters the viewport.  If set to falsey, will not be loaded at all.  You must call `startLoad()` on the component to initiate loading.  `render` will automatically be set to `loaded` if any value is set.  Different loading values can be set for each asset type:
 	- `load-poster (string)`
 	- `load-image (string)`
 	- `load-video (string)` - Also applies to the `fallback`
