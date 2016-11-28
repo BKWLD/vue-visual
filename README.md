@@ -142,7 +142,7 @@ In this case, the poster image will be loaded immediately and the main image wil
 ```html
 <visual
 	poster='low-rez.png'
-	poster-load='visible'
+	load-poster='visible'
 	src='image.png'
 	load='visible'
 	offset='300'
@@ -249,7 +249,7 @@ Instead of `autoplay` and `preload`, though, use these Visual props:
 ```html
 <visual
 	video='video.mp4'
-	video-load='now'
+	load-video='now'
 	autoplay='visible'
 	autopause='visible'>
 </visual>
@@ -264,7 +264,7 @@ These work like the `load` values above.  In otherwords, the video will start lo
 <visual
 	src='image.png'
 	video='video.mp4'
-	video-load='mouseover'
+	load-video='mouseover'
 	autoplay='mouseover'
 	autopause='mouseout'
 	transition='fade'>
@@ -295,13 +295,13 @@ Mobile devices like iOS and Android phones do not support autoplaying videos.  Y
 	aspect='16:9'
 
 	poster='low-rez.png'
-	poster-load='now'
+	load-poster='now'
 
 	src='image.png'
 	load='visible'
 
 	video='video.mp4'
-	video-load='visible'
+	load-video='visible'
 	autoplay='visible'
 	autopause='visible'
 	loop='true'
