@@ -22,28 +22,28 @@ Vue 2 image and video loader supporting lazy loading, cover videos, and more
 ### Create a simple image tag
 
 ```html
-<visual src='image.png'></visual>
+<visual image='image.png'></visual>
 ```
 
 This renders:
 
 ```html
-<div class='visual'>
-	<img src="image.png" class='visual-asset'>
+<div class='vue-visual'>
+	<img image="image.png" class='vue-visual-asset'>
 </div>
 ```
 
 You may also specify the width and height:
 
 ```html
-<visual src='image.png' width='350' height='150'></visual>
+<visual image='image.png' width='350' height='150'></visual>
 ```
 
 This renders:
 
 ```html
-<div class='visual' style='width: 350px; height: 150px;'>
-	<img src="image.png" class='visual-asset' width='350' height='150'>
+<div class='vue-visual' style='width: 350px; height: 150px;'>
+	<img image="image.png" class='vue-visual-asset' width='350' height='150'>
 </div>
 ```
 
@@ -53,20 +53,20 @@ The width and height are applied to the container as well so that loader graphic
 ### Wait to render until image loaded
 
 ```html
-<visual src='image.png' load='now'></visual>
+<visual image='image.png' load='now'></visual>
 ```
 
 This initially renders:
 
 ```html
-<div class='visual visual-loading'></div>
+<div class='vue-visual visual-loading'></div>
 ```
 
 Then, when the image is loaded:
 
 ```html
-<div class='visual visual-loaded'>
-	<img src='image.png' class='visual-asset'>
+<div class='vue-visual visual-loaded'>
+	<img image='image.png' class='vue-visual-asset'>
 </div>
 ```
 
@@ -75,7 +75,7 @@ Then, when the image is loaded:
 
 ```html
 <visual
-	src='image.png'
+	image='image.png'
 	load='visible'
 	offset='200'>
 </visual>
@@ -84,20 +84,20 @@ Then, when the image is loaded:
 This initially renders:
 
 ```html
-<div class='visual visual-pending'></div>
+<div class='vue-visual visual-pending'></div>
 ```
 
 Then, when the `visual` comes within `200px` of the viewport, it starts loading:
 
 ```html
-<div class='visual visual-loading'></div>
+<div class='vue-visual visual-loading'></div>
 ```
 
 And finally, upon load:
 
 ```html
-<div class='visual visual-loaded'>
-	<img src="image.png" class='visual-asset'>
+<div class='vue-visual visual-loaded'>
+	<img image="image.png" class='vue-visual-asset'>
 </div>
 ```
 
@@ -106,7 +106,7 @@ And finally, upon load:
 
 ```html
 <visual
-	src='image.png'
+	image='image.png'
 	load='now'
 	transition='fade'>
 </visual>
@@ -131,19 +131,19 @@ Then the image will fade in once it's done loading.
 ```html
 <visual
 	poster='low-rez.png'
-	src='image.png'
+	image='image.png'
 	load='visible'
 	transition='fade'>
 </visual>
 ```
 
-In this case, the poster image will be loaded immediately and the main image will be loaded only once the Visual enters the viewport.  To lazy load the poster as well as the src:
+In this case, the poster image will be loaded immediately and the main image will be loaded only once the Visual enters the viewport.  To lazy load the poster as well as the image:
 
 ```html
 <visual
 	poster='low-rez.png'
 	load-poster='visible'
-	src='image.png'
+	image='image.png'
 	load='visible'
 	offset='300'
 	transition='fade'>
@@ -154,35 +154,35 @@ In this case, the poster image will be loaded immediately and the main image wil
 ### Render image as a CSS background
 
 ```html
-<visual src='image.png' bkgd='cover'></visual>
+<visual image='image.png' background='cover'></visual>
 ```
 
 This renders:
 
 ```html
-<div class='visual'>
+<div class='vue-visual'>
 	<div
-		class='visual-asset visual-bkgd visual-bkgd-cover'
+		class='vue-visual-asset visual-background visual-background-cover'
 		style='background: url("image.png");'>
 	</div>
 </div>
 ```
 
-The `visual-cover` class adds `background-size: cover` to the asset.  Additionally, you may also set `bkgd` to `contain` for `background-size: contain`.
+The `visual-cover` class adds `background-size: cover` to the asset.  Additionally, you may also set `background` to `contain` for `background-size: contain`.
 
 
 ### Use native asset dimensions for the size
 
 ```html
 <visual
-	src='image.png'
-	bkgd='cover'
-	width='src'
-	height='src'>
+	image='image.png'
+	background='cover'
+	width='image'
+	height='image'>
 </visual>
 ```
 
-Once the `src` image has loaded, the native `src` size will be used for the Visual dimensions.  You may use `poster` as the value as well.  Or, use the shorthand `size='src'` in place of `width` and `height`.
+Once the `image` image has loaded, the native `image` size will be used for the Visual dimensions.  You may use `poster` as the value as well.  Or, use the shorthand `size='image'` in place of `width` and `height`.
 
 
 ### Use an aspect ratio for the size
@@ -191,8 +191,8 @@ It is often more useful in responsive layouts to set an aspect ratio for the Vis
 
 ```html
 <visual
-	src='image.png'
-	bkgd='cover'
+	image='image.png'
+	background='cover'
 	aspect='16:9'>
 </visual>
 ```
@@ -200,24 +200,24 @@ It is often more useful in responsive layouts to set an aspect ratio for the Vis
 This renders:
 
 ```html
-<div class='visual'>
+<div class='vue-visual'>
 	<div
-		class='visual-asset visual-bkgd visual-bkgd-cover visual-aspect'
+		class='vue-visual-asset visual-background visual-background-cover visual-aspect'
 		style='background: url("image.png");'>
-		<div class='visual-aspect-prop' style='padding-top: 56.25%'></div>
+		<div class='vue-visual-aspect-prop' style='padding-top: 56.25%'></div>
 	</div>
 </div>
 ```
 
 You can also pass in a number for the aspect, like: `:aspect='16/9'`.
 
-You can also use the measured dimensions of the `src` or `poster` for the aspect, although these can't be determined until the image has actually fully loaded:
+You can also use the measured dimensions of the `image` or `poster` for the aspect, although these can't be determined until the image has actually fully loaded:
 
 ```html
 <visual
-	src='image.png'
-	bkgd='cover'
-	aspect='src'>
+	image='image.png'
+	background='cover'
+	aspect='image'>
 </visual>
 ```
 
@@ -231,9 +231,9 @@ You can also use the measured dimensions of the `src` or `poster` for the aspect
 This renders:
 
 ```html
-<div class='visual'>
+<div class='vue-visual'>
 	<video>
-		<source src='video.mp4' type='video/mp4'>
+		<source image='video.mp4' type='video/mp4'>
 	</video>
 </div>
 ```
@@ -262,7 +262,7 @@ These work like the `load` values above.  In otherwords, the video will start lo
 
 ```html
 <visual
-	src='image.png'
+	image='image.png'
 	video='video.mp4'
 	load-video='mouseover'
 	autoplay='mouseover'
@@ -291,13 +291,13 @@ Mobile devices like iOS and Android phones do not support autoplaying videos.  Y
 ```html
 <visual
 	transition='fade'
-	bkgd='cover'
+	background='cover'
 	aspect='16:9'
 
 	poster='low-rez.png'
 	load-poster='now'
 
-	src='image.png'
+	image='image.png'
 	load='visible'
 
 	video='video.mp4'
@@ -315,7 +315,7 @@ Mobile devices like iOS and Android phones do not support autoplaying videos.  Y
 </visual>
 ```
 
-This creates a Visual component with a 16:9 aspect ratio and immediately loads a low rez poster image.  Once it loads completely, it will fade in.  When the Visual enters the viewport, the `src` image will load in.  When it completes, if the Visual is still in the viewport, the `video` will load.  Once enough has loaded that it can play without interuption, it will play (looping) until it is scrolled out of the viewport.  Finally, in the event that the user's device doesn't support autoplaying video, instead of loading a video, after the `src` loads, the `fallback` gif would have been loaded instead.
+This creates a Visual component with a 16:9 aspect ratio and immediately loads a low rez poster image.  Once it loads completely, it will fade in.  When the Visual enters the viewport, the `image` image will load in.  When it completes, if the Visual is still in the viewport, the `video` will load.  Once enough has loaded that it can play without interuption, it will play (looping) until it is scrolled out of the viewport.  Finally, in the event that the user's device doesn't support autoplaying video, instead of loading a video, after the `image` loads, the `fallback` gif would have been loaded instead.
 
 In addition, the `<h1>` and `<p>` will be inserted inside the component via the default Vue slot.
 
@@ -327,53 +327,62 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 ### Assets
 
-- `src (string|object)` : An image to load.  If a string, the URL of an image.  If an object, a list of image URLs keyed to `max-width`-style breakpoints:
+- `image (string|object)` : An image to load.  If a string, the URL of an image.  If an object, a list of image URLs keyed to `max-width`-style breakpoints:
 	```
-	:src='{ 500: 'image-mobile.png', 768: 'image-tablet.png' }'
+	:image='{ 500: 'image-mobile.png', 768: 'image-tablet.png' }'
+	```
+	You an also specify pixel density constraints:
+	```
+	:image='{ 500: 'image-mobile.png', '500@2': 'image-tablet-2x.png' }'
 	```
 
-- `poster (string|object)` : An image that is loaded before `src`, `video`, or `fallback`.  See `src` for object schema.
+- `poster (string|object)` : An image that is loaded before `image`, `video`, or `fallback`.  See `image` for object schema.
 
-- `video (string|array)` : A video that is loaded after the src is loaded if the device supports video.    If a string, should be the URL to a source video.  If an array, a list of video URLs that will be added as difference `<source>`s.
+- `video (string|array)` : A video that is loaded after the image is loaded if the device supports video.    If a string, should be the URL to a source video.  If an array, a list of video URLs that will be added as difference `<source>`s.
 
-- `fallback (string|object)` : An image that is loaded after the `src` when the user's device doesn't support video or doesn't support auto-playing video and `require-autoplay` is truthy.  See `src` for object schema.
+- `fallback (string|object)` : An image that is loaded after the `image` when the user's device doesn't support video or doesn't support auto-playing video and `require-autoplay` is truthy.  See `image` for object schema.
 
 
 ### Dimensions
 
-- `width (number|string)` : This width will be applied to the container, `.visual`, div.  May also be a string matching one of the asset properties (`poster`, `src`, `video`, `fallback`) to use the native width of the asset.  Note, these values cannot be read until the asset has loaded, so the Visual will be dimension-less until load has completed.
+- `width (number|string)` : This width will be applied to the container, `.visual`, div.  May also be a string matching one of the asset properties (`poster`, `image`, `video`, `fallback`) to use the native width of the asset.  Note, these values cannot be read until the asset has loaded, so the Visual will be dimension-less until load has completed.
 
 - `height (number|string)` : See `width`
 
-- `aspect` (number|string) : Force the Visual to a specific aspect ratio.  This works by making the asset `position:absolute` and then using an inner div with a `padding-top` set to a percentage.  Can be set as a number like `:aspect='16/9'` or as a string like `aspect='16:9'`.  May also use any of the asset properties (`poster`, `src`, `video`, `fallback`) to use the native aspect ratio of the asset.  Note, these values cannot be read until the asset has loaded, so the Visual will be dimension-less until load has completed.
+- `aspect` (number|string) : Force the Visual to a specific aspect ratio.  This works by making the asset `position:absolute` and then using an inner div with a `padding-top` set to a percentage.  Can be set as a number like `:aspect='16/9'` or as a string like `aspect='16:9'`.  May also use any of the asset properties (`poster`, `image`, `video`, `fallback`) to use the native aspect ratio of the asset.  Note, these values cannot be read until the asset has loaded, so the Visual will be dimension-less until load has completed.
 
 
 ### Rendering
 
-- `bkgd (string)` - May be `cover` or `contain`. When set, image assets as a `background-image` with either `background-size: cover` or `background-size: contain`. Video assets will be made to mimic this display style by using javascript to transform the offset of the asset, masking clipped regions with `overflow: hidden`.
+- `render (string)` - By default, the asset is rendered into the DOM immediately.  If set to `loaded`, it will be rendered only after it finishes loaded.  This works well when paired with a transition. Different render values can be set for each asset type:
+- `render-poster (string)`
+- `render-image (string)`
+- `render-video (string)` - Also applies to the `fallback`
 
-- `bkgd-pos (string)` - *Default `center center`.*  This sets the `background-position` when the Visual is using `bkgd` rendering.  The effect will also be applied to Videos.
+- `background (string)` - May be `cover` or `contain`. When set, image assets as a CSS `background-image` with either `background-size: cover` or `background-size: contain` depending on the value of the prop. Video assets will be made to mimic this display style by using javascript to transform the offset of the asset, masking clipped regions with `overflow: hidden`.
+
+- `background-position (string)` - *Default `center center`.*  This sets the CSS `background-position` when the Visual is using `background` rendering.  The effect will also be applied to Videos.
 
 
 ### Loading
 
-- `load (string)` - By default, the asset is rendered into the DOM immediately.  If set to `now`, the asset is loaded immediately but is not rendered into the DOM until load has completed (or the video can play without interuption).  If set to `visible`, will not begin loading until the Visual enters the viewport.  Different loading values can be set for each asset type:
+- `load (string)` - By default, the assets are loaded immediately.  If set to `visible`, they won't be loaded until the Visual enters the viewport.  If set to falsey, will not be loaded at all.  You must call `startLoad()` on the component to initiate loading.  Different loading values can be set for each asset type:
 	- `load-poster (string)`
-	- `load-src (string)`
-	- `load-video (string)`
+	- `load-image (string)`
+	- `load-video (string)` - Also applies to the `fallback`
 
 - `offset (number|object)` - A number that either expands (if positive) or contracts (if negative) the effective bounds of the Visual as it is interpreted by any `visible` setting (i.e. `load`, `autoplay`, `autopause`).  For example, `<visual load='visible' offset=100></visual>` will make a Visual that is far below the viewport begin loading when it reaches 100px below the viewport. May also be set to an object like so: `<visual load='visible' :offset='{ top: 20, bottom: 50 }'></visual>`.  Different offset values can be set for each asset type:
 	- `offset-poster (string)`
-	- `offset-src (string)`
-	- `offset-video (string)`
+	- `offset-image (string)`
+	- `offset-video (string)` - Also applies to the `fallback`
 
 
 ### Transition
 
 - `transition (string)` - *Default: `visual-fade`.* A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied to the `v-if` directives that are applied to assets that have `load` setting.  The Visual component ships with a `visual-fade` transition that fades in assets over previously loaded assets. Different transition values can be set for each asset type:
 	- `transition-poster (string)`
-	- `transition-src (string)`
-	- `transition-video (string)`
+	- `transition-image (string)`
+	- `transition-video (string)` - Also applies to the `fallback`
 
 
 ### Video
@@ -397,3 +406,11 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 
 ## Slots
+
+- `default`: TODO
+
+- `spinner`: TODO
+
+## Methods
+
+- `startLoad(asset = null)` - Initiate loading if the Visual had the `load` prop set to falsey.  Specify an asset to load a specific asset.
