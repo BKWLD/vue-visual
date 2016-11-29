@@ -104,17 +104,16 @@ module.exports =
 		imageInViewport:  undefined
 		videoInViewport:  undefined
 
-	# Loop through asset types and create load watchers
-	created: ->
+	mounted: ->
+
+		# Loop through asset types and create load watchers
 		['poster', 'image', 'video', 'fallback'].forEach (asset) =>
-			@$watch (=> @[asset+'ShouldLoad'])
+			@$watch asset+'ShouldLoad'
 			, ((ready) => @loadAsset(asset) if ready)
 			, immediate: true
 
-
-	# Loop through asset types and create scroll watchers.  Note, fallback
-	# shares the video scroll listener.
-	mounted: ->
+		# Loop through asset types and create scroll watchers.  Note, fallback
+		# shares the video scroll listener.
 		['poster', 'image', 'video'].forEach (asset) =>
 			@$watch (=> @assetScrollId(asset))
 			, ((active) =>
@@ -136,9 +135,13 @@ module.exports =
 
 		# Assemble additional classes
 		containerClasses: ->
+
+			# Dimension
 			'vv-has-width': @width
 			'vv-has-height': @height
 			'vv-has-aspect': @aspect
+
+			# Load
 			'vv-poster-loading': @posterLoading
 			'vv-poster-loaded': @posterLoaded
 			'vv-image-loading': @imageLoading
@@ -242,6 +245,7 @@ module.exports =
 
 		# Load an asset
 		loadAsset: (asset) -> switch asset
+			when @[asset+'Loaded'] then true # Don't load twice
 			when 'video' then @loadVideoAsset asset
 			else @loadImgAsset asset
 
@@ -253,17 +257,18 @@ module.exports =
 				@[asset+'Loading'] = false
 				@[asset+'Loaded'] = true
 				delete @$refs.video.oncanplaythrough
+			@$refs.video.load()
 
 		# Load an image-based by watching the load on an image instance
 		loadImgAsset: (asset) ->
 			return unless @[asset]
 			@[asset+'Loading'] = true
 			img = new Image()
-			img.src = @[asset]
 			img.onload = =>
 				@[asset+'Loading'] = false
 				@[asset+'Loaded'] = true
 				delete img.onload
+			img.src = @[asset]
 
 		###
 		Scroll

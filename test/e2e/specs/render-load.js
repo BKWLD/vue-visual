@@ -17,6 +17,7 @@ module.exports = {
 
 	'video should render and load': function (browser) { browser
 		.assert.attributeContains('.test-video .vv-video source', 'src', 'video.mp4')
+		.assert.visible('.test-video .vv-video')
 		.assert.elementNotPresent('.test-video .vv-poster')
 		.assert.elementNotPresent('.test-video .vv-image')
 	},
