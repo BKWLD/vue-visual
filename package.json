@@ -25,7 +25,10 @@
     "url": "https://github.com/BKWLD/vue-visual/issues"
   },
   "homepage": "https://github.com/BKWLD/vue-visual#readme",
-  "dependencies": {},
+  "dependencies": {
+    "is-numeric": "^0.0.5",
+    "lodash": "3 - 4"
+  },
   "devDependencies": {
     "apply-loader": "^0.1.0",
     "chromedriver": "^2.25.1",

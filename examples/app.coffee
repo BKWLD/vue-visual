@@ -6,5 +6,4 @@ Vue = require 'vue'
 Vue.component 'visual', require 'vue-visual'
 
 # Init root instance
-window.App = new Vue
-	el: '#app'
+window.App = new Vue el: '#app'

@@ -14,6 +14,8 @@ app.use(webpackDevMiddleware(webpack(WebpackConfig), {
   }
 }))
 
+app.use(express.static(__dirname))
+
 const fs = require('fs')
 const path = require('path')
 
@@ -22,8 +24,6 @@ fs.readdirSync(__dirname).forEach(file => {
     app.use(rewrite('/' + file + '/*', '/' + file + '/index.html'))
   }
 })
-
-app.use(express.static(__dirname))
 
 const port = process.env.PORT || 8080
 module.exports = app.listen(port, () => {

@@ -43,11 +43,11 @@ This renders:
 
 ```html
 <div class='vue-visual' style='width: 350px; height: 150px;'>
-	<img image="image.png" class='vue-visual-asset' width='350' height='150'>
+	<img image="image.png" class='vue-visual-asset vue-visual-image'>
 </div>
 ```
 
-The width and height are applied to the container as well so that loader graphics or other element that are inserted through the `<slot>` can make use of those dimensions.
+The width and height are applied to the container as well so that loader graphics or other element that are inserted through the `<slot>` can make use of those dimensions.  The Visual stylesheet will add `width: 100%; height: 100%` to the img so that it fills the container.
 
 
 ### Wait to render until image loaded
@@ -343,7 +343,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 - `fallback (string|object)` : An image that is loaded after the `image` when the user's device doesn't support video or doesn't support auto-playing video and `require-autoplay` is truthy.  See `image` for object schema.
 
 
-#### Dimensions
+#### Size
 
 - `width (number|string)` : This width will be applied to the container, `.visual`, div.  May also be a string matching one of the asset properties (`poster`, `image`, `video`, `fallback`) to use the native width of the asset.  Note, these values cannot be read until the asset has loaded, so the Visual will be dimension-less until load has completed.
 
