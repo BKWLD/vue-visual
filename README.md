@@ -9,7 +9,7 @@ Vue 2 image and video loader supporting lazy loading, cover videos, and more
 	```js
 	Vue = require('vue')
 	VueVisual = require('vue-visual')
-	Vue.component('visual', VueVisual())
+	Vue.component('visual', VueVisual)
 
 	// Assuming you are using webpack, require the CSS file
 	require('vue-visual/index.css')
@@ -28,8 +28,8 @@ Vue 2 image and video loader supporting lazy loading, cover videos, and more
 This renders:
 
 ```html
-<div class='vue-visual'>
-	<img image="image.png" class='vue-visual-asset'>
+<div class='vv-container'>
+	<img image="image.png" class='vv-asset'>
 </div>
 ```
 
@@ -42,8 +42,8 @@ You may also specify the width and height:
 This renders:
 
 ```html
-<div class='vue-visual' style='width: 350px; height: 150px;'>
-	<img image="image.png" class='vue-visual-asset vue-visual-image'>
+<div class='vv-container' style='width: 350px; height: 150px;'>
+	<img image="image.png" class='vv-asset vue-vv-image'>
 </div>
 ```
 
@@ -59,14 +59,14 @@ The width and height are applied to the container as well so that loader graphic
 This initially renders:
 
 ```html
-<div class='vue-visual visual-loading'></div>
+<div class='vue-visual vv-loading'></div>
 ```
 
 Then, when the image is loaded:
 
 ```html
-<div class='vue-visual visual-loaded'>
-	<img image='image.png' class='vue-visual-asset'>
+<div class='vue-visual vv-loaded'>
+	<img image='image.png' class='vv-asset'>
 </div>
 ```
 
@@ -84,20 +84,20 @@ Then, when the image is loaded:
 This initially renders:
 
 ```html
-<div class='vue-visual visual-pending'></div>
+<div class='vue-visual vv-pending'></div>
 ```
 
 Then, when the `visual` comes within `200px` of the viewport, it starts loading:
 
 ```html
-<div class='vue-visual visual-loading'></div>
+<div class='vue-visual vv-loading'></div>
 ```
 
 And finally, upon load:
 
 ```html
-<div class='vue-visual visual-loaded'>
-	<img image="image.png" class='vue-visual-asset'>
+<div class='vue-visual vv-loaded'>
+	<img image="image.png" class='vv-asset'>
 </div>
 ```
 
@@ -160,15 +160,15 @@ In this case, the poster image will be loaded immediately and the main image wil
 This renders:
 
 ```html
-<div class='vue-visual'>
+<div class='vv-container'>
 	<div
-		class='vue-visual-asset visual-background visual-background-cover'
+		class='vv-asset vv-background vv-background-cover'
 		style='background: url("image.png");'>
 	</div>
 </div>
 ```
 
-The `visual-cover` class adds `background-size: cover` to the asset.  Additionally, you may also set `background` to `contain` for `background-size: contain`.
+The `vv-cover` class adds `background-size: cover` to the asset.  Additionally, you may also set `background` to `contain` for `background-size: contain`.
 
 
 ### Use native asset dimensions for the size
@@ -200,11 +200,11 @@ It is often more useful in responsive layouts to set an aspect ratio for the Vis
 This renders:
 
 ```html
-<div class='vue-visual'>
+<div class='vv-container'>
 	<div
-		class='vue-visual-asset visual-background visual-background-cover visual-aspect'
+		class='vv-asset vv-background vv-background-cover vv-aspect'
 		style='background: url("image.png");'>
-		<div class='vue-visual-aspect-prop' style='padding-top: 56.25%'></div>
+		<div class='vue-vv-aspect-prop' style='padding-top: 56.25%'></div>
 	</div>
 </div>
 ```
@@ -231,7 +231,7 @@ You can also use the measured dimensions of the `image` or `poster` for the aspe
 This renders:
 
 ```html
-<div class='vue-visual'>
+<div class='vv-container'>
 	<video>
 		<source image='video.mp4' type='video/mp4'>
 	</video>
@@ -354,7 +354,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Rendering
 
-- `render (string)` - By default, the asset is rendered into the DOM immediately.  If set to `load`, it will be rendered only after it finishes loading.  This works well when paired with a transition.  This prop Will be treated as set to `load` if any `load` prop value is set. Different render values can be set for each asset type:
+- `render (string)` - By default, the asset is rendered into the DOM immediately.  If set to `load`, it will be rendered only after it finishes loading.  If a `transition` is set, this will be automatically set to `load` so that the transition waits until the asset can be displayed.  Different render values can be set for each asset type:
 	- `render-poster (string)`
 	- `render-image (string)`
 	- `render-video (string)` - Also applies to the `fallback`
@@ -368,10 +368,10 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Loading
 
-- `load (string)` - By default, the assets are loaded immediately.  If set to `visible`, they won't be loaded until the Visual enters the viewport.  If set to falsey, will not be loaded at all.  You must call `startLoad()` on the component to initiate loading.  `render` will automatically be set to `loaded` if any value is set.  Different loading values can be set for each asset type:
-	- `load-poster (string)`
-	- `load-image (string)`
-	- `load-video (string)` - Also applies to the `fallback`
+- `load (string|boolean)` - *Default: `true`.*  If `true`, assets are loaded in order, immediately.  In other words, once the `poster` has loaded, the `image` will load, and then either the `video` or `fallback`.  If set to `false`, you must call `startLoad()` on the component to initiate loading.  If set to `visible`, assets won't be loaded until the Visual enters the viewport.  Different loading values can be set for each asset type:
+	- `load-poster (string|boolean)`
+	- `load-image (string|boolean)`
+	- `load-video (string|boolean)` - Also applies to the `fallback`
 
 - `offset (number|object)` - A number that either expands (if positive) or contracts (if negative) the effective bounds of the Visual as it is interpreted by any `visible` setting (i.e. `load`, `autoplay`, `autopause`).  For example, `<visual load='visible' offset=100></visual>` will make a Visual that is far below the viewport begin loading when it reaches 100px below the viewport. May also be set to an object like so: `<visual load='visible' :offset='{ top: 20, bottom: 50 }'></visual>`.  Different offset values can be set for each asset type:
 	- `offset-poster (string)`
@@ -381,7 +381,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Transition
 
-- `transition (string)` - *Default: `visual-fade`.* A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied to the `v-if` directives that are applied to assets that have `load` setting.  The Visual component ships with a `visual-fade` transition that fades in assets over previously loaded assets. Different transition values can be set for each asset type:
+- `transition (string)` - *Default: `vv-fade`.* A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied to the `v-if` directives that are applied to assets that have `load` setting.  The Visual component ships with a `vv-fade` transition that fades in assets over previously loaded assets.  Setting a `transition` will automatically set `render='load'`.  Different transition values can be set for each asset type:
 	- `transition-poster (string)`
 	- `transition-image (string)`
 	- `transition-video (string)` - Also applies to the `fallback`

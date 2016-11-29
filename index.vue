@@ -29,6 +29,178 @@
 isNumeric = require 'is-numeric'
 scrollMonitor = require 'scrollmonitor'
 
+# The component definition
+module.exports =
+
+	props:
+
+		# Assets
+		poster:   [String, Object]
+		image:    [String, Object]
+		video:    [String, Object]
+		fallback: [String, Object]
+
+		# Size
+		width:  [String, Number]
+		height: [String, Number]
+		aspect: [String, Number]
+
+		# Rendering
+		render:       String
+		renderPoster: String
+		renderImage:  String
+		renderVideo:  String
+
+		# Load
+		load:        { default: true, type: [String, Boolean] }
+		loadPoster:  { default: undefined, type: [String, Boolean] }
+		loadImage:   { default: undefined, type: [String, Boolean] }
+		loadVideo:   { default: undefined, type: [String, Boolean] }
+
+	data: ->
+
+		# Load status
+		posterLoaded:    false
+		imageLoaded:     false
+		videoLoaded:     false
+		fallbackLoaded:  false
+
+		# In viewport statuses
+		posterInViewport: undefined
+		imageInViewport:  undefined
+		videoInViewport:  undefined
+
+	# Loop through asset types and create load watchers
+	created: ->
+		['poster', 'image', 'video', 'fallback'].forEach (asset) =>
+			@$watch (=> @assetReadyToLoad(asset))
+			, ((ready) => @loadAsset(asset) if ready)
+			, immediate: true
+
+
+	# Loop through asset types and create scroll watchers.  Note, fallback
+	# shares the video scroll listener.
+	mounted: ->
+		['poster', 'image', 'video'].forEach (asset) =>
+			@$watch (=> @assetScrollId(asset))
+			, ((active) =>
+				if active
+				then @addScrollListeners(asset)
+				else @removeScrollListeners(asset))
+			, immediate: true
+
+	# Remove scroll watchers
+	destroyed: ->
+		@removeScrollListeners asset for asset in ['poster', 'image', 'video']
+
+	computed:
+
+		# Assemble inline styles of container div
+		containerStyles: ->
+			width: size @width
+			height: size @height
+
+		# Assemble additional classes
+		containerClasses: -> [
+			if @width then 'vv-has-width'
+			if @height then 'vv-has-height'
+			if @aspect then 'vv-has-aspect'
+		].filter (val) -> val
+
+		# Test whether the poster is ready to be shown
+		posterShouldRender: ->
+			return false if @imageShouldRender # Hide when `image` is ready
+			return @assetShouldRender 'poster'
+
+		# Test whether the image is ready to be shown
+		imageShouldRender: ->
+			return false if @poster and !@posterLoaded # Wait for poster
+			return @assetShouldRender 'image'
+
+		# Turn aspect variable into aspect percentage
+		aspectPerc: -> switch
+			when !@aspect then undefined
+			when isNumeric @aspect then @aspect
+			when @aspect.match ':' then aspectFromString @aspect
+		aspectPadding: -> (1 / @aspectPerc * 100) + '%' if @aspectPerc
+
+	methods:
+
+		# DRY per-asset logic for determining whether an asset is ready to render
+		assetShouldRender: (asset) ->
+			renderOnLoad = @assetPropVal(asset, 'render') == 'load'
+			switch
+				when not @[asset] then false # Require asset src
+				when not renderOnLoad then true # Can be rendered immediately
+				when renderOnLoad and @[asset+'Loaded'] then true # Wait for load
+
+		# DRY per-asset logic for determining whetehr an asset is ready to load
+		assetReadyToLoad: (asset) ->
+			alreadyLoading = @[asset+'Loader'] or @[asset+'Loaded']
+			loadNow = @assetPropVal('poster', 'load') == true
+			loadWhenVisible = @assetPropVal('poster', 'load') == 'visible'
+			switch
+				when alreadyLoading then false # Already loading
+				when loadNow then true
+				when loadWhenVisible and @[asset+'InViewport'] then true
+
+		# Per-asset value that triggers scrollMonitor to re-init.  The id is just
+		# the stringified offset (which will trigger re-init if the offset changes)
+		# if there is scrolling or null if there is no scroll listening.
+		assetScrollId: (asset) ->
+			if @assetUsesScroll(asset)
+				offset = @assetPropVal asset, 'offset'
+				return JSON.stringify offset
+
+		# Per-asset check that an asset cares about inViewport
+		assetUsesScroll: (asset) -> switch
+			when @assetPropVal(asset, 'load') == 'visible' then true
+			when asset == 'video' and @autoplay == 'visible' then true
+			when asset == 'video' and @autopause == 'visible' then true
+
+		# Create (or re-init) the scrollMonitor
+		addScrollListeners: (asset) ->
+
+			# Cleanup old scroll monitor
+			@removeScrollListeners asset
+			return unless @$el
+
+			# Create new scroll monitor
+			offset = @assetPropVal asset, 'offset'
+			@[asset+'scrollMonitor'] = scrollMonitor.create @$el, offset
+
+			# Set initial state and listen for updates
+			@[asset+'inViewport'] = @[asset+'scrollMonitor'].isInViewport
+			@posterScrollMonitor.on 'visibilityChange', =>
+				@[asset+'inViewport'] = @[asset+'scrollMonitor'].isInViewport
+
+		# Destroy scrollMonitor
+		removeScrollListeners: (asset) ->
+			@[asset+'scrollMonitor'].destroy() if @[asset+'scrollMonitor']
+
+		# Get value of a prop that has an asset-level override.  For instance,
+		# `render` may be overrode by `renderPoster`
+		assetPropVal: (asset, prop) ->
+			assetProp = prop + ucfirst(asset) # ie: renderPoster
+			@[assetProp] ? @[prop]
+
+		# Load an asset
+		loadAsset: (asset) ->
+			@[asset+'Loader'] = @loadImg @[asset], =>
+				@[asset+'Loaded'] = true
+				delete @[asset+'Loader']
+
+		# Watch for an image to load
+		loadImg: (src, cb) ->
+			return unless src
+			img = new Image()
+			img.addEventListener 'load', cb
+			img.src = src
+
+###
+Utils
+###
+
 # Make a size value from a string or number input
 size = (val) ->
 	return unless val
@@ -48,135 +220,8 @@ canPlay = (mime) ->
 # Test whether the device can autoplay video
 canAutoplayVideo = -> !navigator.userAgent.match /Mobile|Android|BlackBerry/i
 
-# The component definition
-module.exports =
-
-	props:
-
-		# Assets
-		poster:   [String, Object]
-		image:    [String, Object]
-		video:    [String, Object]
-		fallback: [String, Object]
-
-		# Size
-		width:  [String, Number]
-		height: [String, Number]
-		aspect: [String, Number]
-
-		# Rendering
-		render:       null # "null" so it could be tested for undefined
-		renderPoster: null
-		renderImage:  null
-		renderVideo:  null
-
-		# Load
-		load:       null # "null" so it could be tested for undefined
-		loadPoster: null
-		loadImage:  null
-		loadVideo:  null
-
-	data: ->
-
-		# Load status
-		posterLoaded:    false
-		imageLoaded:     false
-		videoLoaded:     false
-		fallbackLoaded:  false
-
-		# In viewport statuses
-		posterInViewport: undefined
-		imageInViewport:  undefined
-		videoInViewport:  undefined
-
-	computed:
-
-		# Assemble inline styles of container div
-		containerStyles: ->
-			width: size @width
-			height: size @height
-
-		# Assemble additional classes
-		containerClasses: -> [
-			if @width then 'vv-has-width'
-			if @height then 'vv-has-height'
-			if @aspect then 'vv-has-aspect'
-		].filter (val) -> val
-
-		###
-		# POSTER
-		###
-
-		# Test whether the poster is ready to be shown
-		posterShouldRender: -> switch
-			when @imageReady then false
-			when !@renderOnPosterLoad and @poster then true
-			when @renderOnPosterLoad and @posterLoaded then true
-		renderOnPosterLoad: ->
-			@renderPoster == 'load' or (@renderPoster != false and @render == 'load')
-
-		# Test whether the poster is ready to load
-		posterReadyToLoad: -> switch
-			when @posterLoader or @posterLoaded then false
-			when @loadPoster == undefined and @load == undefined then true
-			when @loadPoster == true then true
-			when @loadPosterWhenVisible and @posterInViewport then true
-		loadPosterWhenVisible: ->
-			@loadPoster == 'visible' or (@loadPoster != false and @load == 'visible')
-
-		# Make an id that triggers the poster scrollMonitor to regenerate
-		posterScrollId: ->
-			JSON.stringify @posterOffset if @loadPosterWhenVisible and @$el
-		posterOffset: -> @offsetPoster ? @offset
-
-		# Test whether the image is ready to be shown
-		imageShouldRender: -> switch
-			when @poster and !@posterLoaded then false
-			when !@renderOnImageLoad and @image then true
-			when @renderOnImageLoad and @imageLoaded then true
-		renderOnImageLoad: ->
-			@renderImage == 'load' or (@renderImage != false and @render == 'load')
-
-		# Turn aspect variable into aspect percentage
-		aspectPerc: -> switch
-			when !@aspect then undefined
-			when isNumeric @aspect then @aspect
-			when @aspect.match ':' then aspectFromString @aspect
-		aspectPadding: -> (1 / @aspectPerc * 100) + '%' if @aspectPerc
-
-	watch:
-
-		# Watch for when to trigger the poster to load
-		posterReadyToLoad:
-			immediate: true
-			handler: (ready) ->
-				return unless ready
-				@posterLoader = @loadImg @poster, => @posterLoaded = true
-
-		# Watch for whether the poster should respond to being in viewport
-		posterScrollId:
-			immediate: true
-			handler: (active) ->
-
-				# Cleanup old scroll monitor
-				@posterScrollMonitor.destroy() if @posterScrollMonitor
-				return unless active
-
-				# Create new scroll monitor
-				@posterScrollMonitor = scrollMonitor.create @$el, @posterOffset
-				@posterInViewport = @posterScrollMonitor.isInViewport
-				@posterScrollMonitor.on 'visibilityChange', =>
-					@posterInViewport = @posterScrollMonitor.isInViewport
-
-	methods:
-
-		# Watch for an image to load
-		loadImg: (src, cb) ->
-			return unless src
-			img = new Image()
-			img.addEventListener 'load', cb
-			img.src = src
-
+# Uppercase first letter of string
+ucfirst = (str) -> str && str[0].toUpperCase() + str.slice(1)
 
 </script>
 
