@@ -27,7 +27,8 @@
   "homepage": "https://github.com/BKWLD/vue-visual#readme",
   "dependencies": {
     "is-numeric": "^0.0.5",
-    "lodash": "3 - 4"
+    "lodash": "3 - 4",
+    "scrollmonitor": "^1.1.3"
   },
   "devDependencies": {
     "apply-loader": "^0.1.0",

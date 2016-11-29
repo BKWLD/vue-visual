@@ -1,1 +1,1 @@
-.visual{overflow:hidden}.body{background:red}.body .bro{background:#ff0}
+.vv-container{display:inline-block}.vv-has-width .vv-asset{width:100%}.vv-has-height .vv-asset{height:100%}.vv-has-aspect{position:relative;display:block}.vv-has-aspect .vv-asset{position:absolute;left:0;top:0;width:100%;height:100%}.vv-aspect-shim{display:inline-block;height:100%}

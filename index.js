@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
+		module.exports = factory(require("is-numeric"));
 	else if(typeof define === 'function' && define.amd)
-		define([], factory);
+		define(["is-numeric"], factory);
 	else if(typeof exports === 'object')
-		exports["vue-visual"] = factory();
+		exports["vue-visual"] = factory(require("is-numeric"));
 	else
-		root["vue-visual"] = factory();
-})(this, function() {
+		root["vue-visual"] = factory(root["is-numeric"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_3__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -64,7 +64,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	__vue_exports__ = __webpack_require__(2)
 
 	/* template */
-	var __vue_template__ = __webpack_require__(3)
+	var __vue_template__ = __webpack_require__(4)
 	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
 	if (
 	  typeof __vue_exports__.default === "object" ||
@@ -105,23 +105,90 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 2 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
+
+	var aspectFromString, isNumeric, size;
+
+	isNumeric = __webpack_require__(3);
+
+	size = function(val) {
+	  if (!val) {
+	    return;
+	  }
+	  if (isNumeric(val)) {
+	    return val + 'px';
+	  } else {
+	    return val;
+	  }
+	};
+
+	aspectFromString = function(str) {
+	  var parts;
+	  parts = str.split(':');
+	  return parseInt(parts[0], 10) / parseInt(parts[1], 10);
+	};
 
 	module.exports = {
 	  props: {
-	    src: String
+	    poster: [String, Object],
+	    image: [String, Object],
+	    video: [String, Object],
+	    fallback: [String, Object],
+	    width: [String, Number],
+	    height: [String, Number],
+	    aspect: [String, Number]
+	  },
+	  computed: {
+	    containerStyles: function() {
+	      return {
+	        width: size(this.width),
+	        height: size(this.height)
+	      };
+	    },
+	    containerClasses: function() {
+	      return [this.width ? 'vv-has-width' : void 0, this.height ? 'vv-has-height' : void 0, this.aspect ? 'vv-has-aspect' : void 0];
+	    },
+	    aspectPerc: function() {
+	      switch (false) {
+	        case !isNumeric(this.aspect):
+	          return this.aspect;
+	        case !this.aspect.match(':'):
+	          return aspectFromString(this.aspect);
+	      }
+	    },
+	    aspectPadding: function() {
+	      return (1 / this.aspectPerc * 100) + '%';
+	    }
 	  }
 	};
 
 
 /***/ },
 /* 3 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
+
+/***/ },
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports={render:function (){var _vm=this;
-	  return _vm._h('div', {
-	    staticClass: "visual"
-	  })
+	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;
+	  return _h('div', {
+	    staticClass: "vv-container",
+	    class: _vm.containerClasses,
+	    style: (_vm.containerStyles)
+	  }, [(_vm.aspect) ? _h('div', {
+	    staticClass: "vv-aspect-shim",
+	    style: ({
+	      paddingTop: _vm.aspectPadding
+	    })
+	  }) : _vm._e(), (_vm.image) ? _h('img', {
+	    staticClass: "vv-asset vv-image",
+	    attrs: {
+	      "src": _vm.image
+	    }
+	  }) : _vm._e()])
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 	if (false) {

@@ -354,7 +354,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Rendering
 
-- `render (string)` - By default, the asset is rendered into the DOM immediately.  If set to `loaded`, it will be rendered only after it finishes loading.  This works well when paired with a transition.  Will be automatically set to `loaded` if any `load` value is set. Different render values can be set for each asset type:
+- `render (string)` - By default, the asset is rendered into the DOM immediately.  If set to `load`, it will be rendered only after it finishes loading.  This works well when paired with a transition.  This prop Will be treated as set to `load` if any `load` prop value is set. Different render values can be set for each asset type:
 	- `render-poster (string)`
 	- `render-image (string)`
 	- `render-video (string)` - Also applies to the `fallback`
@@ -362,6 +362,8 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 - `background (string)` - May be `cover` or `contain`. When set, image assets as a CSS `background-image` with either `background-size: cover` or `background-size: contain` depending on the value of the prop. Video assets will be made to mimic this display style by using javascript to transform the offset of the asset, masking clipped regions with `overflow: hidden`.
 
 - `background-position (string)` - *Default `center center`.*  This sets the CSS `background-position` when the Visual is using `background` rendering.  The effect will also be applied to Videos.
+
+- `vertical-align (string)` - *Default `middle`.*  If using the default slot to insert markup within the Visual, this controls how that markup is positioned within the Visual.  May be `top`, `middle`, or `bottom`.
 
 
 #### Loading
