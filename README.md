@@ -2,6 +2,7 @@
 
 Vue 2 image and video loader supporting lazy loading, cover videos, and more
 
+
 ## Installation
 
 1. Install the package: `npm install --save vue-visual` or `yarn add vue-visual`
@@ -16,6 +17,7 @@ Vue 2 image and video loader supporting lazy loading, cover videos, and more
 	```
 3. If not using Webpack, copy the css contents from `index.css` to your stylesheet.
 4. See "Usage" for examples
+
 
 ## Usage
 
@@ -295,7 +297,7 @@ Mobile devices like iOS and Android phones do not support autoplaying videos.  Y
 	aspect='16:9'
 
 	poster='low-rez.png'
-	load-poster='now'
+	:load-poster='true'
 
 	image='image.png'
 	load='visible'
@@ -304,8 +306,8 @@ Mobile devices like iOS and Android phones do not support autoplaying videos.  Y
 	load-video='visible'
 	autoplay='visible'
 	autopause='visible'
-	loop='true'
-	muted='true'
+	:loop='true'
+	:muted='true'
 
 	fallback='fallback.gif'>
 
@@ -368,7 +370,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Loading
 
-- `load (string|boolean)` - *Default: `true`.*  If `true`, assets are loaded in order, immediately.  In other words, once the `poster` has loaded, the `image` will load, and then either the `video` or `fallback`.  If set to `false`, you must call `startLoad()` on the component to initiate loading.  If set to `visible`, assets won't be loaded until the Visual enters the viewport.  Different loading values can be set for each asset type:
+- `load (string|boolean)` - *Default: `true`.*  If `true`, assets are loaded in order, immediately.  In other words, once the `poster` has loaded, the `image` will load, and then either the `video` or `fallback`.  If set to `false`, you must call `loadAsset()` on the component to initiate loading.  If set to `visible`, assets won't be loaded until the Visual enters the viewport.  Different loading values can be set for each asset type:
 	- `load-poster (string|boolean)`
 	- `load-image (string|boolean)`
 	- `load-video (string|boolean)` - Also applies to the `fallback`
@@ -389,7 +391,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Video
 
-- `autoplay (string)` - If `now`, begins playing immediately.  If `visible`, begins playing when the Visual enters the viewport, as modified by the `offset` prop.
+- `autoplay (boolean,string)` - If `true`, begins playing immediately.  If `visible`, begins playing when the Visual enters the viewport, as modified by the `offset` prop.
 
 - `autopause  (string)` - If `visible`, begins playing when the Visual enters the viewport, as modified by the `offset` prop.
 
@@ -399,7 +401,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 - `controls (boolean)` - Sets `<video>` `controls`
 
-- `require-autoplay (boolean)` - If falsey, the `fallback` is shown only if the user's device lacks video support.  If truthy, the `fallback`, will be shown also when a device cannot autoplay videos (like most mobile phones).
+- `require-autoplay (boolean)` - If false, the `fallback` is shown only if the user's device lacks video support.  If truthy, the `fallback`, will be shown also when a device cannot autoplay videos (like most mobile phones).
 
 
 #### Accessibility
@@ -415,4 +417,4 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 ## Methods
 
-- `startLoad(asset = null)` - Initiate loading if the Visual had the `load` prop set to falsey.  Specify an asset to load a specific asset.
+- `loadAsset(asset)` - Initiate loading if the Visual had the `load` prop set to false.  Specify an asset to load a specific asset.

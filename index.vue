@@ -19,6 +19,28 @@
 		v-if='imageShouldRender'
 		:src='image')
 
+	//- Video asset
+	video.vv-asset.vv-video(
+		v-show='videoShouldRender'
+		v-if='videoShouldRender || videoShouldLoad'
+		:controls='controls'
+		:loop='loop'
+		:muted='muted'
+		ref='video'
+		preload='auto')
+
+		//- Video sources list
+		source(
+			v-for='url in videoSources'
+			key='url'
+			:src='url'
+			:type='mime(url)')
+
+	//- Fallback asset
+	img.vv-asset.vv-fallback(
+		v-if='fallbackShouldRender'
+		:src='fallback')
+
 </template>
 
 <!-- ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -57,12 +79,24 @@ module.exports =
 		loadImage:   { default: undefined, type: [String, Boolean] }
 		loadVideo:   { default: undefined, type: [String, Boolean] }
 
+		# Video
+		autoplay:        [String, Boolean]
+		autopause:       String
+		loop:            Boolean
+		muted:           Boolean
+		controls:        Boolean
+		requireAutoplay: Boolean
+
 	data: ->
 
 		# Load status
+		posterLoading:   false
 		posterLoaded:    false
+		imageLoading:    false
 		imageLoaded:     false
+		videoLoading:    false
 		videoLoaded:     false
+		fallbackLoading: false
 		fallbackLoaded:  false
 
 		# In viewport statuses
@@ -73,7 +107,7 @@ module.exports =
 	# Loop through asset types and create load watchers
 	created: ->
 		['poster', 'image', 'video', 'fallback'].forEach (asset) =>
-			@$watch (=> @assetReadyToLoad(asset))
+			@$watch (=> @[asset+'ShouldLoad'])
 			, ((ready) => @loadAsset(asset) if ready)
 			, immediate: true
 
@@ -101,21 +135,77 @@ module.exports =
 			height: size @height
 
 		# Assemble additional classes
-		containerClasses: -> [
-			if @width then 'vv-has-width'
-			if @height then 'vv-has-height'
-			if @aspect then 'vv-has-aspect'
-		].filter (val) -> val
+		containerClasses: ->
+			'vv-has-width': @width
+			'vv-has-height': @height
+			'vv-has-aspect': @aspect
+			'vv-poster-loading': @posterLoading
+			'vv-poster-loaded': @posterLoaded
+			'vv-image-loading': @imageLoading
+			'vv-image-loaded': @imageLoaded
+			'vv-video-loading': @videoLoading
+			'vv-video-loaded': @videoLoaded
+			'vv-fallback-loading': @fallbackLoading
+			'vv-fallback-loaded': @fallbackLoaded
 
 		# Test whether the poster is ready to be shown
-		posterShouldRender: ->
-			return false if @imageShouldRender # Hide when `image` is ready
-			return @assetShouldRender 'poster'
+		posterShouldRender: -> switch
+			when @imageShouldRender or @videoShouldRender or @fallbackShouldRender then false
+			else @assetShouldRender 'poster'
+
+		# Test whether poster is ready to load
+		posterShouldLoad: -> @assetReadyToLoad('poster')
 
 		# Test whether the image is ready to be shown
-		imageShouldRender: ->
-			return false if @poster and !@posterLoaded # Wait for poster
-			return @assetShouldRender 'image'
+		imageShouldRender: -> switch
+			when @videoShouldRender or @fallbackShouldRender then false
+			else @assetShouldRender 'image'
+
+		# Test whether image is ready to load
+		imageShouldLoad: -> switch
+			when @poster and !@posterLoaded then false # Wait for poster
+			else @assetReadyToLoad('image')
+
+		# Test whether video should render
+		videoShouldRender: -> switch
+			when @useFallback then false
+			else @assetShouldRender 'video'
+
+		# Test whether video is ready to load
+		videoShouldLoad: -> switch
+			when (@poster and !@posterLoaded) or (@image and !@imageLoaded) then false
+			when @useFallback then false
+			else @assetReadyToLoad('video')
+
+		# Test whether the fallback is ready to be shown
+		fallbackShouldRender: -> switch
+			when not @useFallback then false
+			else @assetShouldRender 'fallback'
+
+		# Test whether the fallback is ready to load
+		fallbackShouldLoad: -> switch
+			when (@poster and !@posterLoaded) or (@image and !@imageLoaded) then false
+			when not @useFallback then false
+			else @assetReadyToLoad('fallback')
+
+		# Return whether a fallback image should be shown
+		useFallback: -> switch
+			when not @fallback then false
+			when not @canPlayVideo then true
+			when @requireAutoplay and !canAutoplayVideo() then true
+
+		# Loop though all video sources and check if at least one is playable on
+		# the device
+		canPlayVideo: ->
+			for video in @videoSources
+				return true if canPlay video
+			return false
+
+		# Turn video sources into an array of URls
+		videoSources: -> switch
+			when !@video then []
+			when typeof @video == 'string' then [@video]
+			when typeof @video == 'array' then @video
 
 		# Turn aspect variable into aspect percentage
 		aspectPerc: -> switch
@@ -126,6 +216,10 @@ module.exports =
 
 	methods:
 
+		###
+		Rendering
+		###
+
 		# DRY per-asset logic for determining whether an asset is ready to render
 		assetShouldRender: (asset) ->
 			renderOnLoad = @assetPropVal(asset, 'render') == 'load'
@@ -134,15 +228,48 @@ module.exports =
 				when not renderOnLoad then true # Can be rendered immediately
 				when renderOnLoad and @[asset+'Loaded'] then true # Wait for load
 
+		###
+		Loading
+		###
+
 		# DRY per-asset logic for determining whetehr an asset is ready to load
 		assetReadyToLoad: (asset) ->
-			alreadyLoading = @[asset+'Loader'] or @[asset+'Loaded']
-			loadNow = @assetPropVal('poster', 'load') == true
-			loadWhenVisible = @assetPropVal('poster', 'load') == 'visible'
+			alreadyLoading = @[asset+'Loading'] or @[asset+'Loaded']
+			loadNow = @assetPropVal(asset, 'load') == true
+			loadWhenVisible = @assetPropVal(asset, 'load') == 'visible'
 			switch
 				when alreadyLoading then false # Already loading
 				when loadNow then true
 				when loadWhenVisible and @[asset+'InViewport'] then true
+
+		# Load an asset
+		loadAsset: (asset) -> switch asset
+			when 'video' then @loadVideoAsset asset
+			else @loadImgAsset asset
+
+		# Load a video based assset
+		loadVideoAsset: (asset) ->
+			return unless @[asset]
+			@[asset+'Loading'] = true
+			@$refs.video.oncanplaythrough = =>
+				@[asset+'Loading'] = false
+				@[asset+'Loaded'] = true
+				delete @$refs.video.oncanplaythrough
+
+		# Load an image-based by watching the load on an image instance
+		loadImgAsset: (asset) ->
+			return unless @[asset]
+			@[asset+'Loading'] = true
+			img = new Image()
+			img.src = @[asset]
+			img.onload = =>
+				@[asset+'Loading'] = false
+				@[asset+'Loaded'] = true
+				delete img.onload
+
+		###
+		Scroll
+		###
 
 		# Per-asset value that triggers scrollMonitor to re-init.  The id is just
 		# the stringified offset (which will trigger re-init if the offset changes)
@@ -178,27 +305,22 @@ module.exports =
 		removeScrollListeners: (asset) ->
 			@[asset+'scrollMonitor'].destroy() if @[asset+'scrollMonitor']
 
+		###
+		Utils
+		###
+
 		# Get value of a prop that has an asset-level override.  For instance,
 		# `render` may be overrode by `renderPoster`
 		assetPropVal: (asset, prop) ->
 			assetProp = prop + ucfirst(asset) # ie: renderPoster
 			@[assetProp] ? @[prop]
 
-		# Load an asset
-		loadAsset: (asset) ->
-			@[asset+'Loader'] = @loadImg @[asset], =>
-				@[asset+'Loaded'] = true
-				delete @[asset+'Loader']
+		# Passthrough to general mime util so it can be called from template
+		mime: (url) -> mime(url)
 
-		# Watch for an image to load
-		loadImg: (src, cb) ->
-			return unless src
-			img = new Image()
-			img.addEventListener 'load', cb
-			img.src = src
 
 ###
-Utils
+General utils
 ###
 
 # Make a size value from a string or number input
@@ -213,9 +335,15 @@ aspectFromString = (str) ->
 
 # Check for video support
 # http://stackoverflow.com/a/3587475/59160
-canPlay = (mime) ->
+canPlay = (url) ->
 	video = document.createElement 'video'
-	return video?.canPlayType(mime) != 'no'
+	return video?.canPlayType(mime(url)) != 'no'
+
+# Get the mimetupe of a video url given it's file extension
+mime = (url) -> switch url.match(/\.(\w+)/)?[1]
+	when 'mp4' then 'video/mp4'
+	when 'webm' then 'video/webm'
+	when 'ogg' then 'video/ogg'
 
 # Test whether the device can autoplay video
 canAutoplayVideo = -> !navigator.userAgent.match /Mobile|Android|BlackBerry/i
