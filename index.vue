@@ -234,11 +234,9 @@ module.exports =
 
 		# DRY per-asset logic for determining whetehr an asset is ready to load
 		assetReadyToLoad: (asset) ->
-			alreadyLoading = @[asset+'Loading'] or @[asset+'Loaded']
 			loadNow = @assetPropVal(asset, 'load') == true
 			loadWhenVisible = @assetPropVal(asset, 'load') == 'visible'
 			switch
-				when alreadyLoading then false # Already loading
 				when loadNow then true
 				when loadWhenVisible and @[asset+'InViewport'] then true
 
