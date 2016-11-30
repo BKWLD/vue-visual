@@ -1,6 +1,6 @@
 {
   "name": "vue-visual",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Vue 2 image and video loader supporting lazy loading, cover videos, and more",
   "main": "index.js",
   "scripts": {
