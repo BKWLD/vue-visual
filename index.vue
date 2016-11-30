@@ -40,10 +40,13 @@
 				:style='backgroundStyles("fallback")')
 
 	//- Video asset
+	//- Rendering a video asset effectively loads it; setting preload to false
+	//- has cause issues in some browser. So the v-if here is based on load
+	//- and we keep it display:none until ready to transition in.
 	transition(:name='assetPropVal("video", "transition")')
 		.vv-transition.vv-video-transition(
 			v-show='videoShouldRender'
-			v-if='videoShouldRender || videoShouldLoad')
+			v-if='videoShouldLoad')
 			video.vv-asset.vv-video(
 				:controls='controls'
 				:loop='loop'
@@ -101,10 +104,14 @@ module.exports =
 		verticalAlign:      { type: String, default: 'middle'  }
 
 		# Load
-		load:        { type: [String, Boolean], default: true }
-		loadPoster:  { type: [String, Boolean], default: null }
-		loadImage:   { type: [String, Boolean], default: null }
-		loadVideo:   { type: [String, Boolean], default: null }
+		load:         { type: [String, Boolean], default: true }
+		loadPoster:   { type: [String, Boolean], default: null }
+		loadImage:    { type: [String, Boolean], default: null }
+		loadVideo:    { type: [String, Boolean], default: null }
+		offset:       [Number, String, Object]
+		offsetPoster: [Number, String, Object]
+		offsetImage:  [Number, String, Object]
+		offsetVideo:  [Number, String, Object]
 
 		# Transition
 		transition:       String
@@ -230,6 +237,11 @@ module.exports =
 			'vv-fallback-loading': @fallbackLoading
 			'vv-fallback-loaded': @fallbackLoaded
 
+			# Offset
+			'vv-poster-in-viewport': @posterInViewport
+			'vv-image-in-viewport': @imageInViewport
+			'vv-video-in-viewport': @videoInViewport
+
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Asset render and load
 
@@ -238,7 +250,9 @@ module.exports =
 
 		# Test whether the poster is ready to be shown
 		posterShouldRender: -> switch
-			when @imageShouldRender or @videoShouldRender or @fallbackShouldRender then false
+			when (@imageShouldRender and @imageLoaded) or
+				(@videoShouldRender and @videoLoaded) or
+				(@fallbackShouldRender and @fallbackLoaded) then false
 			else @assetShouldRender 'poster'
 
 		# Test whether poster is ready to load
@@ -249,7 +263,8 @@ module.exports =
 
 		# Test whether the image is ready to be shown
 		imageShouldRender: -> switch
-			when @videoShouldRender or @fallbackShouldRender then false
+			when (@videoShouldRender and @videoLoaded) or
+				(@fallbackShouldRender and @fallbackLoaded) then false
 			else @assetShouldRender 'image'
 
 		# Test whether image is ready to load
@@ -345,15 +360,20 @@ module.exports =
 		# Rendering
 
 		# DRY per-asset logic for determining whether an asset is ready to render.
-		# Note, if there is a transition set, we automatically render on load.
+		# Rendering is delayed for the load to finish for the following conditions:
+		# - User explicitly set `render` to `load`
+		# - There is a transition set on the asset
+		# - The `load` was not set to load right now
 		assetShouldRender: (asset) ->
 			renderOnLoad = @assetPropVal(asset, 'render') == 'load'
-			renderOnLoad = true if !!@assetPropVal(asset, 'transition')
+			hasTransition = !!@assetPropVal(asset, 'transition')
+			hasDelayedLoad = @assetReadyToLoad(asset) != true
 			switch
 				when not @[asset] then false # Require asset src
-				when renderOnLoad and @[asset+'Loaded'] then true # Wait for load
-				when not renderOnLoad then true # Can be rendered immediately
-
+				when renderOnLoad then @[asset+'Loaded'] # `render` set to `load`
+				when hasTransition then @[asset+'Loaded'] # There is a transition
+				when hasDelayedLoad then @[asset+'Loaded'] # Not loading right away
+				else true # Can be rendered immediately
 
 		# Make background style for an asset
 		backgroundStyles: (asset) ->
@@ -376,11 +396,15 @@ module.exports =
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Loading
 
-		# DRY per-asset logic for determining whetehr an asset is ready to load
+		# DRY per-asset logic for determining whetehr an asset is ready to load.
+		# Once it is loaded, this continues to be true because v-if's in the
+		# template depend on this.
 		assetReadyToLoad: (asset) ->
+			alreadyLoading = @[asset+'Loading'] or @[asset+'Loaded']
 			loadNow = @assetPropVal(asset, 'load') == true
 			loadWhenVisible = @assetPropVal(asset, 'load') == 'visible'
 			switch
+				when alreadyLoading then true # Already loading or loaded
 				when not @[asset] then false # Require asset src
 				when loadNow then true
 				when loadWhenVisible and @[asset+'InViewport'] then true
@@ -469,20 +493,21 @@ module.exports =
 
 			# Cleanup old scroll monitor
 			@removeScrollListeners asset
-			return unless @$el
+			return unless @$el and @[asset]
 
 			# Create new scroll monitor
 			offset = @assetPropVal asset, 'offset'
-			@[asset+'scrollMonitor'] = scrollMonitor.create @$el, offset
+			offset = parseInt(offset, 10) if typeof offset == 'string'
+			@[asset+'ScrollMonitor'] = scrollMonitor.create @$el, offset
 
 			# Set initial state and listen for updates
-			@[asset+'inViewport'] = @[asset+'scrollMonitor'].isInViewport
-			@posterScrollMonitor.on 'visibilityChange', =>
-				@[asset+'inViewport'] = @[asset+'scrollMonitor'].isInViewport
+			@[asset+'InViewport'] = @[asset+'ScrollMonitor'].isInViewport
+			@[asset+'ScrollMonitor'].on 'visibilityChange', =>
+				@[asset+'InViewport'] = @[asset+'ScrollMonitor'].isInViewport
 
 		# Destroy scrollMonitor
 		removeScrollListeners: (asset) ->
-			@[asset+'scrollMonitor'].destroy() if @[asset+'scrollMonitor']
+			@[asset+'ScrollMonitor'].destroy() if @[asset+'ScrollMonitor']
 
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Size

@@ -1,15 +1,19 @@
 <!DOCTYPE html>
-<div id="app">
+<div id="app" style='height: 300vh'>
 
 	<visual
-		poster='/resources/poster.png'
 		image='/resources/image.png'
 		video='/resources/video.mp4'
-		transition='long-scale'
-		background='cover'
-		aspect='350:150'
-		autoplay
-		loop>
+
+		load='visible'
+		offset='0'
+		offset-video='-200'
+
+		autoplay='visible'
+		autopause='visible'
+		loop
+
+		style='margin-top: 100vh'>
 	</visual>
 
 </div>

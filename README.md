@@ -292,7 +292,7 @@ Mobile devices like iOS and Android phones do not support autoplaying videos.  Y
 	load-video='visible'
 	autoplay='visible'
 	autopause='visible'
-	:loop='true'
+	loop
 	:muted='true'
 
 	fallback='fallback.gif'>
@@ -356,7 +356,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Rendering
 
-- `render (string)` - By default, the asset is rendered into the DOM immediately.  If set to `load`, it will be rendered only after it finishes loading.  If a `transition` is set, this will be automatically set to `load` so that the transition waits until the asset can be displayed.  Different render values can be set for each asset type:
+- `render (string)` - By default, the asset is rendered into the DOM immediately.  If set to `load`, it will be rendered only after it finishes loading.  The render will automatically be delayed if there is `transition` defined or if `load` is not set to `true`. Different render values can be set for each asset type:
 	- `render-poster (string)`
 	- `render-image (string)`
 	- `render-video (string)` - Also applies to the `fallback`
@@ -375,10 +375,10 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 	- `load-image (string|boolean)`
 	- `load-video (string|boolean)` - Also applies to the `fallback`
 
-- `offset (number|object)` - A number that either expands (if positive) or contracts (if negative) the effective bounds of the Visual as it is interpreted by any `visible` setting (i.e. `load`, `autoplay`, `autopause`).  For example, `<visual load='visible' offset=100></visual>` will make a Visual that is far below the viewport begin loading when it reaches 100px below the viewport. May also be set to an object like so: `<visual load='visible' :offset='{ top: 20, bottom: 50 }'></visual>`.  Different offset values can be set for each asset type:
-	- `offset-poster (string)`
-	- `offset-image (string)`
-	- `offset-video (string)` - Also applies to the `fallback`
+- `offset (number|string|object)` - A number that either expands (if positive) or contracts (if negative) the effective bounds of the Visual as it is interpreted by any `visible` setting (i.e. `load`, `autoplay`, `autopause`).  For example, `<visual load='visible' offset=100></visual>` will make a Visual that is far below the viewport begin loading when it reaches 100px below the viewport. May also be set to an object like so: `<visual load='visible' :offset='{ top: 20, bottom: 50 }'></visual>`.  Different offset values can be set for each asset type:
+	- `offset-poster (number|string|object)`
+	- `offset-image (number|string|object)`
+	- `offset-video (number|string|object)` - Also applies to the `fallback`
 
 
 #### Transition
