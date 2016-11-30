@@ -16,7 +16,11 @@ module.exports = {
 		.assert.cssClassPresent('.test-letter-video-contain', 'vv-video-letterbox')
 		.assert.cssClassPresent('.test-pillar-video-cover', 'vv-video-pillarbox')
 		.assert.cssClassPresent('.test-pillar-video-contain', 'vv-video-pillarbox')
+	},
 
+	'videos should work with fixed size': function (browser) { browser
+		.assert.cssClassPresent('.test-fixed-size', 'vv-video-letterbox')
+		
 		.end()
 	},
 

@@ -60,6 +60,11 @@
 # Deps
 isNumeric = require 'is-numeric'
 scrollMonitor = require 'scrollmonitor'
+throttle = require 'lodash/throttle'
+
+# Make a single window resize listener
+resizingVms = []
+window.onresize = -> vm.handleWindowResizeThrottled() for vm in resizingVms
 
 # The component definition
 module.exports =
@@ -88,9 +93,9 @@ module.exports =
 
 		# Load
 		load:        { type: [String, Boolean], default: true }
-		loadPoster:  { type: [String, Boolean], default: undefined }
-		loadImage:   { type: [String, Boolean], default: undefined }
-		loadVideo:   { type: [String, Boolean], default: undefined }
+		loadPoster:  { type: [String, Boolean], default: null }
+		loadImage:   { type: [String, Boolean], default: null }
+		loadVideo:   { type: [String, Boolean], default: null }
 
 		# Video
 		autoplay:        [String, Boolean]
@@ -113,15 +118,23 @@ module.exports =
 		fallbackLoaded:  false
 
 		# In viewport statuses
-		posterInViewport: undefined
-		imageInViewport:  undefined
-		videoInViewport:  undefined
+		posterInViewport: null
+		imageInViewport:  null
+		videoInViewport:  null
 
-		# Video measurements
-		videoNativeWidth: undefined
-		videoNativeHeight: undefined
+		# Dimensions
+		windowWidth:       null
+		containerWidth:    null
+		containerHeight:   null
+		videoNativeWidth:  null
+		videoNativeHeight: null
 
 	mounted: ->
+
+		# Start listening to window resizing
+		resizingVms.push this
+		@handleWindowResize()
+		@handleWindowResizeThrottled = throttle @handleWindowResize, 100
 
 		# Loop through asset types and create load watchers
 		['poster', 'image', 'video', 'fallback'].forEach (asset) =>
@@ -139,11 +152,19 @@ module.exports =
 				else @removeScrollListeners(asset))
 			, immediate: true
 
-	# Remove scroll watchers
 	destroyed: ->
+
+		# Remove scroll watchers
 		@removeScrollListeners asset for asset in ['poster', 'image', 'video']
 
+		# Remove resizing reference
+		resizingVms.splice(resizingVms.indexOf(this), 1)
+
 	computed:
+
+		###
+		CSS
+		###
 
 		# Assemble inline styles of container div
 		containerStyles: ->
@@ -173,6 +194,10 @@ module.exports =
 			'vv-video-loaded': @videoLoaded
 			'vv-fallback-loading': @fallbackLoading
 			'vv-fallback-loaded': @fallbackLoaded
+
+		###
+		Asset render and load
+		###
 
 		# Test whether the poster is ready to be shown
 		posterShouldRender: -> switch
@@ -220,6 +245,10 @@ module.exports =
 			when not @canPlayVideo then true
 			when @requireAutoplay and !canAutoplayVideo() then true
 
+		###
+		Video properties
+		###
+
 		# Loop though all video sources and check if at least one is playable on
 		# the device
 		canPlayVideo: ->
@@ -233,17 +262,26 @@ module.exports =
 			when typeof @video == 'string' then [@video]
 			when typeof @video == 'array' then @video
 
-		# Turn aspect variable into aspect percentage
-		aspectPerc: -> switch
-			when !@aspect then undefined
-			when isNumeric @aspect then @aspect
-			when @aspect.match ':' then aspectFromString @aspect
-		aspectPadding: -> (1 / @aspectPerc * 100) + '%' if @aspectPerc
+		###
+		Dimensions
+		###
+
+		# Does this visual need to keep track of it's own width / height
+		shouldTrackSize: -> switch
+			when @aspect then false
+			when @video and @background then true # For Backgrounded vidoes
 
 		# Get the container aspect, which may come from different sources
 		containerAspect: -> switch
-			when @aspect then @aspectPerc
-			# else TODO
+			when @aspect then @aspectProp
+			else @containerWidth / @containerHeight
+
+		# Turn aspect prop into a percentage
+		aspectProp: -> switch
+			when !@aspect then undefined
+			when isNumeric @aspect then @aspect
+			when @aspect.match ':' then aspectFromString @aspect
+		aspectPadding: -> (1 / @aspectProp * 100) + '%' if @aspectProp
 
 		# Get the native aspect of the video
 		videoNativeAspect: -> @videoNativeWidth / @videoNativeHeight
@@ -359,6 +397,20 @@ module.exports =
 			@[asset+'scrollMonitor'].destroy() if @[asset+'scrollMonitor']
 
 		###
+		Size
+		###
+
+		# Update the internal measurement of the window size
+		handleWindowResize: ->
+			@windowWidth = window.innerWidth
+			@updateContainerSize() if @shouldTrackSize
+
+		# Update the container size
+		updateContainerSize: ->
+			@containerWidth = @$el.offsetWidth
+			@containerHeight = @$el.offsetHeight
+
+		###
 		Utils
 		###
 
@@ -414,7 +466,10 @@ ucfirst = (str) -> str && str[0].toUpperCase() + str.slice(1)
 .vv-visual
 	display inline-block
 	font-size 0 // Don't let line-height inflate size and prepare for pseudo-center
-	overflow hidden // For background-cover videos
+
+	// For background-cover videos
+	overflow hidden
+	position relative
 
 // If a width was set, make assets fill to it
 .vv-has-width .vv-asset
@@ -427,7 +482,6 @@ ucfirst = (str) -> str && str[0].toUpperCase() + str.slice(1)
 // If an aspect ratio was set make assets make them fill. CSS-based aspect
 // ratio solve requires display: block
 .vv-has-aspect
-	position relative
 	display block
 	.vv-asset
 		position absolute
@@ -454,6 +508,7 @@ ucfirst = (str) -> str && str[0].toUpperCase() + str.slice(1)
 // Apply background effecs to videos
 .vv-background-cover .vv-video,
 .vv-background-contain .vv-video
+	position absolute
 	top 50%
 	left 50%
 	transform translate(-50%, -50%)
