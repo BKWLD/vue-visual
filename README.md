@@ -351,10 +351,6 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 	```
 	:image='{ 500: 'image-mobile.png', 768: 'image-tablet.png' }'
 	```
-	You an also specify pixel density constraints:
-	```
-	:image='{ 500: 'image-mobile.png', '500@2': 'image-tablet-2x.png' }'
-	```
 
 - `poster (string|object)` : An image that is loaded before `image`, `video`, or `fallback`.  See `image` for object schema.
 
