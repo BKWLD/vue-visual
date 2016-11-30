@@ -10,46 +10,54 @@
 		:style='{ paddingTop: aspectPadding }')
 
 	//- Poster asset
-	img.vv-asset.vv-poster(
-		v-if='!background && posterShouldRender'
-		:src='posterSrc')
-	.vv-asset.vv-poster(
-		v-if='background && posterShouldRender'
-		:style='backgroundStyles("poster")')
+	transition(:name='assetPropVal("poster", "transition")')
+		.vv-transition.vv-poster-transition(v-if='posterShouldRender')
+			img.vv-asset.vv-poster(
+				v-if='!background'
+				:src='posterSrc')
+			.vv-asset.vv-poster(
+				v-else-if='background'
+				:style='backgroundStyles("poster")')
 
 	//- Image asset
-	img.vv-asset.vv-image(
-		v-if='!background && imageShouldRender'
-		:src='imageSrc')
-	.vv-asset.vv-image(
-		v-if='background && imageShouldRender'
-		:style='backgroundStyles("image")')
+	transition(:name='assetPropVal("image", "transition")')
+		.vv-transition.vv-image-transition(v-if='imageShouldRender')
+			img.vv-asset.vv-image(
+				v-if='!background'
+				:src='imageSrc')
+			.vv-asset.vv-image(
+				v-else-if='background'
+				:style='backgroundStyles("image")')
 
 	//- Fallback asset
-	img.vv-asset.vv-fallback(
-		v-if='!background && fallbackShouldRender'
-		:src='fallbackSrc')
-	.vv-asset.vv-fallback(
-		v-if='background && fallbackShouldRender'
-		:style='backgroundStyles("fallback")')
+	transition(:name='assetPropVal("video", "transition")')
+		.vv-transition.vv-fallback-transition(v-if='fallbackShouldRender')
+			img.vv-asset.vv-fallback(
+				v-if='!background'
+				:src='fallbackSrc')
+			.vv-asset.vv-fallback(
+				v-else-if='background'
+				:style='backgroundStyles("fallback")')
 
 	//- Video asset
-	video.vv-asset.vv-video(
-		v-show='videoShouldRender'
-		v-if='videoShouldRender || videoShouldLoad'
-		:controls='controls'
-		:loop='loop'
-		:muted='muted'
-		:autoplay='autoplay'
-		ref='video'
-		preload='auto')
+	transition(:name='assetPropVal("video", "transition")')
+		.vv-transition.vv-video-transition(
+			v-show='videoShouldRender'
+			v-if='videoShouldRender || videoShouldLoad')
+			video.vv-asset.vv-video(
+				:controls='controls'
+				:loop='loop'
+				:muted='muted'
+				:autoplay='autoplay'
+				ref='video'
+				preload='auto')
 
-		//- Video sources list
-		source(
-			v-for='url in videoSources'
-			key='url'
-			:src='url'
-			:type='mime(url)')
+				//- Video sources list
+				source(
+					v-for='url in videoSources'
+					key='url'
+					:src='url'
+					:type='mime(url)')
 
 </template>
 
@@ -96,6 +104,12 @@ module.exports =
 		loadPoster:  { type: [String, Boolean], default: null }
 		loadImage:   { type: [String, Boolean], default: null }
 		loadVideo:   { type: [String, Boolean], default: null }
+
+		# Transition
+		transition:       String
+		transitionPoster: String
+		transitionImage:  String
+		transitionVideo:  String
 
 		# Video
 		autoplay:        [String, Boolean]
@@ -318,13 +332,16 @@ module.exports =
 		Rendering
 		###
 
-		# DRY per-asset logic for determining whether an asset is ready to render
+		# DRY per-asset logic for determining whether an asset is ready to render.
+		# Note, if there is a transition set, we automatically render on load.
 		assetShouldRender: (asset) ->
 			renderOnLoad = @assetPropVal(asset, 'render') == 'load'
+			renderOnLoad = true if !!@assetPropVal(asset, 'transition')
 			switch
 				when not @[asset] then false # Require asset src
-				when not renderOnLoad then true # Can be rendered immediately
 				when renderOnLoad and @[asset+'Loaded'] then true # Wait for load
+				when not renderOnLoad then true # Can be rendered immediately
+
 
 		# Make background style for an asset
 		backgroundStyles: (asset) ->
@@ -463,6 +480,9 @@ module.exports =
 		# Passthrough to general mime util so it can be called from template
 		mime: (url) -> mime(url)
 
+	# Merge config as prop defaults
+	setDefaults: (config) -> @props[key].default = val for key, val of config
+
 
 ###
 General utils
@@ -548,26 +568,61 @@ firstValOfObject = (obj) -> return val for key, val of obj
 .vv-asset
 	background-repeat no-repeat
 
-// Apply background-size properties
-.vv-background-cover .vv-asset
-	background-size cover
-.vv-background-contain .vv-asset
-	background-size contain
+	// Apply background-size properties
+	.vv-background-cover &
+		background-size cover
+	.vv-background-contain &
+		background-size contain
 
 // Apply background effecs to videos
-.vv-background-cover .vv-video,
-.vv-background-contain .vv-video
-	position absolute
-	top 50%
-	left 50%
-	transform translate(-50%, -50%)
-.vv-background-cover.vv-video-pillarbox .vv-video,
-.vv-background-contain.vv-video-letterbox .vv-video
-	width calc(100% + 1px) // Cover rounding errors
-	height auto
-.vv-background-cover.vv-video-letterbox .vv-video,
-.vv-background-contain.vv-video-pillarbox .vv-video
-	width auto
-	height calc(100% + 1px) // Cover rounding errors
+.vv-video
+
+	// Center the video
+	.vv-background-cover &,
+	.vv-background-contain &
+		position absolute
+		top 50%
+		left 50%
+		transform translate(-50%, -50%)
+
+	// Apply letterboxing effect
+	.vv-background-cover.vv-video-pillarbox &,
+	.vv-background-contain.vv-video-letterbox &
+		width calc(100% + 1px) // Cover rounding errors
+		height auto
+
+	// Apply pillarboxing effect
+	.vv-background-cover.vv-video-letterbox &,
+	.vv-background-contain.vv-video-pillarbox &
+		width auto
+		height calc(100% + 1px) // Cover rounding errors
+
+// This container is used to apply transitioning styles without affecting
+// styles on the assets that are necessary for them to render
+.vv-transition
+
+	// If the asset uses absolute positioning, the transition div must fill it's
+	// container
+	.vv-background-cover &,
+	.vv-background-contain &,
+	.vv-has-aspect &
+		position absolute
+		top 0
+		left 0
+		width 100%
+		height 100%
+
+// The standard fading transition
+.vv-fade-enter-active, .vv-fade-leave-active
+	transition opacity .3s
+.vv-fade-enter, .vv-fade-leave-active
+	opacity 0
+
+// Alternative scale animation
+.vv-scale-enter-active, .vv-scale-leave-active
+	transition opacity .3s, transform .3s
+.vv-scale-enter, .vv-scale-leave-active
+	opacity 0
+	transform scale(0.5)
 
 </style>

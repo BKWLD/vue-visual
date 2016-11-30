@@ -3,7 +3,29 @@ body {
 	margin: 0;
 }
 
-/* Make background-contain show up better */
-.vv-visual {
-	background: black;
+/**
+ * These test transitions start at opacity != 0 so that you can see them
+ * fading out through the asset fading in while testing.
+ */
+
+.long-fade-enter-active, .long-fade-leave-active {
+  transition: opacity 5s;
+}
+.long-fade-enter {
+  opacity: 0.2;
+}
+.long-fade-leave-active {
+  opacity: 0;
+}
+
+.long-scale-enter-active, .long-scale-leave-active {
+  transition: opacity 5s, transform 5s;
+}
+.long-scale-enter {
+  opacity: 0.2;
+	transform: scale(0.5);
+}
+.long-scale-leave-active {
+	opacity: 0;
+	transform: scale(0.5);
 }

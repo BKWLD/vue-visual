@@ -322,6 +322,25 @@ This creates a Visual component with a 16:9 aspect ratio and immediately loads a
 In addition, the `<h1>` and `<p>` will be inserted inside the component via the default Vue slot.
 
 
+### Set defaults
+
+Vue-visual was designed to mimic regular `<img>` and `<video>` tag behavior with it's base config.  It renders as `inline-block`, the asset loads immediately, the asset is shown at it's native size, etc.  However, it's more common that you will want to render assets using `background-size: cover`, lazy load, and fade in when they are ready.  To override the default, opt-in themed configuration, you can do the following:
+
+```js
+// Regiter the component
+Vue = require('vue')
+VueVisual = require('vue-visual')
+Vue.component('visual', VueVisual)
+
+// Customize defaults
+Vue.component('visual').options.setDefaults({
+	background: 'cover',
+	load: 'visible',
+	transition: 'vv-fade'
+})
+```
+
+
 ## Props
 
 A list of the [component properties](http://vuejs.org/v2/guide/components.html#Props) that may be set on the Visual component.
@@ -383,7 +402,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Transition
 
-- `transition (string)` - *Default: `vv-fade`.* A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied to the `v-if` directives that are applied to assets that have `load` setting.  The Visual component ships with a `vv-fade` transition that fades in assets over previously loaded assets.  Setting a `transition` will automatically set `render='load'`.  Different transition values can be set for each asset type:
+- `transition (string)` -  A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied to the `v-if` directives that are applied to assets that have `load` setting.  The Visual component ships with a `vv-fade` transition that fades in assets over previously loaded assets.  Setting a `transition` will automatically set `render='load'`.  Different transition values can be set for each asset type:
 	- `transition-poster (string)`
 	- `transition-image (string)`
 	- `transition-video (string)` - Also applies to the `fallback`
@@ -417,4 +436,15 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 ## Methods
 
+#### Instance
+
 - `loadAsset(asset)` - Initiate loading if the Visual had the `load` prop set to false.  Specify an asset to load a specific asset.
+
+#### Component
+
+- `setDefaults(config)` - Change the default prop values for all future-instantiated components.
+	```
+	Vue.component('visual').options.method({
+		transition: 'vv-fade',
+	})
+	```
