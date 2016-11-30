@@ -277,6 +277,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'vv-has-width': this.width,
 	        'vv-has-height': this.height,
 	        'vv-has-aspect': this.aspect,
+	        'vv-fill': this.fill,
 	        'vv-background-cover': this.background === 'cover',
 	        'vv-background-contain': this.background === 'contain',
 	        'vv-video-letterbox': this.videoContainEffect === 'letterbox',
