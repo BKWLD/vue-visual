@@ -224,6 +224,7 @@ module.exports =
 			'vv-has-width': @width
 			'vv-has-height': @height
 			'vv-has-aspect': @aspect
+			'vv-fill': @fill
 
 			# Render
 			'vv-background-cover': @background == 'cover'
@@ -692,6 +693,10 @@ firstValOfObject = (obj) -> return val for key, val of obj
 	bottom 0
 	left 0
 	right 0
+	.vv-asset
+		width 100%
+		height 100%
+		position absolute // Needed for <img>
 
 // Don't tile assets using background positioning
 .vv-asset

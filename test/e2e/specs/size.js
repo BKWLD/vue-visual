@@ -21,7 +21,13 @@ module.exports = {
 
   'it should support aspect fraction numbers': function (browser) { browser
 		.assert.attributeContains('.aspect-fraction .vv-aspect-shim', 'style', `padding-top: ${9/16*100}%;`)
+  },
 
+	'it should support fill': function (browser) { browser
+		.assert.cssProperty('.vv-fill .vv-asset', 'height', '100px')
+		.assert.cssProperty('.vv-fill .vv-asset', 'width', '100px')
     .end()
   },
+
+
 }
