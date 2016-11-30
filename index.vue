@@ -77,6 +77,7 @@ window.onresize = -> vm.handleWindowResizeThrottled() for vm in resizingVms
 # The component definition
 module.exports =
 
+	##############################################################################
 	props:
 
 		# Assets
@@ -119,6 +120,7 @@ module.exports =
 		controls:        Boolean
 		requireAutoplay: Boolean
 
+	##############################################################################
 	data: ->
 
 		# Load status
@@ -143,6 +145,8 @@ module.exports =
 		videoNativeWidth:  null
 		videoNativeHeight: null
 
+
+	##############################################################################
 	mounted: ->
 
 		# Start listening to window resizing
@@ -173,6 +177,8 @@ module.exports =
 				@resetImgAsset asset
 				@loadAsset(asset) if @[asset+'ShouldLoad']
 
+
+	##############################################################################
 	destroyed: ->
 
 		# Remove scroll watchers
@@ -188,11 +194,12 @@ module.exports =
 		# Remove video loaders
 		@removeVideoAssetLoader()
 
+
+	##############################################################################
 	computed:
 
-		###
-		CSS
-		###
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# CSS
 
 		# Assemble inline styles of container div
 		containerStyles: ->
@@ -223,9 +230,8 @@ module.exports =
 			'vv-fallback-loading': @fallbackLoading
 			'vv-fallback-loaded': @fallbackLoaded
 
-		###
-		Asset render and load
-		###
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# Asset render and load
 
 		# Get the right image to show
 		posterSrc: -> @imgSrc 'poster'
@@ -282,9 +288,8 @@ module.exports =
 			when not @canPlayVideo then true
 			when @requireAutoplay and !canAutoplayVideo() then true
 
-		###
-		Video properties
-		###
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# Video properties
 
 		# Loop though all video sources and check if at least one is playable on
 		# the device
@@ -299,9 +304,8 @@ module.exports =
 			when typeof @video == 'string' then [@video]
 			when typeof @video == 'array' then @video
 
-		###
-		Dimensions
-		###
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# Dimensions
 
 		# Does this visual need to keep track of it's own width / height
 		shouldWatchComponentSize: -> switch
@@ -333,11 +337,12 @@ module.exports =
 			return undefined unless @videoNativeAspect
 			if @containerAspect > @videoNativeAspect then 'pillarbox' else 'letterbox'
 
+
+	##############################################################################
 	methods:
 
-		###
-		Rendering
-		###
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# Rendering
 
 		# DRY per-asset logic for determining whether an asset is ready to render.
 		# Note, if there is a transition set, we automatically render on load.
@@ -368,9 +373,8 @@ module.exports =
 				choice = src
 			return choice # Return the largest one when end is reached
 
-		###
-		Loading
-		###
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# Loading
 
 		# DRY per-asset logic for determining whetehr an asset is ready to load
 		assetReadyToLoad: (asset) ->
@@ -443,9 +447,8 @@ module.exports =
 			@[asset+'Loading'] = false
 			@[asset+'Loaded'] = false
 
-		###
-		Scroll
-		###
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# Scroll
 
 		# Per-asset value that triggers scrollMonitor to re-init.  The id is just
 		# the stringified offset (which will trigger re-init if the offset changes)
@@ -481,9 +484,8 @@ module.exports =
 		removeScrollListeners: (asset) ->
 			@[asset+'scrollMonitor'].destroy() if @[asset+'scrollMonitor']
 
-		###
-		Size
-		###
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# Size
 
 		# Update the internal measurement of the window size
 		handleWindowResize: ->
@@ -495,9 +497,8 @@ module.exports =
 			@containerWidth = @$el.offsetWidth
 			@containerHeight = @$el.offsetHeight
 
-		###
-		Utils
-		###
+		#######
+		# Utils
 
 		# Get value of a prop that has an asset-level override.  For instance,
 		# `render` may be overrode by `renderPoster`
@@ -508,13 +509,16 @@ module.exports =
 		# Passthrough to general mime util so it can be called from template
 		mime: (url) -> mime(url)
 
+
+	##############################################################################
+	# Component methods
+
 	# Merge config as prop defaults
 	setDefaults: (config) -> @props[key].default = val for key, val of config
 
 
-###
-General utils
-###
+################################################################################
+# General utils
 
 # Make a size value from a string or number input
 size = (val) ->
