@@ -173,20 +173,6 @@ This renders:
 The `vv-cover` class adds `background-size: cover` to the asset.  Additionally, you may also set `background` to `contain` for `background-size: contain`.
 
 
-### Use native asset dimensions for the size
-
-```html
-<visual
-	image='image.png'
-	background='cover'
-	width='image'
-	height='image'>
-</visual>
-```
-
-Once the `image` image has loaded, the native `image` size will be used for the Visual dimensions.  You may use `poster` as the value as well.  Or, use the shorthand `size='image'` in place of `width` and `height`.
-
-
 ### Use an aspect ratio for the size
 
 It is often more useful in responsive layouts to set an aspect ratio for the Visual rather than a fixed width and height:
@@ -361,7 +347,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Size
 
-- `width (number|string)` : This width will be applied to the container, `.visual`, div.  May also be a string matching one of the asset properties (`poster`, `image`, `video`, `fallback`) to use the native width of the asset.  Note, these values cannot be read until the asset has loaded, so the Visual will be dimension-less until load has completed.
+- `width (number|string)` : This width will be applied to the container, `.visual`, div.
 
 - `height (number|string)` : See `width`
 
