@@ -12,7 +12,7 @@
 	//- Poster asset
 	img.vv-asset.vv-poster(
 		v-if='!background && posterShouldRender'
-		:src='poster')
+		:src='posterSrc')
 	.vv-asset.vv-poster(
 		v-if='background && posterShouldRender'
 		:style='backgroundStyles("poster")')
@@ -20,7 +20,7 @@
 	//- Image asset
 	img.vv-asset.vv-image(
 		v-if='!background && imageShouldRender'
-		:src='image')
+		:src='imageSrc')
 	.vv-asset.vv-image(
 		v-if='background && imageShouldRender'
 		:style='backgroundStyles("image")')
@@ -28,7 +28,7 @@
 	//- Fallback asset
 	img.vv-asset.vv-fallback(
 		v-if='!background && fallbackShouldRender'
-		:src='fallback')
+		:src='fallbackSrc')
 	.vv-asset.vv-fallback(
 		v-if='background && fallbackShouldRender'
 		:style='backgroundStyles("fallback")')
@@ -132,9 +132,10 @@ module.exports =
 	mounted: ->
 
 		# Start listening to window resizing
-		resizingVms.push this
-		@handleWindowResize()
-		@handleWindowResizeThrottled = throttle @handleWindowResize, 100
+		if @shouldWatchComponentSize or @hasResponsiveAsset
+			resizingVms.push this
+			@handleWindowResize()
+			@handleWindowResizeThrottled = throttle @handleWindowResize, 100
 
 		# Loop through asset types and create load watchers
 		['poster', 'image', 'video', 'fallback'].forEach (asset) =>
@@ -151,6 +152,12 @@ module.exports =
 				then @addScrollListeners(asset)
 				else @removeScrollListeners(asset))
 			, immediate: true
+
+		# If the src of an image changes, trigger a reload
+		['poster', 'image', 'fallback'].forEach (asset) =>
+			@$watch asset+'Src', =>
+				@resetImgAsset asset
+				@loadAsset(asset) if @[asset+'ShouldLoad']
 
 	destroyed: ->
 
@@ -199,13 +206,19 @@ module.exports =
 		Asset render and load
 		###
 
+		# Get the right image to show
+		posterSrc: -> @imgSrc 'poster'
+
 		# Test whether the poster is ready to be shown
 		posterShouldRender: -> switch
 			when @imageShouldRender or @videoShouldRender or @fallbackShouldRender then false
 			else @assetShouldRender 'poster'
 
 		# Test whether poster is ready to load
-		posterShouldLoad: -> @assetReadyToLoad('poster')
+		posterShouldLoad: -> @assetReadyToLoad 'poster'
+
+		# Get the right image to show
+		imageSrc: -> @imgSrc 'image'
 
 		# Test whether the image is ready to be shown
 		imageShouldRender: -> switch
@@ -215,7 +228,7 @@ module.exports =
 		# Test whether image is ready to load
 		imageShouldLoad: -> switch
 			when @poster and !@posterLoaded then false # Wait for poster
-			else @assetReadyToLoad('image')
+			else @assetReadyToLoad 'image'
 
 		# Test whether video should render
 		videoShouldRender: -> switch
@@ -226,7 +239,10 @@ module.exports =
 		videoShouldLoad: -> switch
 			when (@poster and !@posterLoaded) or (@image and !@imageLoaded) then false
 			when @useFallback then false
-			else @assetReadyToLoad('video')
+			else @assetReadyToLoad 'video'
+
+		# Get the right image to show
+		fallbackSrc: -> @imgSrc 'fallback'
 
 		# Test whether the fallback is ready to be shown
 		fallbackShouldRender: -> switch
@@ -237,7 +253,7 @@ module.exports =
 		fallbackShouldLoad: -> switch
 			when (@poster and !@posterLoaded) or (@image and !@imageLoaded) then false
 			when not @useFallback then false
-			else @assetReadyToLoad('fallback')
+			else @assetReadyToLoad 'fallback'
 
 		# Return whether a fallback image should be shown
 		useFallback: -> switch
@@ -267,9 +283,14 @@ module.exports =
 		###
 
 		# Does this visual need to keep track of it's own width / height
-		shouldTrackSize: -> switch
+		shouldWatchComponentSize: -> switch
 			when @aspect then false
 			when @video and @background then true # For Backgrounded vidoes
+
+		# Is at least one asset type a responsive object
+		hasResponsiveAsset: ->
+			for asset in ['poster', 'image', 'fallback']
+				return true if typeof @[asset] == 'object'
 
 		# Get the container aspect, which may come from different sources
 		containerAspect: -> switch
@@ -307,8 +328,21 @@ module.exports =
 
 		# Make background style for an asset
 		backgroundStyles: (asset) ->
-			backgroundImage: "url('#{@[asset]}')"
+			backgroundImage: "url('#{@[asset+'Src']}')"
 			backgroundPosition: @backgroundPosition
+
+		# Get the source of images, which may be using breakpoints
+		imgSrc: (asset) ->
+			return unless @[asset] # Require an asset
+			return @[asset] if typeof @[asset] == 'string'
+
+			# Loop through breaks and find the src for the largest src for the width
+			breaks = sortObjByKey @[asset]
+			choice = firstValOfObject breaks
+			for width, src of breaks
+				return choice if width >= @windowWidth
+				choice = src
+			return choice # Return the largest one when end is reached
 
 		###
 		Loading
@@ -351,12 +385,18 @@ module.exports =
 		# Load an image-based by watching the load on an image instance
 		loadImgAsset: (asset) ->
 			@[asset+'Loading'] = true
-			img = new Image()
-			img.onload = =>
+			@[asset+'Loader'] = new Image()
+			@[asset+'Loader'].onload = =>
 				@[asset+'Loading'] = false
 				@[asset+'Loaded'] = true
-				delete img.onload
-			img.src = @[asset]
+				delete @[asset+'Loader'].onload
+			@[asset+'Loader'].src = @[asset+'Src']
+
+		# Reset the loading of an asset, like in response to responsive breaks
+		resetImgAsset: (asset) ->
+			delete @[asset+'Loader'].onload if @[asset+'Loader']
+			@[asset+'Loading'] = false
+			@[asset+'Loaded'] = false
 
 		###
 		Scroll
@@ -403,7 +443,7 @@ module.exports =
 		# Update the internal measurement of the window size
 		handleWindowResize: ->
 			@windowWidth = window.innerWidth
-			@updateContainerSize() if @shouldTrackSize
+			@updateContainerSize() if @shouldWatchComponentSize
 
 		# Update the container size
 		updateContainerSize: ->
@@ -455,6 +495,15 @@ canAutoplayVideo = -> !navigator.userAgent.match /Mobile|Android|BlackBerry/i
 
 # Uppercase first letter of string
 ucfirst = (str) -> str && str[0].toUpperCase() + str.slice(1)
+
+# Sort object by keys
+sortObjByKey = (obj) ->
+	ordered = {}
+	Object.keys(obj).sort().forEach (key) => ordered[key] = obj[key]
+	return ordered
+
+# Get the firt value of an object
+firstValOfObject = (obj) -> return val for key, val of obj
 
 </script>
 
