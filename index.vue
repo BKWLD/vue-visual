@@ -181,6 +181,13 @@ module.exports =
 		# Remove resizing reference
 		resizingVms.splice(resizingVms.indexOf(this), 1)
 
+		# Remove image loaders
+		for asset in ['poster', 'image', 'fallback']
+			@removeImgAssetLoader asset
+
+		# Remove video loaders
+		@removeVideoAssetLoader()
+
 	computed:
 
 		###
@@ -377,41 +384,62 @@ module.exports =
 		# Load an asset
 		loadAsset: (asset) -> switch asset
 			when @[asset+'Loaded'] then true # Don't load twice
-			when 'video' then @loadVideoAsset asset
+			when 'video' then @loadVideoAsset()
 			else @loadImgAsset asset
 
 		# Load a video based assset
-		loadVideoAsset: (asset) ->
+		loadVideoAsset: ->
 
 			# Update loading status for video
-			@[asset+'Loading'] = true
-			@$refs.video.oncanplaythrough = =>
-				@[asset+'Loading'] = false
-				@[asset+'Loaded'] = true
-				delete @$refs.video.oncanplaythrough
+			@videoLoading = true
+			@$refs.video.addEventListener 'canplaythrough', @videoOnCanplaythrough = =>
+				@videoLoading = false
+				@videoLoaded = true
+				if @$refs.video # Check that Visual hasn't been removed since started
+					@$refs.video.removeEventListener 'canplaythrough', @videoOnCanplaythrough
 
 			# Store the native size of the video in case of `background: cover`
-			@$refs.video.onloadedmetadata = =>
-				delete @$refs.video.onloadedmetadata
+			@$refs.video.addEventListener 'loadedmetadata', @videoOnLoadedmetadata = =>
 				@videoNativeWidth = @$refs.video.videoWidth
 				@videoNativeHeight = @$refs.video.videoHeight
+				if @$refs.video # Check that Visual hasn't been removed since started
+					@$refs.video.removeEventListener 'loadedmetadata', @videoOnLoadedmetadata
 
 			# Start loading
 			@$refs.video.load()
 
+		# Cleanup video asset loading
+		removeVideoAssetLoader: (asset) ->
+			return unless @$refs.video
+			if @videoOnCanplaythrough
+				removeEventListener 'canplaythrough', @videoOnCanplaythrough
+			if @videoOnLoadedmetadata
+				removeEventListener 'loadedmetadata', @videoOnLoadedmetadata
+
 		# Load an image-based by watching the load on an image instance
 		loadImgAsset: (asset) ->
+
+			# Create loader
 			@[asset+'Loading'] = true
 			@[asset+'Loader'] = new Image()
-			@[asset+'Loader'].onload = =>
+
+			# Create load handler
+			@[asset+'Loader'].addEventListener 'load', @[asset+'OnLoad'] = =>
 				@[asset+'Loading'] = false
 				@[asset+'Loaded'] = true
-				delete @[asset+'Loader'].onload
+				@removeImgAssetLoader asset
+
+			# Trigger the load
 			@[asset+'Loader'].src = @[asset+'Src']
+
+		# Cleanup image asset loading
+		removeImgAssetLoader: (asset) ->
+			if @[asset+'Loader'] and @[asset+'OnLoad']
+				@[asset+'Loader'].removeEventListener 'load', @[asset+'OnLoad']
 
 		# Reset the loading of an asset, like in response to responsive breaks
 		resetImgAsset: (asset) ->
-			delete @[asset+'Loader'].onload if @[asset+'Loader']
+			@removeImgAssetLoader asset
 			@[asset+'Loading'] = false
 			@[asset+'Loaded'] = false
 
