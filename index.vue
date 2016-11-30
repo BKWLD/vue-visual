@@ -47,11 +47,12 @@
 		.vv-transition.vv-video-transition(
 			v-show='videoShouldRender'
 			v-if='videoShouldLoad')
+
+			//- The video tag
 			video.vv-asset.vv-video(
 				:controls='controls'
 				:loop='loop'
 				:muted='muted'
-				:autoplay='autoplay'
 				ref='video'
 				preload='auto')
 
@@ -152,6 +153,9 @@ module.exports =
 		videoNativeWidth:  null
 		videoNativeHeight: null
 
+		# Video status
+		playing: false
+
 
 	##############################################################################
 	mounted: ->
@@ -184,7 +188,6 @@ module.exports =
 				@resetImgAsset asset
 				@loadAsset(asset) if @[asset+'ShouldLoad']
 
-
 	##############################################################################
 	destroyed: ->
 
@@ -216,7 +219,7 @@ module.exports =
 		# Assemble additional classes
 		containerClasses: ->
 
-			# Dimension
+			# Dimension (used internally)
 			'vv-has-width': @width
 			'vv-has-height': @height
 			'vv-has-aspect': @aspect
@@ -241,6 +244,9 @@ module.exports =
 			'vv-poster-in-viewport': @posterInViewport
 			'vv-image-in-viewport': @imageInViewport
 			'vv-video-in-viewport': @videoInViewport
+
+			# Video playback
+			'vv-playing': @playing
 
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Asset render and load
@@ -281,6 +287,7 @@ module.exports =
 		videoShouldLoad: -> switch
 			when (@poster and !@posterLoaded) or (@image and !@imageLoaded) then false
 			when @useFallback then false
+			when @playng then true # If someone manually starts playing it
 			else @assetReadyToLoad 'video'
 
 		# Get the right image to show
@@ -351,6 +358,33 @@ module.exports =
 		videoContainEffect: ->
 			return undefined unless @videoNativeAspect
 			if @containerAspect > @videoNativeAspect then 'pillarbox' else 'letterbox'
+
+
+	##############################################################################
+	watch:
+
+		# Directly control video element
+		playing: ->
+
+			# If the video isn't ready, it should be soon. At which point the
+			# videoLoaded watcher will take over and trigger playback
+			return @playing = false if !@$refs.video
+
+			# Control the video element
+			if @playing then @$refs.video.play() else @$refs.video.pause()
+
+		# Respond to changes in autoplay/pause settings
+		autoplay: -> @respondToAutoplay()
+		autopause: -> @respondToAutopause()
+
+		# When video is ready to play, respond to autoplay sending
+		videoLoaded: -> @respondToAutoplay()
+
+		# Handle playback changes when the video moves in and out of viewport
+		videoInViewport: (visible) ->
+			if visible
+			then @respondToAutoplay()
+			else @respondToAutopause()
 
 
 	##############################################################################
@@ -522,7 +556,35 @@ module.exports =
 			@containerWidth = @$el.offsetWidth
 			@containerHeight = @$el.offsetHeight
 
-		#######
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# Video
+
+		# Start playing video
+		play: -> @playing = true
+
+		# Pause the video
+		pause: -> @playing = false
+
+		# Play the video from the beginning
+		restart: ->
+			@$refs.video.currentTime = 0 if @$refs.video
+			@play()
+
+		# Toggle video playing state
+		togglePlayback: (play = null) ->
+			return @togglePlayback !@playing if play = null
+			if play then @play() else @pause()
+
+		# Control video playback based on autoplaying setting
+		respondToAutoplay: -> switch
+			when @autoplay == true then @play()
+			when @autoplay == 'visible' and @videoInViewport then @play()
+
+		# Control video playback based on autipause setting
+		respondToAutopause: -> switch
+			when @autopause == 'visible' and !@videoInViewport then @pause()
+
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Utils
 
 		# Get value of a prop that has an asset-level override.  For instance,

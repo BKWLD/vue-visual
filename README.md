@@ -421,6 +421,14 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 - `loadAsset(asset)` - Initiate loading if the Visual had the `load` prop set to false.  Specify an asset to load a specific asset.
 
+- `play()` - Tell `video` to play.
+
+- `pause()` - Tell `video` to pause.
+
+- `restart()` - Tell `video` to restart playback from beginning.
+
+- `togglePlayback(bool = null)` - Call without an argument to toggle between playing and paused.  Or call with `true` to play and `false` to pause.
+
 #### Component
 
 - `setDefaults(config)` - Change the default prop values for all future-instantiated components.

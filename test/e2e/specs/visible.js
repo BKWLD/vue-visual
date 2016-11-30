@@ -23,6 +23,16 @@ module.exports = {
 
 		.assert.elementPresent('.vv-image')
 		.assert.elementPresent('.vv-video')
+	},
+
+	'video should stop playing when scrolling back up': function (browser) { browser
+
+		// Wait for video to start playing
+		.waitForElementPresent('.vv-visual.vv-playing', 1000)
+
+		.execute('scrollTo(0, 0)')
+		.assert.cssClassNotPresent('.vv-visual', '.vv-playing')
+
 		.end()
 	},
 
