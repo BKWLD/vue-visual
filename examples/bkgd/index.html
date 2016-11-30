@@ -4,7 +4,7 @@
 	<visual
 		image='/resources/image.png'
 		background='cover'
-		aspect='1:1'
+		aspect='3:1'
 		class='test-image-cover'>
 	</visual>
 
@@ -12,13 +12,47 @@
 		image='/resources/image.png'
 		background='contain'
 		aspect='3:1'
-		class='test-image-contain'>
+		class='test-image-contain'
+		style='background: blue;'>
 	</visual>
 
-	<!-- <visual
+	<visual
 		video='/resources/video.mp4'
-		class='test-video'>
-	</visual> -->
+		background='cover'
+		aspect='2:1'
+		class='test-letter-video-cover'
+		:loop='true'
+		:autoplay='true'>
+	</visual>
+
+	<visual
+		video='/resources/video.mp4'
+		background='contain'
+		aspect='2:1'
+		class='test-letter-video-contain'
+		:loop='true'
+		:autoplay='true'
+		style='background: green;'>
+	</visual>
+
+	<visual
+		video='/resources/video.mp4'
+		background='cover'
+		:aspect='4/1'
+		class='test-pillar-video-cover'
+		:loop='true'
+		:autoplay='true'>
+	</visual>
+
+	<visual
+		video='/resources/video.mp4'
+		background='contain'
+		:aspect='4/1'
+		class='test-pillar-video-contain'
+		:loop='true'
+		:autoplay='true'
+		style='background: purple;'>
+	</visual>
 
 
 </div>

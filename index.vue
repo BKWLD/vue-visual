@@ -13,7 +13,7 @@
 	img.vv-asset.vv-poster(
 		v-if='!background && posterShouldRender'
 		:src='poster')
-	div.vv-asset.vv-poster(
+	.vv-asset.vv-poster(
 		v-if='background && posterShouldRender'
 		:style='backgroundStyles("poster")')
 
@@ -21,7 +21,7 @@
 	img.vv-asset.vv-image(
 		v-if='!background && imageShouldRender'
 		:src='image')
-	div.vv-asset.vv-image(
+	.vv-asset.vv-image(
 		v-if='background && imageShouldRender'
 		:style='backgroundStyles("image")')
 
@@ -29,7 +29,7 @@
 	img.vv-asset.vv-fallback(
 		v-if='!background && fallbackShouldRender'
 		:src='fallback')
-	div.vv-asset.vv-fallback(
+	.vv-asset.vv-fallback(
 		v-if='background && fallbackShouldRender'
 		:style='backgroundStyles("fallback")')
 
@@ -40,6 +40,7 @@
 		:controls='controls'
 		:loop='loop'
 		:muted='muted'
+		:autoplay='autoplay'
 		ref='video'
 		preload='auto')
 
@@ -116,6 +117,10 @@ module.exports =
 		imageInViewport:  undefined
 		videoInViewport:  undefined
 
+		# Video measurements
+		videoNativeWidth: undefined
+		videoNativeHeight: undefined
+
 	mounted: ->
 
 		# Loop through asset types and create load watchers
@@ -152,6 +157,12 @@ module.exports =
 			'vv-has-width': @width
 			'vv-has-height': @height
 			'vv-has-aspect': @aspect
+
+			# Render
+			'vv-background-cover': @background == 'cover'
+			'vv-background-contain': @background == 'contain'
+			'vv-video-letterbox': @videoContainEffect == 'letterbox'
+			'vv-video-pillarbox': @videoContainEffect == 'pillarbox'
 
 			# Load
 			'vv-poster-loading': @posterLoading
@@ -229,6 +240,19 @@ module.exports =
 			when @aspect.match ':' then aspectFromString @aspect
 		aspectPadding: -> (1 / @aspectPerc * 100) + '%' if @aspectPerc
 
+		# Get the container aspect, which may come from different sources
+		containerAspect: -> switch
+			when @aspect then @aspectPerc
+			# else TODO
+
+		# Get the native aspect of the video
+		videoNativeAspect: -> @videoNativeWidth / @videoNativeHeight
+
+		# The masking affect applied to video when applying background-size
+		videoContainEffect: ->
+			return undefined unless @videoNativeAspect
+			if @containerAspect > @videoNativeAspect then 'pillarbox' else 'letterbox'
+
 	methods:
 
 		###
@@ -245,7 +269,6 @@ module.exports =
 
 		# Make background style for an asset
 		backgroundStyles: (asset) ->
-			backgroundSize: @background
 			backgroundImage: "url('#{@[asset]}')"
 			backgroundPosition: @backgroundPosition
 
@@ -270,11 +293,21 @@ module.exports =
 
 		# Load a video based assset
 		loadVideoAsset: (asset) ->
+
+			# Update loading status for video
 			@[asset+'Loading'] = true
 			@$refs.video.oncanplaythrough = =>
 				@[asset+'Loading'] = false
 				@[asset+'Loaded'] = true
 				delete @$refs.video.oncanplaythrough
+
+			# Store the native size of the video in case of `background: cover`
+			@$refs.video.onloadedmetadata = =>
+				delete @$refs.video.onloadedmetadata
+				@videoNativeWidth = @$refs.video.videoWidth
+				@videoNativeHeight = @$refs.video.videoHeight
+
+			# Start loading
 			@$refs.video.load()
 
 		# Load an image-based by watching the load on an image instance
@@ -380,6 +413,8 @@ ucfirst = (str) -> str && str[0].toUpperCase() + str.slice(1)
 // Display using inline-block like an img or video tag
 .vv-visual
 	display inline-block
+	font-size 0 // Don't let line-height inflate size and prepare for pseudo-center
+	overflow hidden // For background-cover videos
 
 // If a width was set, make assets fill to it
 .vv-has-width .vv-asset
@@ -394,7 +429,6 @@ ucfirst = (str) -> str && str[0].toUpperCase() + str.slice(1)
 .vv-has-aspect
 	position relative
 	display block
-	font-size 0 // Don't let line-height inflate size and prepare for pseudo-center
 	.vv-asset
 		position absolute
 		left 0
@@ -410,5 +444,26 @@ ucfirst = (str) -> str && str[0].toUpperCase() + str.slice(1)
 // Don't tile assets using background positioning
 .vv-asset
 	background-repeat no-repeat
+
+// Apply background-size properties
+.vv-background-cover .vv-asset
+	background-size cover
+.vv-background-contain .vv-asset
+	background-size contain
+
+// Apply background effecs to videos
+.vv-background-cover .vv-video,
+.vv-background-contain .vv-video
+	top 50%
+	left 50%
+	transform translate(-50%, -50%)
+.vv-background-cover.vv-video-pillarbox .vv-video,
+.vv-background-contain.vv-video-letterbox .vv-video
+	width calc(100% + 1px) // Cover rounding errors
+	height auto
+.vv-background-cover.vv-video-letterbox .vv-video,
+.vv-background-contain.vv-video-pillarbox .vv-video
+	width auto
+	height calc(100% + 1px) // Cover rounding errors
 
 </style>
