@@ -14,30 +14,36 @@
 		.vv-transition.vv-poster-transition(v-if='posterShouldRender')
 			img.vv-asset.vv-poster(
 				v-if='!background'
-				:src='posterSrc')
+				:src='posterSrc'
+				:alt='alt')
 			.vv-asset.vv-poster(
 				v-else-if='background'
-				:style='backgroundStyles("poster")')
+				:style='backgroundStyles("poster")'
+				:aria-label='alt')
 
 	//- Image asset
 	transition(:name='assetPropVal("image", "transition")')
 		.vv-transition.vv-image-transition(v-if='imageShouldRender')
 			img.vv-asset.vv-image(
 				v-if='!background'
-				:src='imageSrc')
+				:src='imageSrc'
+				:alt='alt')
 			.vv-asset.vv-image(
 				v-else-if='background'
-				:style='backgroundStyles("image")')
+				:style='backgroundStyles("image")'
+				:aria-label='alt')
 
 	//- Fallback asset
 	transition(:name='assetPropVal("video", "transition")')
 		.vv-transition.vv-fallback-transition(v-if='fallbackShouldRender')
 			img.vv-asset.vv-fallback(
 				v-if='!background'
-				:src='fallbackSrc')
+				:src='fallbackSrc'
+				:alt='alt')
 			.vv-asset.vv-fallback(
 				v-else-if='background'
-				:style='backgroundStyles("fallback")')
+				:style='backgroundStyles("fallback")'
+				:aria-label='alt')
 
 	//- Video asset
 	//- Rendering a video asset effectively loads it; setting preload to false
@@ -54,7 +60,8 @@
 				:loop='loop'
 				:muted='muted'
 				ref='video'
-				preload='auto')
+				preload='auto'
+				:aria-label='alt')
 
 				//- Video sources list
 				source(
@@ -128,6 +135,9 @@ module.exports =
 		muted:           Boolean
 		controls:        Boolean
 		requireAutoplay: Boolean
+
+		# Accessibility
+		alt: String
 
 	##############################################################################
 	data: ->
