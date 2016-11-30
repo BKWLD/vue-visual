@@ -94,6 +94,7 @@ module.exports =
 		width:  [String, Number]
 		height: [String, Number]
 		aspect: [String, Number]
+		fill:   Boolean
 
 		# Rendering
 		render:       String
@@ -682,6 +683,15 @@ firstValOfObject = (obj) -> return val for key, val of obj
 .vv-aspect-shim
 	display inline-block
 	height 100%
+
+// Fill the container
+.vv-fill
+	display block
+	position absolute
+	top 0
+	bottom 0
+	left 0
+	right 0
 
 // Don't tile assets using background positioning
 .vv-asset
