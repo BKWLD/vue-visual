@@ -1,6 +1,6 @@
 <template lang='jade'>
 
-.vv-container(
+.vv-visual(
 	:style='containerStyles'
 	:class='containerClasses')
 
@@ -11,13 +11,27 @@
 
 	//- Poster asset
 	img.vv-asset.vv-poster(
-		v-if='posterShouldRender'
+		v-if='!background && posterShouldRender'
 		:src='poster')
+	div.vv-asset.vv-poster(
+		v-if='background && posterShouldRender'
+		:style='backgroundStyles("poster")')
 
 	//- Image asset
 	img.vv-asset.vv-image(
-		v-if='imageShouldRender'
+		v-if='!background && imageShouldRender'
 		:src='image')
+	div.vv-asset.vv-image(
+		v-if='background && imageShouldRender'
+		:style='backgroundStyles("image")')
+
+	//- Fallback asset
+	img.vv-asset.vv-fallback(
+		v-if='!background && fallbackShouldRender'
+		:src='fallback')
+	div.vv-asset.vv-fallback(
+		v-if='background && fallbackShouldRender'
+		:style='backgroundStyles("fallback")')
 
 	//- Video asset
 	video.vv-asset.vv-video(
@@ -35,11 +49,6 @@
 			key='url'
 			:src='url'
 			:type='mime(url)')
-
-	//- Fallback asset
-	img.vv-asset.vv-fallback(
-		v-if='fallbackShouldRender'
-		:src='fallback')
 
 </template>
 
@@ -72,12 +81,15 @@ module.exports =
 		renderPoster: String
 		renderImage:  String
 		renderVideo:  String
+		background:   { type: String, validator: (val) -> val in ['cover', 'contain'] }
+		backgroundPosition: { type: String, default: 'center center' }
+		verticalAlign:      { type: String, default: 'middle'  }
 
 		# Load
-		load:        { default: true, type: [String, Boolean] }
-		loadPoster:  { default: undefined, type: [String, Boolean] }
-		loadImage:   { default: undefined, type: [String, Boolean] }
-		loadVideo:   { default: undefined, type: [String, Boolean] }
+		load:        { type: [String, Boolean], default: true }
+		loadPoster:  { type: [String, Boolean], default: undefined }
+		loadImage:   { type: [String, Boolean], default: undefined }
+		loadVideo:   { type: [String, Boolean], default: undefined }
 
 		# Video
 		autoplay:        [String, Boolean]
@@ -231,6 +243,12 @@ module.exports =
 				when not renderOnLoad then true # Can be rendered immediately
 				when renderOnLoad and @[asset+'Loaded'] then true # Wait for load
 
+		# Make background style for an asset
+		backgroundStyles: (asset) ->
+			backgroundSize: @background
+			backgroundImage: "url('#{@[asset]}')"
+			backgroundPosition: @backgroundPosition
+
 		###
 		Loading
 		###
@@ -240,6 +258,7 @@ module.exports =
 			loadNow = @assetPropVal(asset, 'load') == true
 			loadWhenVisible = @assetPropVal(asset, 'load') == 'visible'
 			switch
+				when not @[asset] then false # Require asset src
 				when loadNow then true
 				when loadWhenVisible and @[asset+'InViewport'] then true
 
@@ -251,7 +270,6 @@ module.exports =
 
 		# Load a video based assset
 		loadVideoAsset: (asset) ->
-			return unless @[asset]
 			@[asset+'Loading'] = true
 			@$refs.video.oncanplaythrough = =>
 				@[asset+'Loading'] = false
@@ -261,7 +279,6 @@ module.exports =
 
 		# Load an image-based by watching the load on an image instance
 		loadImgAsset: (asset) ->
-			return unless @[asset]
 			@[asset+'Loading'] = true
 			img = new Image()
 			img.onload = =>
@@ -361,7 +378,7 @@ ucfirst = (str) -> str && str[0].toUpperCase() + str.slice(1)
 <style lang='stylus'>
 
 // Display using inline-block like an img or video tag
-.vv-container
+.vv-visual
 	display inline-block
 
 // If a width was set, make assets fill to it
@@ -377,6 +394,7 @@ ucfirst = (str) -> str && str[0].toUpperCase() + str.slice(1)
 .vv-has-aspect
 	position relative
 	display block
+	font-size 0 // Don't let line-height inflate size and prepare for pseudo-center
 	.vv-asset
 		position absolute
 		left 0
@@ -388,5 +406,9 @@ ucfirst = (str) -> str && str[0].toUpperCase() + str.slice(1)
 .vv-aspect-shim
 	display inline-block
 	height 100%
+
+// Don't tile assets using background positioning
+.vv-asset
+	background-repeat no-repeat
 
 </style>

@@ -30,7 +30,7 @@ Vue 2 image and video loader supporting lazy loading, cover videos, and more
 This renders:
 
 ```html
-<div class='vv-container'>
+<div class='vv-visual'>
 	<img image="image.png" class='vv-asset'>
 </div>
 ```
@@ -44,7 +44,7 @@ You may also specify the width and height:
 This renders:
 
 ```html
-<div class='vv-container' style='width: 350px; height: 150px;'>
+<div class='vv-visual' style='width: 350px; height: 150px;'>
 	<img image="image.png" class='vv-asset vue-vv-image'>
 </div>
 ```
@@ -162,7 +162,7 @@ In this case, the poster image will be loaded immediately and the main image wil
 This renders:
 
 ```html
-<div class='vv-container'>
+<div class='vv-visual'>
 	<div
 		class='vv-asset vv-background vv-background-cover'
 		style='background: url("image.png");'>
@@ -202,7 +202,7 @@ It is often more useful in responsive layouts to set an aspect ratio for the Vis
 This renders:
 
 ```html
-<div class='vv-container'>
+<div class='vv-visual'>
 	<div
 		class='vv-asset vv-background vv-background-cover vv-aspect'
 		style='background: url("image.png");'>
@@ -233,7 +233,7 @@ You can also use the measured dimensions of the `image` or `poster` for the aspe
 This renders:
 
 ```html
-<div class='vv-container'>
+<div class='vv-visual'>
 	<video>
 		<source image='video.mp4' type='video/mp4'>
 	</video>

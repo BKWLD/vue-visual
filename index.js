@@ -175,7 +175,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;
 	  return _h('div', {
-	    staticClass: "vv-container",
+	    staticClass: "vv-visual",
 	    class: _vm.containerClasses,
 	    style: (_vm.containerStyles)
 	  }, [(_vm.aspect) ? _h('div', {
