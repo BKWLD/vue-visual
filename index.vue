@@ -132,7 +132,7 @@ module.exports =
 		loadPoster:     { type: [String, Boolean], default: null }
 		loadImage:      { type: [String, Boolean], default: null }
 		loadVideo:      { type: [String, Boolean], default: null }
-		offset:         [Number, String, Object]
+		offset:         { type: [Number, String, Object], default: 0 }
 		offsetPoster:   [Number, String, Object]
 		offsetImage:    [Number, String, Object]
 		offsetVideo:    [Number, String, Object]
