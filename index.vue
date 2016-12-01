@@ -381,13 +381,13 @@ module.exports =
 		# Loop though all video sources and check if at least one is playable on
 		# the device
 		canPlayVideo: ->
+			return false unless @video
 			for video in @videoSources
 				return true if canPlay video
 			return false
 
 		# Turn video sources into an array of URls
 		videoSources: -> switch
-			when !@video then []
 			when typeof @video == 'string' then [@video]
 			when typeof @video == 'array' then @video
 
