@@ -770,6 +770,12 @@ firstValOfObject = (obj) -> return val for key, val of obj
 		height 100%
 		position absolute // Needed for <img>
 
+// If using background cover, assume that the visual will be display block to
+// it fills the width of it's container
+.vv-background-cover,
+.vv-background-contain
+	display block
+
 // Don't tile assets using background positioning
 .vv-asset
 	background-repeat no-repeat
