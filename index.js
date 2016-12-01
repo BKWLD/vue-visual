@@ -107,7 +107,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Vue, aspectFromString, canAutoplayVideo, canPlay, firstValOfObject, isNumeric, mime, resizingVms, scrollMonitor, size, sortObjByKey, throttle, ucfirst;
+	var Vue, aspectFromString, canAutoplayVideo, canPlay, firstValOfObject, isNumeric, mime, resizeAllVms, resizingVms, scrollMonitor, size, sortObjByKey, throttle, ucfirst;
 
 	Vue = __webpack_require__(3);
 
@@ -119,7 +119,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	resizingVms = [];
 
-	window.onresize = function() {
+	resizeAllVms = function() {
 	  var i, len, results, vm;
 	  results = [];
 	  for (i = 0, len = resizingVms.length; i < len; i++) {
@@ -128,6 +128,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	  return results;
 	};
+
+	window.addEventListener('resize', function() {
+	  return resizeAllVms();
+	});
+
+	window.addEventListener('load', function() {
+	  return resizeAllVms();
+	});
 
 	module.exports = {
 	  props: {
