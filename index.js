@@ -173,7 +173,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      type: [String, Boolean],
 	      "default": null
 	    },
-	    offset: [Number, String, Object],
+	    offset: {
+	      type: [Number, String, Object],
+	      "default": 0
+	    },
 	    offsetPoster: [Number, String, Object],
 	    offsetImage: [Number, String, Object],
 	    offsetVideo: [Number, String, Object],
@@ -429,6 +432,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    canPlayVideo: function() {
 	      var i, len, ref, video;
+	      if (!this.video) {
+	        return false;
+	      }
 	      ref = this.videoSources;
 	      for (i = 0, len = ref.length; i < len; i++) {
 	        video = ref[i];
@@ -440,8 +446,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    videoSources: function() {
 	      switch (false) {
-	        case !!this.video:
-	          return [];
 	        case typeof this.video !== 'string':
 	          return [this.video];
 	        case typeof this.video !== 'array':
@@ -676,6 +680,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    assetUsesScroll: function(asset) {
 	      switch (false) {
+	        case !!this[asset]:
+	          return false;
 	        case this.assetPropVal(asset, 'load') !== 'visible':
 	          return true;
 	        case !(asset === 'video' && this.autoplay === 'visible'):
