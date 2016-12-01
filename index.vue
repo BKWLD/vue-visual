@@ -10,7 +10,7 @@
 		:style='{ paddingTop: aspectPadding }')
 
 	//- Optional prepending slot
-	.vv-slot-prepend
+	.vv-slot-prepend(v-if='$slots.prepend')
 		slot(name='prepend')
 
 	//- Poster asset
@@ -75,7 +75,7 @@
 					:type='mime(url)')
 
 	//- The main content slot
-	.vv-slot
+	.vv-slot(v-if='$slots.default')
 		slot
 
 	//- Insert the spinner using dynamic components
