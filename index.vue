@@ -595,6 +595,7 @@ module.exports =
 
 		# Per-asset check that an asset cares about inViewport
 		assetUsesScroll: (asset) -> switch
+			when not @[asset] then false
 			when @assetPropVal(asset, 'load') == 'visible' then true
 			when asset == 'video' and @autoplay == 'visible' then true
 			when asset == 'video' and @autopause == 'visible' then true
