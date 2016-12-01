@@ -9,6 +9,10 @@
 		v-if='aspect'
 		:style='{ paddingTop: aspectPadding }')
 
+	//- Optional prepending slot
+	.vv-slot-prepend
+		slot(name='prepend')
+
 	//- Poster asset
 	transition(:name='assetPropVal("poster", "transition")')
 		.vv-transition.vv-poster-transition(v-if='posterShouldRender')
@@ -70,6 +74,10 @@
 					:src='url'
 					:type='mime(url)')
 
+	//- The main content slot
+	.vv-slot
+		slot
+
 	//- Insert the spinner using dynamic components
 	transition(:name='assetPropVal("loader", "transition")')
 		component.vv-loader(
@@ -117,7 +125,7 @@ module.exports =
 		renderVideo:  String
 		background:   { type: String, validator: (val) -> val in ['cover', 'contain'] }
 		backgroundPosition: { type: String, default: 'center center' }
-		verticalAlign:      { type: String, default: 'middle'  }
+		align:              { type: String, default: 'center middle'  }
 
 		# Load
 		load:         { type: [String, Boolean], default: true }
@@ -250,6 +258,14 @@ module.exports =
 			'vv-background-contain': @background == 'contain'
 			'vv-video-letterbox': @videoContainEffect == 'letterbox'
 			'vv-video-pillarbox': @videoContainEffect == 'pillarbox'
+
+			# Alignment
+			'vv-align-left': @align.indexOf('left') != -1 and @$slots.default
+			'vv-align-center': @align.indexOf('center') != -1 and @$slots.default
+			'vv-align-right': @align.indexOf('right') != -1 and @$slots.default
+			'vv-align-bottom': @align.indexOf('bottom') != -1 and @$slots.default
+			'vv-align-middle': @align.indexOf('middle') != -1 and @$slots.default
+			'vv-align-top': @align.indexOf('top') != -1 and @$slots.default
 
 			# Load
 			'vv-loading': @loadingThrottled
@@ -724,6 +740,14 @@ firstValOfObject = (obj) -> return val for key, val of obj
 	display inline-block
 	height 100%
 
+	// Add vertical align rules
+	.vv-align-bottom &
+		vertical-align bottom
+	.vv-align-middle &
+		vertical-align middle
+	.vv-align-top &
+		vertical-align top
+
 // Fill the container
 .vv-fill
 	display block
@@ -797,5 +821,34 @@ firstValOfObject = (obj) -> return val for key, val of obj
 .vv-scale-enter, .vv-scale-leave-active
 	opacity 0
 	transform scale(0.5)
+
+// Slot containrs
+.vv-slot, .vv-slot-prepend
+
+	// Restore font size
+	font-size 1rem
+
+	// Make slots not have a lower z-index compared to position absolute background
+	// cover assets
+	position relative
+
+	// Prep for vetical centering
+	display inline-block
+
+	// Add vertical align rules
+	.vv-align-bottom &
+		vertical-align bottom
+	.vv-align-middle &
+		vertical-align middle
+	.vv-align-top &
+		vertical-align top
+
+// Add horizontal align rules
+.vv-align-left
+	text-align left
+.vv-align-center
+	text-align center
+.vv-align-right
+	text-align right
 
 </style>

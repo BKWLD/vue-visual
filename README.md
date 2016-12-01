@@ -274,7 +274,7 @@ Mobile devices like iOS and Android phones do not support autoplaying videos.  Y
 ```
 
 
-### The kitchen sink
+### Add markup within the Visual
 
 ```html
 <visual
@@ -293,7 +293,7 @@ Mobile devices like iOS and Android phones do not support autoplaying videos.  Y
 	autoplay='visible'
 	autopause='visible'
 	loop
-	:muted='true'
+	muted
 
 	fallback='fallback.gif'>
 
@@ -303,7 +303,7 @@ Mobile devices like iOS and Android phones do not support autoplaying videos.  Y
 </visual>
 ```
 
-This creates a Visual component with a 16:9 aspect ratio and immediately loads a low rez poster image.  Once it loads completely, it will fade in.  When the Visual enters the viewport, the `image` image will load in.  When it completes, if the Visual is still in the viewport, the `video` will load.  Once enough has loaded that it can play without interuption, it will play (looping) until it is scrolled out of the viewport.  Finally, in the event that the user's device doesn't support autoplaying video, instead of loading a video, after the `image` loads, the `fallback` gif would have been loaded instead.
+This creates a Visual component with a 16:9 aspect ratio and immediately loads a low rez poster image.  Once it loads completely, it will fade in.  When the Visual enters the viewport, the `image` image will load in.  When it completes, if the Visual is still in the viewport, the `video` will load.  Once enough has loaded that it can play without interruption, it will play (looping) until it is scrolled out of the viewport.  Finally, in the event that the user's device doesn't support autoplaying video, instead of loading a video, after the `image` loads, the `fallback` gif would have been loaded instead.
 
 In addition, the `<h1>` and `<p>` will be inserted inside the component via the default Vue slot.
 
@@ -346,7 +346,7 @@ Vue.component('spinner', {
 </visual>
 ```
 
-The component will be mounted and appened within the Visual.
+It's up to you to style the spinner.  The component is added after the assets and the slot in the DOM.
 
 
 ## Props
@@ -390,7 +390,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 - `background-position (string)` - *Default `center center`.*  This sets the CSS `background-position` when the Visual is using `background` rendering.  The effect will also be applied to Videos.
 
-- `vertical-align (string)` - *Default `middle`.*  If using the default slot to insert markup within the Visual, this controls how that markup is positioned within the Visual.  May be `top`, `middle`, or `bottom`.
+- `align (string)` - *Default `center middle`.*.  Used in conjunction with slots to position the slot content.  May be any combination of one horizontal (`left`, `center`, `right`) and one vertical (`top`, `middle`, `bottom`) choice, space-delimited.
 
 
 #### Loading
@@ -439,9 +439,9 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 ## Slots
 
-- `default`: TODO
+- `default`: Markup is added after the assets and before the loader
 
-- `prepend`: TODO
+- `prepend`: Markup is added before the assets
 
 
 ## Methods
