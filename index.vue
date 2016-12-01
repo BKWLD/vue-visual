@@ -6,7 +6,7 @@
 
 	//- Prop aspect-based sizing open
 	.vv-aspect-shim(
-		v-if='aspect'
+		v-if='showShim'
 		:style='{ paddingTop: aspectPadding }')
 
 	//- Optional prepending slot
@@ -393,6 +393,17 @@ module.exports =
 
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Dimensions
+
+		# Check whether the shim is needed
+		showShim: -> switch
+			when @aspect then true
+			when @$slots.default and @hasVerticalAlign then true
+
+		# Check if vertical-alignment choice was made
+		hasVerticalAlign: ->
+			@align.indexOf('bottom') or
+			@align.indexOf('middle') or
+			@align.indexOf('top')
 
 		# Does this visual need to keep track of it's own width / height
 		shouldWatchComponentSize: -> switch
