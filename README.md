@@ -313,12 +313,8 @@ In addition, the `<h1>` and `<p>` will be inserted inside the component via the 
 Vue-visual was designed to mimic regular `<img>` and `<video>` tag behavior with it's base config.  It renders as `inline-block`, the asset loads immediately, the asset is shown at it's native size, etc.  However, it's more common that you will want to render assets using `background-size: cover`, lazy load, and fade in when they are ready.  To override the default, opt-in themed configuration, you can do the following:
 
 ```js
-// Register the component
 Vue = require('vue')
-Vue.component('visual', require('vue-visual'))
-
-// Customize defaults
-Vue.component('visual').options.setDefaults({
+Vue.component('visual', require('vue-visual')).options.setDefaults({
 	background: 'cover',
 	load: 'visible',
 	transition: 'vv-fade'
