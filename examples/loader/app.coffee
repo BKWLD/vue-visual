@@ -7,9 +7,9 @@ Vue.component 'visual', require 'vue-visual'
 
 # The spinner component
 Vue.component 'spinner',
-	template: '<transition name="long-fade">
-		<div class="spinner"></div>
-	</transition>'
+	template: '<div class="spinner"></div>'
 
 # Init root instance
-window.App = new Vue el: '#app'
+window.App = new Vue
+	el: '#app'
+	data: -> load: false

@@ -341,7 +341,8 @@ Vue.component('spinner', {
 ```html
 <visual
 	image='image.png'
-	loader='spinner'>
+	loader='spinner'
+	transition-loader='vv-fade'>
 </visual>
 ```
 
@@ -394,7 +395,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Loading
 
-- `load (string|boolean)` - *Default: `true`.*  If `true`, assets are loaded in order, immediately.  In other words, once the `poster` has loaded, the `image` will load, and then either the `video` or `fallback`.  If set to `false`, you must call `loadAsset()` on the component to initiate loading.  If set to `visible`, assets won't be loaded until the Visual enters the viewport.  Different loading values can be set for each asset type:
+- `load (string|boolean)` - *Default: `true`.*  If `true`, assets are loaded in order, immediately.  In other words, once the `poster` has loaded, the `image` will load, and then either the `video` or `fallback`.  If set to `false`, you must call `loadAsset(asset)` on the component to initiate loading.  If set to `visible`, assets won't be loaded until the Visual enters the viewport.  Different loading values can be set for each asset type:
 	- `load-poster (string|boolean)`
 	- `load-image (string|boolean)`
 	- `load-video (string|boolean)` - Also applies to the `fallback`
@@ -409,10 +410,11 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Transition
 
-- `transition (string)` -  A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied to the `v-if` directives that are applied to assets that have `load` setting.  The Visual component ships with a `vv-fade` transition that fades in assets over previously loaded assets.  Setting a `transition` will automatically set `render='load'`.  Different transition values can be set for each asset type:
+- `transition (string)` -  A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied to the `v-if` directives that are applied to assets that have `load` setting.  The Visual component ships with a `vv-fade` transition that fades in assets over previously loaded assets.  Setting a `transition` will automatically set `render='load'`.  Different transition values can be set for each asset type (as well as the loader):
 	- `transition-poster (string)`
 	- `transition-image (string)`
 	- `transition-video (string)` - Also applies to the `fallback`
+	- `transition-loader (string)`
 
 
 #### Video

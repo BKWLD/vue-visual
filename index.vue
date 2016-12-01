@@ -70,6 +70,12 @@
 					:src='url'
 					:type='mime(url)')
 
+	//- Insert the spinner using dynamic components
+	transition(:name='assetPropVal("loader", "transition")')
+		component.vv-loader(
+			v-if='loader && loadingThrottled'
+			:is='loaderComponent')
+
 </template>
 
 <!-- ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -129,6 +135,7 @@ module.exports =
 		transitionPoster: String
 		transitionImage:  String
 		transitionVideo:  String
+		transitionLoader: String
 
 		# Video
 		autoplay:        [String, Boolean]
@@ -335,8 +342,13 @@ module.exports =
 
 		# Try to reduce the loading state flickering back and forth when one asset
 		# finishes and the next begins
-		loadingThrottled: throttle (-> @loading), 10
-		loadedThrottled: throttle (-> @loaded), 10
+		loadingThrottled: throttle (-> @loading), 5
+		loadedThrottled: throttle (-> @loaded), 5
+
+		# Take loader prop and make component instances
+		loaderComponent: -> switch typeof @loader
+			when 'string' then Vue.component @loader
+			when 'object' then @loader
 
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Video properties
@@ -414,13 +426,6 @@ module.exports =
 		# Handle playback changes when the video moves in and out of viewport
 		videoInViewport: (visible) ->
 			if visible then @respondToAutoplay() else @respondToAutopause()
-
-		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		# Loading
-
-		# Toggle the loader based on whether there is any loading happening
-		loadingThrottled: (loading) ->
-			if loading then @addLoader() else @removeLoader()
 
 
 	##############################################################################
@@ -540,24 +545,6 @@ module.exports =
 			@removeImgAssetLoader asset
 			@[asset+'Loading'] = false
 			@[asset+'Loaded'] = false
-
-		# Add the loader
-		addLoader: ->
-			return unless @loader
-			Component = @buildLoader()
-			@loaderVm = new Component().$mount()
-			@$el.appendChild @loaderVm.$el
-
-		# Build the loader
-		buildLoader: -> switch typeof @loader
-			when 'string' then Vue.component @loader
-			when 'object' then Vue.extend @loader
-
-		# Remove the loader
-		removeLoader: ->
-			return unless @loaderVm
-			@loaderVm.$destroy()
-			@$el.removeChild @loaderVm.$el
 
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Scroll
