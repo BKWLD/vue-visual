@@ -745,9 +745,11 @@ firstValOfObject = (obj) -> return val for key, val of obj
 .vv-has-height .vv-asset
 	height 100%
 
-// If an aspect ratio was set make assets make them fill. CSS-based aspect
-// ratio solve requires display: block
-.vv-has-aspect
+// If an aspect ratio was set or using background-size, make assets fill the
+// visual.
+.vv-has-aspect,
+.vv-background-cover,
+.vv-background-contain
 	display block
 	.vv-asset
 		position absolute
@@ -782,11 +784,6 @@ firstValOfObject = (obj) -> return val for key, val of obj
 		height 100%
 		position absolute // Needed for <img>
 
-// If using background cover, assume that the visual will be display block to
-// it fills the width of it's container
-.vv-background-cover,
-.vv-background-contain
-	display block
 
 // Don't tile assets using background positioning
 .vv-asset
