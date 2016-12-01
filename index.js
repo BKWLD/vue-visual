@@ -180,7 +180,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    loader: [String, Object],
 	    loaderThrottle: {
 	      type: Number,
-	      "default": true
+	      "default": 100
 	    },
 	    transition: String,
 	    transitionPoster: String,
@@ -447,6 +447,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case typeof this.video !== 'array':
 	          return this.video;
 	      }
+	    },
+	    showShim: function() {
+	      switch (false) {
+	        case !this.aspect:
+	          return true;
+	        case !(this.$slots["default"] && this.hasVerticalAlign):
+	          return true;
+	      }
+	    },
+	    hasVerticalAlign: function() {
+	      return this.align.indexOf('bottom') || this.align.indexOf('middle') || this.align.indexOf('top');
 	    },
 	    shouldWatchComponentSize: function() {
 	      switch (false) {
@@ -1485,14 +1496,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    staticClass: "vv-visual",
 	    class: _vm.containerClasses,
 	    style: (_vm.containerStyles)
-	  }, [(_vm.aspect) ? _h('div', {
+	  }, [(_vm.showShim) ? _h('div', {
 	    staticClass: "vv-aspect-shim",
 	    style: ({
 	      paddingTop: _vm.aspectPadding
 	    })
-	  }) : _vm._e(), _h('div', {
+	  }) : _vm._e(), (_vm.$slots.prepend) ? _h('div', {
 	    staticClass: "vv-slot-prepend"
-	  }, [_vm._t("prepend")]), _h('transition', {
+	  }, [_vm._t("prepend")]) : _vm._e(), _h('transition', {
 	    attrs: {
 	      "name": _vm.assetPropVal("poster", "transition")
 	    }
@@ -1578,9 +1589,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        "type": _vm.mime(url)
 	      }
 	    })
-	  })])]) : _vm._e()]), _h('div', {
+	  })])]) : _vm._e()]), (_vm.$slots.default) ? _h('div', {
 	    staticClass: "vv-slot"
-	  }, [_vm._t("default")]), _h('transition', {
+	  }, [_vm._t("default")]) : _vm._e(), _h('transition', {
 	    attrs: {
 	      "name": _vm.assetPropVal("loader", "transition")
 	    }
