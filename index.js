@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("is-numeric"), require("scrollmonitor"));
+		module.exports = factory(require("vue"), require("is-numeric"), require("scrollmonitor"));
 	else if(typeof define === 'function' && define.amd)
-		define(["is-numeric", "scrollmonitor"], factory);
+		define(["vue", "is-numeric", "scrollmonitor"], factory);
 	else if(typeof exports === 'object')
-		exports["vue-visual"] = factory(require("is-numeric"), require("scrollmonitor"));
+		exports["vue-visual"] = factory(require("vue"), require("is-numeric"), require("scrollmonitor"));
 	else
-		root["vue-visual"] = factory(root["is-numeric"], root["scrollmonitor"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__) {
+		root["vue-visual"] = factory(root["vue"], root["is-numeric"], root["scrollmonitor"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -64,7 +64,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	__vue_exports__ = __webpack_require__(2)
 
 	/* template */
-	var __vue_template__ = __webpack_require__(18)
+	var __vue_template__ = __webpack_require__(19)
 	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
 	if (
 	  typeof __vue_exports__.default === "object" ||
@@ -107,13 +107,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var aspectFromString, canAutoplayVideo, canPlay, firstValOfObject, isNumeric, mime, resizingVms, scrollMonitor, size, sortObjByKey, throttle, ucfirst;
+	var Vue, aspectFromString, canAutoplayVideo, canPlay, firstValOfObject, isNumeric, mime, resizingVms, scrollMonitor, size, sortObjByKey, throttle, ucfirst;
 
-	isNumeric = __webpack_require__(3);
+	Vue = __webpack_require__(3);
 
-	scrollMonitor = __webpack_require__(4);
+	isNumeric = __webpack_require__(4);
 
-	throttle = __webpack_require__(5);
+	scrollMonitor = __webpack_require__(5);
+
+	throttle = __webpack_require__(6);
 
 	resizingVms = [];
 
@@ -151,9 +153,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      type: String,
 	      "default": 'center center'
 	    },
-	    verticalAlign: {
+	    align: {
 	      type: String,
-	      "default": 'middle'
+	      "default": 'center middle'
 	    },
 	    load: {
 	      type: [String, Boolean],
@@ -175,16 +177,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    offsetPoster: [Number, String, Object],
 	    offsetImage: [Number, String, Object],
 	    offsetVideo: [Number, String, Object],
+	    loader: [String, Object],
+	    loaderThrottle: {
+	      type: Number,
+	      "default": true
+	    },
 	    transition: String,
 	    transitionPoster: String,
 	    transitionImage: String,
 	    transitionVideo: String,
+	    transitionLoader: String,
 	    autoplay: [String, Boolean],
 	    autopause: String,
 	    loop: Boolean,
 	    muted: Boolean,
 	    controls: Boolean,
-	    requireAutoplay: Boolean
+	    requireAutoplay: Boolean,
+	    alt: String
 	  },
 	  data: function() {
 	    return {
@@ -282,6 +291,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'vv-background-contain': this.background === 'contain',
 	        'vv-video-letterbox': this.videoContainEffect === 'letterbox',
 	        'vv-video-pillarbox': this.videoContainEffect === 'pillarbox',
+	        'vv-align-left': this.align.indexOf('left') !== -1 && this.$slots["default"],
+	        'vv-align-center': this.align.indexOf('center') !== -1 && this.$slots["default"],
+	        'vv-align-right': this.align.indexOf('right') !== -1 && this.$slots["default"],
+	        'vv-align-bottom': this.align.indexOf('bottom') !== -1 && this.$slots["default"],
+	        'vv-align-middle': this.align.indexOf('middle') !== -1 && this.$slots["default"],
+	        'vv-align-top': this.align.indexOf('top') !== -1 && this.$slots["default"],
+	        'vv-loading': this.loadingThrottled,
+	        'vv-loaded': this.loadedThrottled,
 	        'vv-poster-loading': this.posterLoading,
 	        'vv-poster-loaded': this.posterLoaded,
 	        'vv-image-loading': this.imageLoading,
@@ -378,6 +395,36 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return true;
 	        case !(this.requireAutoplay && !canAutoplayVideo()):
 	          return true;
+	      }
+	    },
+	    loading: function() {
+	      return this.posterLoading || this.imageLoading || this.videoLoading || this.fallbackLoading;
+	    },
+	    loaded: function() {
+	      return this.posterLoaded || this.imageLoaded || this.videoLoaded || this.fallbackLoaded;
+	    },
+	    loadingThrottled: throttle((function() {
+	      return this.loading;
+	    }), this.loaderThrottle),
+	    loadedThrottled: throttle((function() {
+	      return this.loaded;
+	    }), this.loaderThrottle),
+	    showLoader: function() {
+	      switch (false) {
+	        case !!this.loader:
+	          return false;
+	        case !this.throttleLoader:
+	          return this.loadingThrottled;
+	        default:
+	          return this.loading;
+	      }
+	    },
+	    loaderComponent: function() {
+	      switch (typeof this.loader) {
+	        case 'string':
+	          return Vue.component(this.loader);
+	        case 'object':
+	          return this.loader;
 	      }
 	    },
 	    canPlayVideo: function() {
@@ -795,10 +842,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 5 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
+
+/***/ },
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var debounce = __webpack_require__(6),
-	    isObject = __webpack_require__(7);
+	var debounce = __webpack_require__(7),
+	    isObject = __webpack_require__(8);
 
 	/** Error message constants. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -869,12 +922,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(7),
-	    now = __webpack_require__(8),
-	    toNumber = __webpack_require__(11);
+	var isObject = __webpack_require__(8),
+	    now = __webpack_require__(9),
+	    toNumber = __webpack_require__(12);
 
 	/** Error message constants. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -1063,7 +1116,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports) {
 
 	/**
@@ -1100,10 +1153,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(9);
+	var root = __webpack_require__(10);
 
 	/**
 	 * Gets the timestamp of the number of milliseconds that have elapsed since
@@ -1129,10 +1182,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var freeGlobal = __webpack_require__(10);
+	var freeGlobal = __webpack_require__(11);
 
 	/** Detect free variable `self`. */
 	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -1144,7 +1197,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
@@ -1155,11 +1208,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(7),
-	    isSymbol = __webpack_require__(12);
+	var isObject = __webpack_require__(8),
+	    isSymbol = __webpack_require__(13);
 
 	/** Used as references for various `Number` constants. */
 	var NAN = 0 / 0;
@@ -1227,11 +1280,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(13),
-	    isObjectLike = __webpack_require__(17);
+	var baseGetTag = __webpack_require__(14),
+	    isObjectLike = __webpack_require__(18);
 
 	/** `Object#toString` result references. */
 	var symbolTag = '[object Symbol]';
@@ -1262,12 +1315,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(14),
-	    getRawTag = __webpack_require__(15),
-	    objectToString = __webpack_require__(16);
+	var Symbol = __webpack_require__(15),
+	    getRawTag = __webpack_require__(16),
+	    objectToString = __webpack_require__(17);
 
 	/** `Object#toString` result references. */
 	var nullTag = '[object Null]',
@@ -1297,10 +1350,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(9);
+	var root = __webpack_require__(10);
 
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
@@ -1309,10 +1362,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(14);
+	var Symbol = __webpack_require__(15);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -1361,7 +1414,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -1389,7 +1442,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports) {
 
 	/**
@@ -1424,7 +1477,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;
@@ -1437,7 +1490,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    style: ({
 	      paddingTop: _vm.aspectPadding
 	    })
-	  }) : _vm._e(), _h('transition', {
+	  }) : _vm._e(), _h('div', {
+	    staticClass: "vv-slot-prepend"
+	  }, [_vm._t("prepend")]), _h('transition', {
 	    attrs: {
 	      "name": _vm.assetPropVal("poster", "transition")
 	    }
@@ -1446,11 +1501,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, [(!_vm.background) ? _h('img', {
 	    staticClass: "vv-asset vv-poster",
 	    attrs: {
-	      "src": _vm.posterSrc
+	      "src": _vm.posterSrc,
+	      "alt": _vm.alt
 	    }
 	  }) : (_vm.background) ? _h('div', {
 	    staticClass: "vv-asset vv-poster",
-	    style: (_vm.backgroundStyles("poster"))
+	    style: (_vm.backgroundStyles("poster")),
+	    attrs: {
+	      "aria-label": _vm.alt
+	    }
 	  }) : _vm._e()]) : _vm._e()]), _h('transition', {
 	    attrs: {
 	      "name": _vm.assetPropVal("image", "transition")
@@ -1460,11 +1519,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, [(!_vm.background) ? _h('img', {
 	    staticClass: "vv-asset vv-image",
 	    attrs: {
-	      "src": _vm.imageSrc
+	      "src": _vm.imageSrc,
+	      "alt": _vm.alt
 	    }
 	  }) : (_vm.background) ? _h('div', {
 	    staticClass: "vv-asset vv-image",
-	    style: (_vm.backgroundStyles("image"))
+	    style: (_vm.backgroundStyles("image")),
+	    attrs: {
+	      "aria-label": _vm.alt
+	    }
 	  }) : _vm._e()]) : _vm._e()]), _h('transition', {
 	    attrs: {
 	      "name": _vm.assetPropVal("video", "transition")
@@ -1474,11 +1537,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, [(!_vm.background) ? _h('img', {
 	    staticClass: "vv-asset vv-fallback",
 	    attrs: {
-	      "src": _vm.fallbackSrc
+	      "src": _vm.fallbackSrc,
+	      "alt": _vm.alt
 	    }
 	  }) : (_vm.background) ? _h('div', {
 	    staticClass: "vv-asset vv-fallback",
-	    style: (_vm.backgroundStyles("fallback"))
+	    style: (_vm.backgroundStyles("fallback")),
+	    attrs: {
+	      "aria-label": _vm.alt
+	    }
 	  }) : _vm._e()]) : _vm._e()]), _h('transition', {
 	    attrs: {
 	      "name": _vm.assetPropVal("video", "transition")
@@ -1497,7 +1564,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    attrs: {
 	      "controls": _vm.controls,
 	      "loop": _vm.loop,
-	      "preload": "auto"
+	      "preload": "auto",
+	      "aria-label": _vm.alt
 	    },
 	    domProps: {
 	      "muted": _vm.muted
@@ -1510,7 +1578,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        "type": _vm.mime(url)
 	      }
 	    })
-	  })])]) : _vm._e()])])
+	  })])]) : _vm._e()]), _h('div', {
+	    staticClass: "vv-slot"
+	  }, [_vm._t("default")]), _h('transition', {
+	    attrs: {
+	      "name": _vm.assetPropVal("loader", "transition")
+	    }
+	  }, [(_vm.showLoader) ? _h(_vm.loaderComponent, {
+	    tag: "component",
+	    staticClass: "vv-loader"
+	  }) : _vm._e()])])
 	},staticRenderFns: []}
 	module.exports.render._withStripped = true
 	if (false) {
