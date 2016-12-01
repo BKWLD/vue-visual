@@ -137,7 +137,7 @@ module.exports =
 		offsetImage:    [Number, String, Object]
 		offsetVideo:    [Number, String, Object]
 		loader:         [String, Object]
-		loaderThrottle: { type: Number, default: true }
+		loaderThrottle: { type: Number, default: 100 }
 
 		# Transition
 		transition:       String
