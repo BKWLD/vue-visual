@@ -81,7 +81,7 @@
 	//- Insert the spinner using dynamic components
 	transition(:name='assetPropVal("loader", "transition")')
 		component.vv-loader(
-			v-if='loader && loadingThrottled'
+			v-if='showLoader'
 			:is='loaderComponent')
 
 </template>
@@ -128,15 +128,16 @@ module.exports =
 		align:              { type: String, default: 'center middle'  }
 
 		# Load
-		load:         { type: [String, Boolean], default: true }
-		loadPoster:   { type: [String, Boolean], default: null }
-		loadImage:    { type: [String, Boolean], default: null }
-		loadVideo:    { type: [String, Boolean], default: null }
-		offset:       [Number, String, Object]
-		offsetPoster: [Number, String, Object]
-		offsetImage:  [Number, String, Object]
-		offsetVideo:  [Number, String, Object]
-		loader:       [String, Object]
+		load:           { type: [String, Boolean], default: true }
+		loadPoster:     { type: [String, Boolean], default: null }
+		loadImage:      { type: [String, Boolean], default: null }
+		loadVideo:      { type: [String, Boolean], default: null }
+		offset:         [Number, String, Object]
+		offsetPoster:   [Number, String, Object]
+		offsetImage:    [Number, String, Object]
+		offsetVideo:    [Number, String, Object]
+		loader:         [String, Object]
+		loaderThrottle: { type: Number, default: true }
 
 		# Transition
 		transition:       String
@@ -357,9 +358,17 @@ module.exports =
 		loaded: -> @posterLoaded or @imageLoaded or @videoLoaded or @fallbackLoaded
 
 		# Try to reduce the loading state flickering back and forth when one asset
-		# finishes and the next begins
-		loadingThrottled: throttle (-> @loading), 5
-		loadedThrottled: throttle (-> @loaded), 5
+		# finishes and the next begins.  Also will prevent the loader showing for
+		# super quck loads.
+		loadingThrottled: throttle (-> @loading), @loaderThrottle
+		loadedThrottled: throttle (-> @loaded), @loaderThrottle
+
+		# Show the loader if the Visual is currently loading, optionally using a
+		# throttled check
+		showLoader: -> switch
+			when not @loader then false
+			when @throttleLoader then @loadingThrottled
+			else @loading
 
 		# Take loader prop and make component instances
 		loaderComponent: -> switch typeof @loader

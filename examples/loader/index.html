@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <div id="app">
 
+
+	<p>
+		<a @click.prevent='load = true' href='#'>Start load</a>
+	</p>
+
 	<visual
 		poster='/resources/poster.png'
 		image='/resources/image.png'
 		video='/resources/video.mp4'
-		loader='spinner'
 		transition-loader='long-fade'
+
 		:load='load'
+		loader='spinner'
+		:loader-throttle='0'
+
 		ref='visual'>
 	</visual>
 
