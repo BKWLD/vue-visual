@@ -243,7 +243,7 @@ Instead of `autoplay` and `preload`, though, use these Visual props:
 </visual>
 ```
 
-These work like the `load` values above.  In otherwords, the video will start loading as soon as the component is mounted.  Howver, if won't play until it enters the viewport.  And then the video will pause again once it leaves the viewport.
+These work like the `load` values above.  In other words, the video will start loading as soon as the component is mounted.  However, if won't play until it enters the viewport.  And then the video will pause again once it leaves the viewport.
 
 
 ### Play videos on hover
@@ -326,6 +326,28 @@ Vue.component('visual').options.setDefaults({
 ```
 
 
+### Add a spinner graphic
+
+You can insert a spinner graphic that displays while loading like:
+
+```js
+// Register components
+Vue = require('vue')
+Vue.component('visual', require('vue-visual'))
+Vue.component('spinner', {
+	template: '<div class="spinner"></div>'
+})
+```
+```html
+<visual
+	image='image.png'
+	loader='spinner'>
+</visual>
+```
+
+The component will be mounted and appened within the Visual.
+
+
 ## Props
 
 A list of the [component properties](http://vuejs.org/v2/guide/components.html#Props) that may be set on the Visual component.
@@ -382,6 +404,8 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 	- `offset-image (number|string|object)`
 	- `offset-video (number|string|object)` - Also applies to the `fallback`
 
+- `loader (string|object)` - A Vue component that will be mounted and appended to `.vv-visual`.  If a string, the identifier of a Component already registered with `Vue.component()`.  If an object, a Vue coomponent object.
+
 
 #### Transition
 
@@ -415,7 +439,8 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 - `default`: TODO
 
-- `spinner`: TODO
+- `prepend`: TODO
+
 
 ## Methods
 

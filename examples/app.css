@@ -29,3 +29,9 @@ body {
 	opacity: 0;
 	transform: scale(0.5);
 }
+
+.spinner {
+	width: 100px;
+	height: 100px;
+	background: black;
+}

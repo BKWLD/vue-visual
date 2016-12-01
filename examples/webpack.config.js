@@ -8,6 +8,7 @@ module.exports = {
   entry: {
     app: path.join(__dirname, 'app.coffee'),
     defaults: path.join(__dirname, 'set-defaults', 'app.coffee'),
+    loader: path.join(__dirname, 'loader', 'app.coffee'),
   },
 
   output: {

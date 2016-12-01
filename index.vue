@@ -77,6 +77,7 @@
 <script lang='coffee'>
 
 # Deps
+Vue = require 'vue'
 isNumeric = require 'is-numeric'
 scrollMonitor = require 'scrollmonitor'
 throttle = require 'lodash/throttle'
@@ -121,6 +122,7 @@ module.exports =
 		offsetPoster: [Number, String, Object]
 		offsetImage:  [Number, String, Object]
 		offsetVideo:  [Number, String, Object]
+		loader:       [String, Object]
 
 		# Transition
 		transition:       String
@@ -243,6 +245,8 @@ module.exports =
 			'vv-video-pillarbox': @videoContainEffect == 'pillarbox'
 
 			# Load
+			'vv-loading': @loadingThrottled
+			'vv-loaded': @loadedThrottled
 			'vv-poster-loading': @posterLoading
 			'vv-poster-loaded': @posterLoaded
 			'vv-image-loading': @imageLoading
@@ -323,6 +327,18 @@ module.exports =
 			when @requireAutoplay and !canAutoplayVideo() then true
 
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# Loading
+
+		# Are any assets currenting loading.
+		loading: -> @posterLoading or @imageLoading or @videoLoading or @fallbackLoading
+		loaded: -> @posterLoaded or @imageLoaded or @videoLoaded or @fallbackLoaded
+
+		# Try to reduce the loading state flickering back and forth when one asset
+		# finishes and the next begins
+		loadingThrottled: throttle (-> @loading), 10
+		loadedThrottled: throttle (-> @loaded), 10
+
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Video properties
 
 		# Loop though all video sources and check if at least one is playable on
@@ -375,6 +391,9 @@ module.exports =
 	##############################################################################
 	watch:
 
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# Video
+
 		# Directly control video element
 		playing: ->
 
@@ -394,9 +413,14 @@ module.exports =
 
 		# Handle playback changes when the video moves in and out of viewport
 		videoInViewport: (visible) ->
-			if visible
-			then @respondToAutoplay()
-			else @respondToAutopause()
+			if visible then @respondToAutoplay() else @respondToAutopause()
+
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# Loading
+
+		# Toggle the loader based on whether there is any loading happening
+		loadingThrottled: (loading) ->
+			if loading then @addLoader() else @removeLoader()
 
 
 	##############################################################################
@@ -516,6 +540,24 @@ module.exports =
 			@removeImgAssetLoader asset
 			@[asset+'Loading'] = false
 			@[asset+'Loaded'] = false
+
+		# Add the loader
+		addLoader: ->
+			return unless @loader
+			Component = @buildLoader()
+			@loaderVm = new Component().$mount()
+			@$el.appendChild @loaderVm.$el
+
+		# Build the loader
+		buildLoader: -> switch typeof @loader
+			when 'string' then Vue.component @loader
+			when 'object' then Vue.extend @loader
+
+		# Remove the loader
+		removeLoader: ->
+			return unless @loaderVm
+			@loaderVm.$destroy()
+			@$el.removeChild @loaderVm.$el
 
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Scroll
