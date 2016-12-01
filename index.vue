@@ -98,7 +98,9 @@ throttle = require 'lodash/throttle'
 
 # Make a single window resize listener
 resizingVms = []
-window.onresize = -> vm.handleWindowResizeThrottled() for vm in resizingVms
+resizeAllVms = -> vm.handleWindowResizeThrottled() for vm in resizingVms
+window.addEventListener 'resize', -> resizeAllVms()
+window.addEventListener 'load', -> resizeAllVms()
 
 # The component definition
 module.exports =
