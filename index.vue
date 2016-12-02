@@ -125,7 +125,7 @@ module.exports =
 		renderPoster: String
 		renderImage:  String
 		renderVideo:  String
-		background:   { type: String, validator: (val) -> val in ['cover', 'contain'] }
+		background:   { type: String, validator: (val) -> val in ['cover', 'contain', ''] }
 		backgroundPosition: { type: String, default: 'center center' }
 		align:              { type: String, default: 'center middle'  }
 
