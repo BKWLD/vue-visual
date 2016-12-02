@@ -31,9 +31,11 @@ module.exports = {
 	},
 
   resolve: {
+    root: path.join(__dirname, '..'),
+    extensions: ['', '.js', '.coffee', '.vue'],
     alias: {
       'vue': 'vue/dist/vue.js',
-      'vue-visual': path.join(__dirname, '..', 'index.vue')
+      'vue-visual': 'index.vue'
     }
   },
 

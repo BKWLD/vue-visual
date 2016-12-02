@@ -4,8 +4,9 @@ ExtractText = require 'extract-text-webpack-plugin'
 
 module.exports =
 
-	entry:
-		index: './index.vue'
+	entry: index: './index.vue'
+
+	resolve: extensions: ['', '.js', '.coffee', '.vue']
 
 	plugins: [
 		new ExtractText '[name].css', allChunks: true

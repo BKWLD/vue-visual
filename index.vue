@@ -95,12 +95,13 @@ Vue = require 'vue'
 isNumeric = require 'is-numeric'
 scrollMonitor = require 'scrollmonitor'
 throttle = require 'lodash/throttle'
+fireWhenReady = require './src/utils/fire-when-ready'
 
 # Make a single window resize listener
 resizingVms = []
 resizeAllVms = -> vm.handleWindowResizeThrottled() for vm in resizingVms
 window.addEventListener 'resize', -> resizeAllVms()
-window.addEventListener 'load', -> resizeAllVms()
+fireWhenReady resizeAllVms
 
 # The component definition
 module.exports =
@@ -615,9 +616,18 @@ module.exports =
 			@[asset+'ScrollMonitor'] = scrollMonitor.create @$el, offset
 
 			# Set initial state and listen for updates
+			@[asset+'ScrollMonitor'].on 'stateChange', =>
+				 @updateInViewport asset
+
+			# Trigger fake scrolls to get scrollMonitor to recalculate itself when
+			# document becomes ready.  This was particularly an issue for me when
+			# webpack hot module reloading was running
+			fireWhenReady -> window.dispatchEvent new Event 'scroll'
+
+		# Update whether asset is in the viewport
+		updateInViewport: (asset) ->
+			# console.log document.readyState, @$el, @[asset+'ScrollMonitor'].isInViewport
 			@[asset+'InViewport'] = @[asset+'ScrollMonitor'].isInViewport
-			@[asset+'ScrollMonitor'].on 'visibilityChange', =>
-				@[asset+'InViewport'] = @[asset+'ScrollMonitor'].isInViewport
 
 		# Destroy scrollMonitor
 		removeScrollListeners: (asset) ->
