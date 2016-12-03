@@ -666,7 +666,6 @@ module.exports =
 
 		# Update whether asset is in the viewport
 		updateInViewport: (asset) ->
-			# console.log document.readyState, @$el, @[asset+'ScrollMonitor'].isInViewport
 			@[asset+'InViewport'] = @[asset+'ScrollMonitor'].isInViewport
 
 		# Destroy scrollMonitor
