@@ -7,7 +7,8 @@
 	//- Prop aspect-based sizing open
 	.vv-aspect-shim(
 		v-if='showShim'
-		:style='{ paddingTop: aspectPadding }')
+		:style='{ paddingTop: aspectPadding }'
+		:shimClasses='shimClasses')
 
 	//- Optional prepending slot
 	.vv-slot-prepend(v-if='$slots.prepend')
@@ -15,38 +16,50 @@
 
 	//- Poster asset
 	transition(:name='assetPropVal("poster", "transition")')
-		.vv-transition.vv-poster-transition(v-if='posterShouldRender')
+		.vv-transition.vv-poster-transition(
+			v-if='posterShouldRender'
+			:class='transitionClasses')
 			img.vv-asset.vv-poster(
 				v-if='!background'
 				:src='posterSrc'
+				:class='assetClasses'
 				:alt='alt')
 			.vv-asset.vv-poster(
 				v-else-if='background'
 				:style='backgroundStyles("poster")'
+				:class='assetClasses'
 				:aria-label='alt')
 
 	//- Image asset
 	transition(:name='assetPropVal("image", "transition")')
-		.vv-transition.vv-image-transition(v-if='imageShouldRender')
+		.vv-transition.vv-image-transition(
+			v-if='imageShouldRender'
+			:class='transitionClasses')
 			img.vv-asset.vv-image(
 				v-if='!background'
 				:src='imageSrc'
+				:class='assetClasses'
 				:alt='alt')
 			.vv-asset.vv-image(
 				v-else-if='background'
 				:style='backgroundStyles("image")'
+				:class='assetClasses'
 				:aria-label='alt')
 
 	//- Fallback asset
 	transition(:name='assetPropVal("video", "transition")')
-		.vv-transition.vv-fallback-transition(v-if='fallbackShouldRender')
+		.vv-transition.vv-fallback-transition(
+			v-if='fallbackShouldRender'
+			:class='transitionClasses')
 			img.vv-asset.vv-fallback(
 				v-if='!background'
 				:src='fallbackSrc'
+				:class='assetClasses'
 				:alt='alt')
 			.vv-asset.vv-fallback(
 				v-else-if='background'
 				:style='backgroundStyles("fallback")'
+				:class='assetClasses'
 				:aria-label='alt')
 
 	//- Video asset
@@ -56,10 +69,12 @@
 	transition(:name='assetPropVal("video", "transition")')
 		.vv-transition.vv-video-transition(
 			v-show='videoShouldRender'
-			v-if='videoShouldLoad')
+			v-if='videoShouldLoad'
+			:class='transitionClasses')
 
 			//- The video tag
 			video.vv-asset.vv-video(
+				:class='assetClasses'
 				:controls='controls'
 				:loop='loop'
 				:muted='muted'
@@ -75,7 +90,9 @@
 					:type='mime(url)')
 
 	//- The main content slot
-	.vv-slot(v-if='$slots.default')
+	.vv-slot(
+		v-if='$slots.default'
+		:class='slotClasses')
 		slot
 
 	//- Insert the spinner using dynamic components
@@ -251,25 +268,9 @@ module.exports =
 		# Assemble additional classes
 		containerClasses: ->
 
-			# Dimension (used internally)
-			'vv-has-width': @width
-			'vv-has-height': @height
-			'vv-has-aspect': @aspect
+			# Dimension
+			'vv-block': @displayBlock
 			'vv-fill': @fill
-
-			# Render
-			'vv-background-cover': @background == 'cover'
-			'vv-background-contain': @background == 'contain'
-			'vv-video-letterbox': @videoContainEffect == 'letterbox'
-			'vv-video-pillarbox': @videoContainEffect == 'pillarbox'
-
-			# Alignment
-			'vv-align-left': @align.indexOf('left') != -1 and @$slots.default
-			'vv-align-center': @align.indexOf('center') != -1 and @$slots.default
-			'vv-align-right': @align.indexOf('right') != -1 and @$slots.default
-			'vv-align-bottom': @align.indexOf('bottom') != -1 and @$slots.default
-			'vv-align-middle': @align.indexOf('middle') != -1 and @$slots.default
-			'vv-align-top': @align.indexOf('top') != -1 and @$slots.default
 
 			# Load
 			'vv-loading': @loadingThrottled
@@ -290,6 +291,39 @@ module.exports =
 
 			# Video playback
 			'vv-playing': @playing
+
+		# Asset classes
+		assetClasses: ->
+
+			# Dimension
+			'vv-has-width': @width
+			'vv-has-height': @height
+			'vv-fill-asset': @shouldFill
+
+			# Render
+			'vv-background-cover': @background == 'cover'
+			'vv-background-contain': @background == 'contain'
+			'vv-video-letterbox': @videoContainEffect == 'letterbox'
+			'vv-video-pillarbox': @videoContainEffect == 'pillarbox'
+
+		# Transition classes
+		transitionClasses: ->
+			'vv-fill': @shouldFill
+
+		# Slot classes
+		slotClasses: ->
+			'vv-align-left': @align.indexOf('left') != -1 and @$slots.default
+			'vv-align-center': @align.indexOf('center') != -1 and @$slots.default
+			'vv-align-right': @align.indexOf('right') != -1 and @$slots.default
+			'vv-align-bottom': @align.indexOf('bottom') != -1 and @$slots.default
+			'vv-align-middle': @align.indexOf('middle') != -1 and @$slots.default
+			'vv-align-top': @align.indexOf('top') != -1 and @$slots.default
+
+		# Shim classes
+		shimClasses: ->
+			'vv-align-bottom': @align.indexOf('bottom') != -1 and @$slots.default
+			'vv-align-middle': @align.indexOf('middle') != -1 and @$slots.default
+			'vv-align-top': @align.indexOf('top') != -1 and @$slots.default
 
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Asset render and load
@@ -396,6 +430,12 @@ module.exports =
 
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Dimensions
+
+		# Whether to display:block
+		displayBlock: -> @aspect or @background
+
+		# Whether the visual is filling it's container
+		shouldFill: -> @fill or @aspect or @background
 
 		# Check whether the shim is needed
 		showShim: -> switch
@@ -749,39 +789,22 @@ firstValOfObject = (obj) -> return val for key, val of obj
 	overflow hidden
 	position relative
 
+// If aspect or if it has a background, dispaly block
+.vv-block
+	display block
+
 // If a width was set, make assets fill to it
-.vv-has-width .vv-asset
+.vv-has-width
 	width 100%
 
 // If a height was set, make assets fill to it
-.vv-has-height .vv-asset
+.vv-has-height
 	height 100%
-
-// If an aspect ratio was set or using background-size, make assets fill the
-// visual.
-.vv-has-aspect,
-.vv-background-cover,
-.vv-background-contain
-	display block
-	.vv-asset
-		position absolute
-		left 0
-		top 0
-		width 100%
-		height 100%
 
 // This shim props open aspect-based sizes
 .vv-aspect-shim
 	display inline-block
 	height 100%
-
-	// Add vertical align rules
-	.vv-align-bottom &
-		vertical-align bottom
-	.vv-align-middle &
-		vertical-align middle
-	.vv-align-top &
-		vertical-align top
 
 // Fill the container
 .vv-fill
@@ -791,59 +814,45 @@ firstValOfObject = (obj) -> return val for key, val of obj
 	bottom 0
 	left 0
 	right 0
-	.vv-asset
-		width 100%
-		height 100%
-		position absolute // Needed for <img>
 
+// Using width and height here so that <img>s will fill their container
+.vv-fill-asset
+	position absolute // Needed for <img>
+	width 100%
+	height 100%
 
 // Don't tile assets using background positioning
-.vv-asset
+.vv-asset[class*='vv-background-']
 	background-repeat no-repeat
 
-	// Apply background-size properties
-	.vv-background-cover &
-		background-size cover
-	.vv-background-contain &
-		background-size contain
+// Apply background-size properties
+.vv-background-cover
+	background-size cover
+.vv-background-contain
+	background-size contain
 
 // Apply background effecs to videos
 .vv-video
 
 	// Center the video
-	.vv-background-cover &,
-	.vv-background-contain &
+	&.vv-background-cover
+	&.vv-background-contain
 		position absolute
 		top 50%
 		left 50%
 		transform translate(-50%, -50%)
 
 	// Apply letterboxing effect
-	.vv-background-cover.vv-video-pillarbox &,
-	.vv-background-contain.vv-video-letterbox &
+	&.vv-background-cover.vv-video-pillarbox
+	&.vv-background-contain.vv-video-letterbox
 		width calc(100% + 1px) // Cover rounding errors
 		height auto
 
 	// Apply pillarboxing effect
-	.vv-background-cover.vv-video-letterbox &,
-	.vv-background-contain.vv-video-pillarbox &
+	&.vv-background-cover.vv-video-letterbox
+	&.vv-background-contain.vv-video-pillarbox
 		width auto
 		height calc(100% + 1px) // Cover rounding errors
-
-// This container is used to apply transitioning styles without affecting
-// styles on the assets that are necessary for them to render
-.vv-transition
-
-	// If the asset uses absolute positioning, the transition div must fill it's
-	// container
-	.vv-background-cover &,
-	.vv-background-contain &,
-	.vv-has-aspect &
-		position absolute
-		top 0
-		left 0
-		width 100%
-		height 100%
 
 // The standard fading transition
 .vv-fade-enter-active, .vv-fade-leave-active
@@ -860,24 +869,17 @@ firstValOfObject = (obj) -> return val for key, val of obj
 
 // Slot containrs
 .vv-slot, .vv-slot-prepend
+	font-size 1rem // Restore font size
+	position relative // Layer above position:absolute backgrounds
+	display inline-block // Prep for vetical centering
 
-	// Restore font size
-	font-size 1rem
-
-	// Make slots not have a lower z-index compared to position absolute background
-	// cover assets
-	position relative
-
-	// Prep for vetical centering
-	display inline-block
-
-	// Add vertical align rules
-	.vv-align-bottom &
-		vertical-align bottom
-	.vv-align-middle &
-		vertical-align middle
-	.vv-align-top &
-		vertical-align top
+// Add vertical align rules
+.vv-align-bottom
+	vertical-align bottom
+.vv-align-middle
+	vertical-align middle
+.vv-align-top
+	vertical-align top
 
 // Add horizontal align rules
 .vv-align-left
