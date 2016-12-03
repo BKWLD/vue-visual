@@ -660,9 +660,13 @@ module.exports =
 				 @updateInViewport asset
 
 			# Trigger fake scrolls to get scrollMonitor to recalculate itself when
-			# document becomes ready.  This was particularly an issue for me when
-			# webpack hot module reloading was running
-			fireWhenReady -> window.dispatchEvent new Event 'scroll'
+			# document becomes ready.  In addition, updateInViewport is manually being
+			# fired because in some cases (seems to be when scroll is at top of the
+			# page) the manual scroll event wasn't sufficient to recognize the inital
+			# state.
+			fireWhenReady =>
+				window.dispatchEvent new Event 'scroll'
+				@updateInViewport asset
 
 		# Update whether asset is in the viewport
 		updateInViewport: (asset) ->
