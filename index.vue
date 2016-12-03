@@ -8,7 +8,7 @@
 	.vv-aspect-shim(
 		v-if='showShim'
 		:style='{ paddingTop: aspectPadding }'
-		:shimClasses='shimClasses')
+		:class='shimClasses')
 
 	//- Optional prepending slot
 	.vv-slot-prepend(v-if='$slots.prepend')
