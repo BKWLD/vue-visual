@@ -541,10 +541,9 @@ module.exports =
 
 			# Loop through breaks and find the src for the largest src for the width
 			breaks = sortObjByKey @[asset]
-			choice = firstValOfObject breaks
 			for width, src of breaks
-				return choice if width >= @windowWidth
 				choice = src
+				return choice if width >= @windowWidth
 			return choice # Return the largest one when end is reached
 
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
