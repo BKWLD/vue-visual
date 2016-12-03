@@ -64,7 +64,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	__vue_exports__ = __webpack_require__(2)
 
 	/* template */
-	var __vue_template__ = __webpack_require__(19)
+	var __vue_template__ = __webpack_require__(20)
 	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
 	if (
 	  typeof __vue_exports__.default === "object" ||
@@ -107,7 +107,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Vue, aspectFromString, canAutoplayVideo, canPlay, firstValOfObject, isNumeric, mime, resizeAllVms, resizingVms, scrollMonitor, size, sortObjByKey, throttle, ucfirst;
+	var Vue, aspectFromString, canAutoplayVideo, canPlay, fireWhenReady, firstValOfObject, isNumeric, mime, resizeAllVms, resizingVms, scrollMonitor, size, sortObjByKey, throttle, ucfirst;
 
 	Vue = __webpack_require__(3);
 
@@ -116,6 +116,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	scrollMonitor = __webpack_require__(5);
 
 	throttle = __webpack_require__(6);
+
+	fireWhenReady = __webpack_require__(19);
 
 	resizingVms = [];
 
@@ -133,9 +135,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return resizeAllVms();
 	});
 
-	window.addEventListener('load', function() {
-	  return resizeAllVms();
-	});
+	fireWhenReady(resizeAllVms);
 
 	module.exports = {
 	  props: {
@@ -154,7 +154,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    background: {
 	      type: String,
 	      validator: function(val) {
-	        return val === 'cover' || val === 'contain';
+	        return val === 'cover' || val === 'contain' || val === '';
 	      }
 	    },
 	    backgroundPosition: {
@@ -294,20 +294,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    containerClasses: function() {
 	      return {
-	        'vv-has-width': this.width,
-	        'vv-has-height': this.height,
-	        'vv-has-aspect': this.aspect,
+	        'vv-block': this.displayBlock,
 	        'vv-fill': this.fill,
-	        'vv-background-cover': this.background === 'cover',
-	        'vv-background-contain': this.background === 'contain',
-	        'vv-video-letterbox': this.videoContainEffect === 'letterbox',
-	        'vv-video-pillarbox': this.videoContainEffect === 'pillarbox',
-	        'vv-align-left': this.align.indexOf('left') !== -1 && this.$slots["default"],
-	        'vv-align-center': this.align.indexOf('center') !== -1 && this.$slots["default"],
-	        'vv-align-right': this.align.indexOf('right') !== -1 && this.$slots["default"],
-	        'vv-align-bottom': this.align.indexOf('bottom') !== -1 && this.$slots["default"],
-	        'vv-align-middle': this.align.indexOf('middle') !== -1 && this.$slots["default"],
-	        'vv-align-top': this.align.indexOf('top') !== -1 && this.$slots["default"],
 	        'vv-loading': this.loadingThrottled,
 	        'vv-loaded': this.loadedThrottled,
 	        'vv-poster-loading': this.posterLoading,
@@ -322,6 +310,39 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'vv-image-in-viewport': this.imageInViewport,
 	        'vv-video-in-viewport': this.videoInViewport,
 	        'vv-playing': this.playing
+	      };
+	    },
+	    assetClasses: function() {
+	      return {
+	        'vv-has-width': this.width,
+	        'vv-has-height': this.height,
+	        'vv-fill-asset': this.shouldFill,
+	        'vv-background-cover': this.background === 'cover',
+	        'vv-background-contain': this.background === 'contain',
+	        'vv-video-letterbox': this.videoContainEffect === 'letterbox',
+	        'vv-video-pillarbox': this.videoContainEffect === 'pillarbox'
+	      };
+	    },
+	    transitionClasses: function() {
+	      return {
+	        'vv-fill': this.shouldFill
+	      };
+	    },
+	    slotClasses: function() {
+	      return {
+	        'vv-align-left': this.align.indexOf('left') !== -1 && this.$slots["default"],
+	        'vv-align-center': this.align.indexOf('center') !== -1 && this.$slots["default"],
+	        'vv-align-right': this.align.indexOf('right') !== -1 && this.$slots["default"],
+	        'vv-align-bottom': this.align.indexOf('bottom') !== -1 && this.$slots["default"],
+	        'vv-align-middle': this.align.indexOf('middle') !== -1 && this.$slots["default"],
+	        'vv-align-top': this.align.indexOf('top') !== -1 && this.$slots["default"]
+	      };
+	    },
+	    shimClasses: function() {
+	      return {
+	        'vv-align-bottom': this.align.indexOf('bottom') !== -1 && this.$slots["default"],
+	        'vv-align-middle': this.align.indexOf('middle') !== -1 && this.$slots["default"],
+	        'vv-align-top': this.align.indexOf('top') !== -1 && this.$slots["default"]
 	      };
 	    },
 	    posterSrc: function() {
@@ -459,6 +480,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case typeof this.video !== 'array':
 	          return this.video;
 	      }
+	    },
+	    displayBlock: function() {
+	      return this.aspect || this.background;
+	    },
+	    shouldFill: function() {
+	      return this.fill || this.aspect || this.background;
 	    },
 	    showShim: function() {
 	      switch (false) {
@@ -709,12 +736,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	        offset = parseInt(offset, 10);
 	      }
 	      this[asset + 'ScrollMonitor'] = scrollMonitor.create(this.$el, offset);
-	      this[asset + 'InViewport'] = this[asset + 'ScrollMonitor'].isInViewport;
-	      return this[asset + 'ScrollMonitor'].on('visibilityChange', (function(_this) {
+	      this[asset + 'ScrollMonitor'].on('stateChange', (function(_this) {
 	        return function() {
-	          return _this[asset + 'InViewport'] = _this[asset + 'ScrollMonitor'].isInViewport;
+	          return _this.updateInViewport(asset);
 	        };
 	      })(this));
+	      return fireWhenReady((function(_this) {
+	        return function() {
+	          window.dispatchEvent(new Event('scroll'));
+	          return _this.updateInViewport(asset);
+	        };
+	      })(this));
+	    },
+	    updateInViewport: function(asset) {
+	      return this[asset + 'InViewport'] = this[asset + 'ScrollMonitor'].isInViewport;
 	    },
 	    removeScrollListeners: function(asset) {
 	      if (this[asset + 'ScrollMonitor']) {
@@ -1503,6 +1538,24 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 19 */
+/***/ function(module, exports) {
+
+	module.exports = function(cb) {
+	  var handler;
+	  cb();
+	  if (document.readyState === 'loading') {
+	    return document.addEventListener('readystatechange', handler = function() {
+	      cb();
+	      if (document.readyState === 'complete') {
+	        return document.removeEventListener('readystatechange', handler);
+	      }
+	    });
+	  }
+	};
+
+
+/***/ },
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;
@@ -1512,6 +1565,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    style: (_vm.containerStyles)
 	  }, [(_vm.showShim) ? _h('div', {
 	    staticClass: "vv-aspect-shim",
+	    class: _vm.shimClasses,
 	    style: ({
 	      paddingTop: _vm.aspectPadding
 	    })
@@ -1522,15 +1576,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	      "name": _vm.assetPropVal("poster", "transition")
 	    }
 	  }, [(_vm.posterShouldRender) ? _h('div', {
-	    staticClass: "vv-transition vv-poster-transition"
+	    staticClass: "vv-transition vv-poster-transition",
+	    class: _vm.transitionClasses
 	  }, [(!_vm.background) ? _h('img', {
 	    staticClass: "vv-asset vv-poster",
+	    class: _vm.assetClasses,
 	    attrs: {
 	      "src": _vm.posterSrc,
 	      "alt": _vm.alt
 	    }
 	  }) : (_vm.background) ? _h('div', {
 	    staticClass: "vv-asset vv-poster",
+	    class: _vm.assetClasses,
 	    style: (_vm.backgroundStyles("poster")),
 	    attrs: {
 	      "aria-label": _vm.alt
@@ -1540,15 +1597,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	      "name": _vm.assetPropVal("image", "transition")
 	    }
 	  }, [(_vm.imageShouldRender) ? _h('div', {
-	    staticClass: "vv-transition vv-image-transition"
+	    staticClass: "vv-transition vv-image-transition",
+	    class: _vm.transitionClasses
 	  }, [(!_vm.background) ? _h('img', {
 	    staticClass: "vv-asset vv-image",
+	    class: _vm.assetClasses,
 	    attrs: {
 	      "src": _vm.imageSrc,
 	      "alt": _vm.alt
 	    }
 	  }) : (_vm.background) ? _h('div', {
 	    staticClass: "vv-asset vv-image",
+	    class: _vm.assetClasses,
 	    style: (_vm.backgroundStyles("image")),
 	    attrs: {
 	      "aria-label": _vm.alt
@@ -1558,15 +1618,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	      "name": _vm.assetPropVal("video", "transition")
 	    }
 	  }, [(_vm.fallbackShouldRender) ? _h('div', {
-	    staticClass: "vv-transition vv-fallback-transition"
+	    staticClass: "vv-transition vv-fallback-transition",
+	    class: _vm.transitionClasses
 	  }, [(!_vm.background) ? _h('img', {
 	    staticClass: "vv-asset vv-fallback",
+	    class: _vm.assetClasses,
 	    attrs: {
 	      "src": _vm.fallbackSrc,
 	      "alt": _vm.alt
 	    }
 	  }) : (_vm.background) ? _h('div', {
 	    staticClass: "vv-asset vv-fallback",
+	    class: _vm.assetClasses,
 	    style: (_vm.backgroundStyles("fallback")),
 	    attrs: {
 	      "aria-label": _vm.alt
@@ -1582,10 +1645,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      value: (_vm.videoShouldRender),
 	      expression: "videoShouldRender"
 	    }],
-	    staticClass: "vv-transition vv-video-transition"
+	    staticClass: "vv-transition vv-video-transition",
+	    class: _vm.transitionClasses
 	  }, [_h('video', {
 	    ref: "video",
 	    staticClass: "vv-asset vv-video",
+	    class: _vm.assetClasses,
 	    attrs: {
 	      "controls": _vm.controls,
 	      "loop": _vm.loop,
@@ -1604,7 +1669,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    })
 	  })])]) : _vm._e()]), (_vm.$slots.default) ? _h('div', {
-	    staticClass: "vv-slot"
+	    staticClass: "vv-slot",
+	    class: _vm.slotClasses
 	  }, [_vm._t("default")]) : _vm._e(), _h('transition', {
 	    attrs: {
 	      "name": _vm.assetPropVal("loader", "transition")
