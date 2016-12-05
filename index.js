@@ -7,7 +7,7 @@
 		exports["vue-visual"] = factory(require("vue"), require("is-numeric"), require("scrollmonitor"));
 	else
 		root["vue-visual"] = factory(root["vue"], root["is-numeric"], root["scrollmonitor"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_8__, __WEBPACK_EXTERNAL_MODULE_23__, __WEBPACK_EXTERNAL_MODULE_28__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -64,7 +64,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	__vue_exports__ = __webpack_require__(2)
 
 	/* template */
-	var __vue_template__ = __webpack_require__(20)
+	var __vue_template__ = __webpack_require__(30)
 	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
 	if (
 	  typeof __vue_exports__.default === "object" ||
@@ -107,35 +107,66 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Vue, aspectFromString, canAutoplayVideo, canPlay, fireWhenReady, firstValOfObject, isNumeric, mime, resizeAllVms, resizingVms, scrollMonitor, size, sortObjByKey, throttle, ucfirst;
+	var ucfirst;
 
-	Vue = __webpack_require__(3);
+	ucfirst = __webpack_require__(3);
 
-	isNumeric = __webpack_require__(4);
-
-	scrollMonitor = __webpack_require__(5);
-
-	throttle = __webpack_require__(6);
-
-	fireWhenReady = __webpack_require__(19);
-
-	resizingVms = [];
-
-	resizeAllVms = function() {
-	  var i, len, results, vm;
-	  results = [];
-	  for (i = 0, len = resizingVms.length; i < len; i++) {
-	    vm = resizingVms[i];
-	    results.push(vm.handleWindowResizeThrottled());
+	module.exports = {
+	  mixins: [__webpack_require__(4), __webpack_require__(5), __webpack_require__(7), __webpack_require__(22), __webpack_require__(24), __webpack_require__(25), __webpack_require__(26), __webpack_require__(27)],
+	  methods: {
+	    assetPropVal: function(asset, prop) {
+	      var assetProp, ref;
+	      assetProp = prop + ucfirst(asset);
+	      return (ref = this[assetProp]) != null ? ref : this[prop];
+	    }
+	  },
+	  setDefaults: function(config) {
+	    var key, results, val;
+	    results = [];
+	    for (key in config) {
+	      val = config[key];
+	      results.push(this.props[key]["default"] = val);
+	    }
+	    return results;
 	  }
-	  return results;
 	};
 
-	window.addEventListener('resize', function() {
-	  return resizeAllVms();
-	});
 
-	fireWhenReady(resizeAllVms);
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	module.exports = function(str) {
+	  return str && str[0].toUpperCase() + str.slice(1);
+	};
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	
+	/*
+	Configuration related accessibilty support
+	 */
+	module.exports = {
+	  props: {
+	    alt: String
+	  }
+	};
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	Configuration related to the specification of assets
+	 */
+	var sortObjByKey;
+
+	sortObjByKey = __webpack_require__(6);
 
 	module.exports = {
 	  props: {
@@ -143,122 +174,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    image: [String, Object],
 	    video: [String, Object],
 	    fallback: [String, Object],
-	    width: [String, Number],
-	    height: [String, Number],
-	    aspect: [String, Number],
-	    fill: Boolean,
-	    render: String,
-	    renderPoster: String,
-	    renderImage: String,
-	    renderVideo: String,
-	    background: {
-	      type: String,
-	      validator: function(val) {
-	        return val === 'cover' || val === 'contain' || val === '';
-	      }
-	    },
-	    backgroundPosition: {
-	      type: String,
-	      "default": 'center center'
-	    },
-	    align: {
-	      type: String,
-	      "default": 'center middle'
-	    },
-	    load: {
-	      type: [String, Boolean],
+	    requireAutoplay: {
+	      type: Boolean,
 	      "default": true
-	    },
-	    loadPoster: {
-	      type: [String, Boolean],
-	      "default": null
-	    },
-	    loadImage: {
-	      type: [String, Boolean],
-	      "default": null
-	    },
-	    loadVideo: {
-	      type: [String, Boolean],
-	      "default": null
-	    },
-	    offset: {
-	      type: [Number, String, Object],
-	      "default": 0
-	    },
-	    offsetPoster: [Number, String, Object],
-	    offsetImage: [Number, String, Object],
-	    offsetVideo: [Number, String, Object],
-	    loader: [String, Object],
-	    loaderThrottle: {
-	      type: Number,
-	      "default": 100
-	    },
-	    transition: String,
-	    transitionPoster: String,
-	    transitionImage: String,
-	    transitionVideo: String,
-	    transitionLoader: String,
-	    autoplay: [String, Boolean],
-	    autopause: String,
-	    loop: Boolean,
-	    muted: Boolean,
-	    controls: Boolean,
-	    requireAutoplay: Boolean,
-	    alt: String
-	  },
-	  data: function() {
-	    return {
-	      posterLoading: false,
-	      posterLoaded: false,
-	      imageLoading: false,
-	      imageLoaded: false,
-	      videoLoading: false,
-	      videoLoaded: false,
-	      fallbackLoading: false,
-	      fallbackLoaded: false,
-	      posterInViewport: null,
-	      imageInViewport: null,
-	      videoInViewport: null,
-	      windowWidth: null,
-	      containerWidth: null,
-	      containerHeight: null,
-	      videoNativeWidth: null,
-	      videoNativeHeight: null,
-	      playing: false
-	    };
+	    }
 	  },
 	  mounted: function() {
-	    if (this.shouldWatchComponentSize || this.hasResponsiveAsset) {
-	      resizingVms.push(this);
-	      this.handleWindowResize();
-	      this.handleWindowResizeThrottled = throttle(this.handleWindowResize, 100);
-	    }
-	    ['poster', 'image', 'video', 'fallback'].forEach((function(_this) {
-	      return function(asset) {
-	        return _this.$watch(asset + 'ShouldLoad', (function(ready) {
-	          if (ready) {
-	            return _this.loadAsset(asset);
-	          }
-	        }), {
-	          immediate: true
-	        });
-	      };
-	    })(this));
-	    ['poster', 'image', 'video'].forEach((function(_this) {
-	      return function(asset) {
-	        return _this.$watch((function() {
-	          return _this.assetScrollId(asset);
-	        }), (function(active) {
-	          if (active) {
-	            return _this.addScrollListeners(asset);
-	          } else {
-	            return _this.removeScrollListeners(asset);
-	          }
-	        }), {
-	          immediate: true
-	        });
-	      };
-	    })(this));
 	    return ['poster', 'image', 'fallback'].forEach((function(_this) {
 	      return function(asset) {
 	        return _this.$watch(asset + 'Src', function() {
@@ -270,105 +191,149 @@ return /******/ (function(modules) { // webpackBootstrap
 	      };
 	    })(this));
 	  },
+	  computed: {
+	    posterSrc: function() {
+	      return this.imgSrc('poster');
+	    },
+	    imageSrc: function() {
+	      return this.imgSrc('image');
+	    },
+	    fallbackSrc: function() {
+	      return this.imgSrc('fallback');
+	    },
+	    useFallback: function() {
+	      switch (false) {
+	        case !!this.fallback:
+	          return false;
+	        case !!this.canPlayVideo:
+	          return true;
+	        case !(this.requireAutoplay && !canAutoplayVideo()):
+	          return true;
+	      }
+	    }
+	  },
+	  methods: {
+	    imgSrc: function(asset) {
+	      var breaks, choice, src, width;
+	      if (!this[asset]) {
+	        return;
+	      }
+	      if (typeof this[asset] === 'string') {
+	        return this[asset];
+	      }
+	      breaks = sortObjByKey(this[asset]);
+	      for (width in breaks) {
+	        src = breaks[width];
+	        choice = src;
+	        if (width >= this.windowWidth) {
+	          return choice;
+	        }
+	      }
+	      return choice;
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports) {
+
+	module.exports = function(obj) {
+	  var ordered;
+	  ordered = {};
+	  Object.keys(obj).sort().forEach((function(_this) {
+	    return function(key) {
+	      return ordered[key] = obj[key];
+	    };
+	  })(this));
+	  return ordered;
+	};
+
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	Configuration related to loading of assets
+	 */
+	var Vue, loadRules, throttle;
+
+	Vue = __webpack_require__(8);
+
+	throttle = __webpack_require__(9);
+
+	loadRules = function(val) {
+	  return val === false || val === true || val === 'visible';
+	};
+
+	module.exports = {
+	  props: {
+	    load: {
+	      type: [String, Boolean],
+	      "default": true,
+	      validator: loadRules
+	    },
+	    loadPoster: {
+	      type: [String, Boolean],
+	      "default": null,
+	      validator: loadRules
+	    },
+	    loadImage: {
+	      type: [String, Boolean],
+	      "default": null,
+	      validator: loadRules
+	    },
+	    loadVideo: {
+	      type: [String, Boolean],
+	      "default": null,
+	      validator: loadRules
+	    },
+	    loader: [String, Object],
+	    loaderThrottle: {
+	      type: Number,
+	      "default": 100
+	    }
+	  },
+	  data: function() {
+	    return {
+	      posterLoading: false,
+	      posterLoaded: false,
+	      imageLoading: false,
+	      imageLoaded: false,
+	      videoLoading: false,
+	      videoLoaded: false,
+	      fallbackLoading: false,
+	      fallbackLoaded: false
+	    };
+	  },
+	  mounted: function() {
+	    return ['poster', 'image', 'video', 'fallback'].forEach((function(_this) {
+	      return function(asset) {
+	        return _this.$watch(asset + 'ShouldLoad', (function(ready) {
+	          if (ready) {
+	            return _this.loadAsset(asset);
+	          }
+	        }), {
+	          immediate: true
+	        });
+	      };
+	    })(this));
+	  },
 	  destroyed: function() {
-	    var asset, i, j, len, len1, ref, ref1;
-	    ref = ['poster', 'image', 'video'];
+	    var asset, i, len, ref;
+	    ref = ['poster', 'image', 'fallback'];
 	    for (i = 0, len = ref.length; i < len; i++) {
 	      asset = ref[i];
-	      this.removeScrollListeners(asset);
-	    }
-	    resizingVms.splice(resizingVms.indexOf(this), 1);
-	    ref1 = ['poster', 'image', 'fallback'];
-	    for (j = 0, len1 = ref1.length; j < len1; j++) {
-	      asset = ref1[j];
 	      this.removeImgAssetLoader(asset);
 	    }
 	    return this.removeVideoAssetLoader();
 	  },
 	  computed: {
-	    containerStyles: function() {
-	      return {
-	        width: size(this.width),
-	        height: size(this.height)
-	      };
-	    },
-	    containerClasses: function() {
-	      return {
-	        'vv-block': this.displayBlock,
-	        'vv-fill': this.fill,
-	        'vv-loading': this.loadingThrottled,
-	        'vv-loaded': this.loadedThrottled,
-	        'vv-poster-loading': this.posterLoading,
-	        'vv-poster-loaded': this.posterLoaded,
-	        'vv-image-loading': this.imageLoading,
-	        'vv-image-loaded': this.imageLoaded,
-	        'vv-video-loading': this.videoLoading,
-	        'vv-video-loaded': this.videoLoaded,
-	        'vv-fallback-loading': this.fallbackLoading,
-	        'vv-fallback-loaded': this.fallbackLoaded,
-	        'vv-poster-in-viewport': this.posterInViewport,
-	        'vv-image-in-viewport': this.imageInViewport,
-	        'vv-video-in-viewport': this.videoInViewport,
-	        'vv-playing': this.playing
-	      };
-	    },
-	    assetClasses: function() {
-	      return {
-	        'vv-has-width': this.width,
-	        'vv-has-height': this.height,
-	        'vv-fill-asset': this.shouldFill,
-	        'vv-background-cover': this.background === 'cover',
-	        'vv-background-contain': this.background === 'contain',
-	        'vv-video-letterbox': this.videoContainEffect === 'letterbox',
-	        'vv-video-pillarbox': this.videoContainEffect === 'pillarbox'
-	      };
-	    },
-	    transitionClasses: function() {
-	      return {
-	        'vv-fill': this.shouldFill
-	      };
-	    },
-	    slotClasses: function() {
-	      return {
-	        'vv-align-left': this.align.indexOf('left') !== -1 && this.$slots["default"],
-	        'vv-align-center': this.align.indexOf('center') !== -1 && this.$slots["default"],
-	        'vv-align-right': this.align.indexOf('right') !== -1 && this.$slots["default"],
-	        'vv-align-bottom': this.align.indexOf('bottom') !== -1 && this.$slots["default"],
-	        'vv-align-middle': this.align.indexOf('middle') !== -1 && this.$slots["default"],
-	        'vv-align-top': this.align.indexOf('top') !== -1 && this.$slots["default"]
-	      };
-	    },
-	    shimClasses: function() {
-	      return {
-	        'vv-align-bottom': this.align.indexOf('bottom') !== -1 && this.$slots["default"],
-	        'vv-align-middle': this.align.indexOf('middle') !== -1 && this.$slots["default"],
-	        'vv-align-top': this.align.indexOf('top') !== -1 && this.$slots["default"]
-	      };
-	    },
-	    posterSrc: function() {
-	      return this.imgSrc('poster');
-	    },
-	    posterShouldRender: function() {
-	      switch (false) {
-	        case !((this.imageShouldRender && this.imageLoaded) || (this.videoShouldRender && this.videoLoaded) || (this.fallbackShouldRender && this.fallbackLoaded)):
-	          return false;
-	        default:
-	          return this.assetShouldRender('poster');
-	      }
-	    },
 	    posterShouldLoad: function() {
 	      return this.assetReadyToLoad('poster');
-	    },
-	    imageSrc: function() {
-	      return this.imgSrc('image');
-	    },
-	    imageShouldRender: function() {
-	      switch (false) {
-	        case !((this.videoShouldRender && this.videoLoaded) || (this.fallbackShouldRender && this.fallbackLoaded)):
-	          return false;
-	        default:
-	          return this.assetShouldRender('image');
-	      }
 	    },
 	    imageShouldLoad: function() {
 	      switch (false) {
@@ -376,14 +341,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return false;
 	        default:
 	          return this.assetReadyToLoad('image');
-	      }
-	    },
-	    videoShouldRender: function() {
-	      switch (false) {
-	        case !this.useFallback:
-	          return false;
-	        default:
-	          return this.assetShouldRender('video');
 	      }
 	    },
 	    videoShouldLoad: function() {
@@ -398,17 +355,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return this.assetReadyToLoad('video');
 	      }
 	    },
-	    fallbackSrc: function() {
-	      return this.imgSrc('fallback');
-	    },
-	    fallbackShouldRender: function() {
-	      switch (false) {
-	        case !!this.useFallback:
-	          return false;
-	        default:
-	          return this.assetShouldRender('fallback');
-	      }
-	    },
 	    fallbackShouldLoad: function() {
 	      switch (false) {
 	        case !((this.poster && !this.posterLoaded) || (this.image && !this.imageLoaded)):
@@ -417,16 +363,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return false;
 	        default:
 	          return this.assetReadyToLoad('fallback');
-	      }
-	    },
-	    useFallback: function() {
-	      switch (false) {
-	        case !!this.fallback:
-	          return false;
-	        case !!this.canPlayVideo:
-	          return true;
-	        case !(this.requireAutoplay && !canAutoplayVideo()):
-	          return true;
 	      }
 	    },
 	    loading: function() {
@@ -458,173 +394,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        case 'object':
 	          return this.loader;
 	      }
-	    },
-	    canPlayVideo: function() {
-	      var i, len, ref, video;
-	      if (!this.video) {
-	        return false;
-	      }
-	      ref = this.videoSources;
-	      for (i = 0, len = ref.length; i < len; i++) {
-	        video = ref[i];
-	        if (canPlay(video)) {
-	          return true;
-	        }
-	      }
-	      return false;
-	    },
-	    videoSources: function() {
-	      switch (false) {
-	        case typeof this.video !== 'string':
-	          return [this.video];
-	        case typeof this.video !== 'array':
-	          return this.video;
-	      }
-	    },
-	    displayBlock: function() {
-	      return this.aspect || this.background;
-	    },
-	    shouldFill: function() {
-	      return this.fill || this.aspect || this.background;
-	    },
-	    showShim: function() {
-	      switch (false) {
-	        case !this.aspect:
-	          return true;
-	        case !(this.$slots["default"] && this.hasVerticalAlign):
-	          return true;
-	      }
-	    },
-	    hasVerticalAlign: function() {
-	      return this.align.indexOf('bottom') || this.align.indexOf('middle') || this.align.indexOf('top');
-	    },
-	    shouldWatchComponentSize: function() {
-	      switch (false) {
-	        case !this.aspect:
-	          return false;
-	        case !(this.video && this.background):
-	          return true;
-	      }
-	    },
-	    hasResponsiveAsset: function() {
-	      var asset, i, len, ref;
-	      ref = ['poster', 'image', 'fallback'];
-	      for (i = 0, len = ref.length; i < len; i++) {
-	        asset = ref[i];
-	        if (typeof this[asset] === 'object') {
-	          return true;
-	        }
-	      }
-	    },
-	    containerAspect: function() {
-	      switch (false) {
-	        case !this.aspect:
-	          return this.aspectProp;
-	        default:
-	          return this.containerWidth / this.containerHeight;
-	      }
-	    },
-	    aspectProp: function() {
-	      switch (false) {
-	        case !!this.aspect:
-	          return void 0;
-	        case !isNumeric(this.aspect):
-	          return this.aspect;
-	        case !this.aspect.match(':'):
-	          return aspectFromString(this.aspect);
-	      }
-	    },
-	    aspectPadding: function() {
-	      if (this.aspectProp) {
-	        return (1 / this.aspectProp * 100) + '%';
-	      }
-	    },
-	    videoNativeAspect: function() {
-	      return this.videoNativeWidth / this.videoNativeHeight;
-	    },
-	    videoContainEffect: function() {
-	      if (!this.videoNativeAspect) {
-	        return void 0;
-	      }
-	      if (this.containerAspect > this.videoNativeAspect) {
-	        return 'pillarbox';
-	      } else {
-	        return 'letterbox';
-	      }
-	    }
-	  },
-	  watch: {
-	    playing: function() {
-	      if (!this.$refs.video) {
-	        return this.playing = false;
-	      }
-	      if (this.playing) {
-	        return this.$refs.video.play();
-	      } else {
-	        return this.$refs.video.pause();
-	      }
-	    },
-	    autoplay: function() {
-	      return this.respondToAutoplay();
-	    },
-	    autopause: function() {
-	      return this.respondToAutopause();
-	    },
-	    videoLoaded: function() {
-	      return this.respondToAutoplay();
-	    },
-	    videoInViewport: function(visible) {
-	      if (visible) {
-	        return this.respondToAutoplay();
-	      } else {
-	        return this.respondToAutopause();
-	      }
 	    }
 	  },
 	  methods: {
-	    assetShouldRender: function(asset) {
-	      var hasDelayedLoad, hasTransition, renderOnLoad;
-	      renderOnLoad = this.assetPropVal(asset, 'render') === 'load';
-	      hasTransition = !!this.assetPropVal(asset, 'transition');
-	      hasDelayedLoad = this.assetReadyToLoad(asset) !== true;
-	      switch (false) {
-	        case !!this[asset]:
-	          return false;
-	        case !renderOnLoad:
-	          return this[asset + 'Loaded'];
-	        case !hasTransition:
-	          return this[asset + 'Loaded'];
-	        case !hasDelayedLoad:
-	          return this[asset + 'Loaded'];
-	        default:
-	          return true;
-	      }
-	    },
-	    backgroundStyles: function(asset) {
-	      return {
-	        backgroundImage: "url('" + this[asset + 'Src'] + "')",
-	        backgroundPosition: this.backgroundPosition
-	      };
-	    },
-	    imgSrc: function(asset) {
-	      var breaks, choice, src, width;
-	      if (!this[asset]) {
-	        return;
-	      }
-	      if (typeof this[asset] === 'string') {
-	        return this[asset];
-	      }
-	      breaks = sortObjByKey(this[asset]);
-	      choice = firstValOfObject(breaks);
-	      for (width in breaks) {
-	        src = breaks[width];
-	        if (width >= this.windowWidth) {
-	          return choice;
-	        }
-	        choice = src;
-	      }
-	      return choice;
-	    },
 	    assetReadyToLoad: function(asset) {
 	      var alreadyLoading, loadNow, loadWhenVisible;
 	      alreadyLoading = this[asset + 'Loading'] || this[asset + 'Loaded'];
@@ -650,6 +422,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	        default:
 	          return this.loadImgAsset(asset);
 	      }
+	    },
+	    loadImgAsset: function(asset) {
+	      this[asset + 'Loading'] = true;
+	      this[asset + 'Loader'] = new Image();
+	      this[asset + 'Loader'].addEventListener('load', this[asset + 'OnLoad'] = (function(_this) {
+	        return function() {
+	          _this[asset + 'Loading'] = false;
+	          _this[asset + 'Loaded'] = true;
+	          return _this.removeImgAssetLoader(asset);
+	        };
+	      })(this));
+	      return this[asset + 'Loader'].src = this[asset + 'Src'];
+	    },
+	    removeImgAssetLoader: function(asset) {
+	      if (this[asset + 'Loader'] && this[asset + 'OnLoad']) {
+	        return this[asset + 'Loader'].removeEventListener('load', this[asset + 'OnLoad']);
+	      }
+	    },
+	    resetImgAsset: function(asset) {
+	      this.removeImgAssetLoader(asset);
+	      this[asset + 'Loading'] = false;
+	      return this[asset + 'Loaded'] = false;
 	    },
 	    loadVideoAsset: function() {
 	      this.videoLoading = true;
@@ -683,235 +477,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this.videoOnLoadedmetadata) {
 	        return removeEventListener('loadedmetadata', this.videoOnLoadedmetadata);
 	      }
-	    },
-	    loadImgAsset: function(asset) {
-	      this[asset + 'Loading'] = true;
-	      this[asset + 'Loader'] = new Image();
-	      this[asset + 'Loader'].addEventListener('load', this[asset + 'OnLoad'] = (function(_this) {
-	        return function() {
-	          _this[asset + 'Loading'] = false;
-	          _this[asset + 'Loaded'] = true;
-	          return _this.removeImgAssetLoader(asset);
-	        };
-	      })(this));
-	      return this[asset + 'Loader'].src = this[asset + 'Src'];
-	    },
-	    removeImgAssetLoader: function(asset) {
-	      if (this[asset + 'Loader'] && this[asset + 'OnLoad']) {
-	        return this[asset + 'Loader'].removeEventListener('load', this[asset + 'OnLoad']);
-	      }
-	    },
-	    resetImgAsset: function(asset) {
-	      this.removeImgAssetLoader(asset);
-	      this[asset + 'Loading'] = false;
-	      return this[asset + 'Loaded'] = false;
-	    },
-	    assetScrollId: function(asset) {
-	      var offset;
-	      if (this.assetUsesScroll(asset)) {
-	        offset = this.assetPropVal(asset, 'offset');
-	        return JSON.stringify(offset);
-	      }
-	    },
-	    assetUsesScroll: function(asset) {
-	      switch (false) {
-	        case !!this[asset]:
-	          return false;
-	        case this.assetPropVal(asset, 'load') !== 'visible':
-	          return true;
-	        case !(asset === 'video' && this.autoplay === 'visible'):
-	          return true;
-	        case !(asset === 'video' && this.autopause === 'visible'):
-	          return true;
-	      }
-	    },
-	    addScrollListeners: function(asset) {
-	      var offset;
-	      this.removeScrollListeners(asset);
-	      if (!(this.$el && this[asset])) {
-	        return;
-	      }
-	      offset = this.assetPropVal(asset, 'offset');
-	      if (typeof offset === 'string') {
-	        offset = parseInt(offset, 10);
-	      }
-	      this[asset + 'ScrollMonitor'] = scrollMonitor.create(this.$el, offset);
-	      this[asset + 'ScrollMonitor'].on('stateChange', (function(_this) {
-	        return function() {
-	          return _this.updateInViewport(asset);
-	        };
-	      })(this));
-	      return fireWhenReady((function(_this) {
-	        return function() {
-	          window.dispatchEvent(new Event('scroll'));
-	          return _this.updateInViewport(asset);
-	        };
-	      })(this));
-	    },
-	    updateInViewport: function(asset) {
-	      return this[asset + 'InViewport'] = this[asset + 'ScrollMonitor'].isInViewport;
-	    },
-	    removeScrollListeners: function(asset) {
-	      if (this[asset + 'ScrollMonitor']) {
-	        return this[asset + 'ScrollMonitor'].destroy();
-	      }
-	    },
-	    handleWindowResize: function() {
-	      this.windowWidth = window.innerWidth;
-	      if (this.shouldWatchComponentSize) {
-	        return this.updateContainerSize();
-	      }
-	    },
-	    updateContainerSize: function() {
-	      this.containerWidth = this.$el.offsetWidth;
-	      return this.containerHeight = this.$el.offsetHeight;
-	    },
-	    play: function() {
-	      return this.playing = true;
-	    },
-	    pause: function() {
-	      return this.playing = false;
-	    },
-	    restart: function() {
-	      if (this.$refs.video) {
-	        this.$refs.video.currentTime = 0;
-	      }
-	      return this.play();
-	    },
-	    togglePlayback: function(play) {
-	      if (play == null) {
-	        play = null;
-	      }
-	      if (play = null) {
-	        return this.togglePlayback(!this.playing);
-	      }
-	      if (play) {
-	        return this.play();
-	      } else {
-	        return this.pause();
-	      }
-	    },
-	    respondToAutoplay: function() {
-	      switch (false) {
-	        case this.autoplay !== true:
-	          return this.play();
-	        case !(this.autoplay === 'visible' && this.videoInViewport):
-	          return this.play();
-	      }
-	    },
-	    respondToAutopause: function() {
-	      switch (false) {
-	        case !(this.autopause === 'visible' && !this.videoInViewport):
-	          return this.pause();
-	      }
-	    },
-	    assetPropVal: function(asset, prop) {
-	      var assetProp, ref;
-	      assetProp = prop + ucfirst(asset);
-	      return (ref = this[assetProp]) != null ? ref : this[prop];
-	    },
-	    mime: function(url) {
-	      return mime(url);
 	    }
-	  },
-	  setDefaults: function(config) {
-	    var key, results, val;
-	    results = [];
-	    for (key in config) {
-	      val = config[key];
-	      results.push(this.props[key]["default"] = val);
-	    }
-	    return results;
-	  }
-	};
-
-	size = function(val) {
-	  if (!val) {
-	    return;
-	  }
-	  if (isNumeric(val)) {
-	    return val + 'px';
-	  } else {
-	    return val;
-	  }
-	};
-
-	aspectFromString = function(str) {
-	  var parts;
-	  parts = str.split(':');
-	  return parseInt(parts[0], 10) / parseInt(parts[1], 10);
-	};
-
-	canPlay = function(url) {
-	  var video;
-	  video = document.createElement('video');
-	  return (video != null ? video.canPlayType(mime(url)) : void 0) !== 'no';
-	};
-
-	mime = function(url) {
-	  var ref;
-	  switch ((ref = url.match(/\.(\w+)/)) != null ? ref[1] : void 0) {
-	    case 'mp4':
-	      return 'video/mp4';
-	    case 'webm':
-	      return 'video/webm';
-	    case 'ogg':
-	      return 'video/ogg';
-	  }
-	};
-
-	canAutoplayVideo = function() {
-	  return !navigator.userAgent.match(/Mobile|Android|BlackBerry/i);
-	};
-
-	ucfirst = function(str) {
-	  return str && str[0].toUpperCase() + str.slice(1);
-	};
-
-	sortObjByKey = function(obj) {
-	  var ordered;
-	  ordered = {};
-	  Object.keys(obj).sort().forEach((function(_this) {
-	    return function(key) {
-	      return ordered[key] = obj[key];
-	    };
-	  })(this));
-	  return ordered;
-	};
-
-	firstValOfObject = function(obj) {
-	  var key, val;
-	  for (key in obj) {
-	    val = obj[key];
-	    return val;
 	  }
 	};
 
 
 /***/ },
-/* 3 */
+/* 8 */
 /***/ function(module, exports) {
 
-	module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
+	module.exports = __WEBPACK_EXTERNAL_MODULE_8__;
 
 /***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
-
-/***/ },
-/* 5 */
-/***/ function(module, exports) {
-
-	module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
-
-/***/ },
-/* 6 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var debounce = __webpack_require__(7),
-	    isObject = __webpack_require__(8);
+	var debounce = __webpack_require__(10),
+	    isObject = __webpack_require__(11);
 
 	/** Error message constants. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -982,12 +564,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 7 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(8),
-	    now = __webpack_require__(9),
-	    toNumber = __webpack_require__(12);
+	var isObject = __webpack_require__(11),
+	    now = __webpack_require__(12),
+	    toNumber = __webpack_require__(15);
 
 	/** Error message constants. */
 	var FUNC_ERROR_TEXT = 'Expected a function';
@@ -1176,7 +758,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 8 */
+/* 11 */
 /***/ function(module, exports) {
 
 	/**
@@ -1213,10 +795,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 9 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(10);
+	var root = __webpack_require__(13);
 
 	/**
 	 * Gets the timestamp of the number of milliseconds that have elapsed since
@@ -1242,10 +824,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 10 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var freeGlobal = __webpack_require__(11);
+	var freeGlobal = __webpack_require__(14);
 
 	/** Detect free variable `self`. */
 	var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -1257,7 +839,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 11 */
+/* 14 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
@@ -1268,11 +850,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 12 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isObject = __webpack_require__(8),
-	    isSymbol = __webpack_require__(13);
+	var isObject = __webpack_require__(11),
+	    isSymbol = __webpack_require__(16);
 
 	/** Used as references for various `Number` constants. */
 	var NAN = 0 / 0;
@@ -1340,11 +922,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 13 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseGetTag = __webpack_require__(14),
-	    isObjectLike = __webpack_require__(18);
+	var baseGetTag = __webpack_require__(17),
+	    isObjectLike = __webpack_require__(21);
 
 	/** `Object#toString` result references. */
 	var symbolTag = '[object Symbol]';
@@ -1375,12 +957,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 14 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(15),
-	    getRawTag = __webpack_require__(16),
-	    objectToString = __webpack_require__(17);
+	var Symbol = __webpack_require__(18),
+	    getRawTag = __webpack_require__(19),
+	    objectToString = __webpack_require__(20);
 
 	/** `Object#toString` result references. */
 	var nullTag = '[object Null]',
@@ -1410,10 +992,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 15 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var root = __webpack_require__(10);
+	var root = __webpack_require__(13);
 
 	/** Built-in value references. */
 	var Symbol = root.Symbol;
@@ -1422,10 +1004,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 16 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Symbol = __webpack_require__(15);
+	var Symbol = __webpack_require__(18);
 
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -1474,7 +1056,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 17 */
+/* 20 */
 /***/ function(module, exports) {
 
 	/** Used for built-in method references. */
@@ -1502,7 +1084,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 18 */
+/* 21 */
 /***/ function(module, exports) {
 
 	/**
@@ -1537,7 +1119,601 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 19 */
+/* 22 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	Configuration related to sizing of the component
+	 */
+	var aspectFromString, isNumeric;
+
+	isNumeric = __webpack_require__(23);
+
+	aspectFromString = function(str) {
+	  var parts;
+	  parts = str.split(':');
+	  return parseInt(parts[0], 10) / parseInt(parts[1], 10);
+	};
+
+	module.exports = {
+	  props: {
+	    width: [String, Number],
+	    height: [String, Number],
+	    aspect: [String, Number],
+	    fill: Boolean
+	  },
+	  computed: {
+	    shouldWatchComponentSize: function() {
+	      switch (false) {
+	        case !this.aspect:
+	          return false;
+	        case !(this.video && this.background):
+	          return true;
+	      }
+	    },
+	    hasResponsiveAsset: function() {
+	      var asset, i, len, ref;
+	      ref = ['poster', 'image', 'fallback'];
+	      for (i = 0, len = ref.length; i < len; i++) {
+	        asset = ref[i];
+	        if (typeof this[asset] === 'object') {
+	          return true;
+	        }
+	      }
+	    },
+	    containerAspect: function() {
+	      switch (false) {
+	        case !this.aspect:
+	          return this.aspectProp;
+	        default:
+	          return this.containerWidth / this.containerHeight;
+	      }
+	    },
+	    aspectProp: function() {
+	      switch (false) {
+	        case !!this.aspect:
+	          return void 0;
+	        case !isNumeric(this.aspect):
+	          return this.aspect;
+	        case !this.aspect.match(':'):
+	          return aspectFromString(this.aspect);
+	      }
+	    },
+	    aspectPadding: function() {
+	      if (this.aspectProp) {
+	        return (1 / this.aspectProp * 100) + '%';
+	      }
+	    }
+	  },
+	  methods: {
+	    handleWindowResize: function() {
+	      this.windowWidth = window.innerWidth;
+	      if (this.shouldWatchComponentSize) {
+	        return this.updateContainerSize();
+	      }
+	    },
+	    updateContainerSize: function() {
+	      this.containerWidth = this.$el.offsetWidth;
+	      return this.containerHeight = this.$el.offsetHeight;
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 23 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_23__;
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	Configuration related to styling the component as well as the computed
+	properties that add classes to the component.
+	 */
+	var isNumeric, size;
+
+	isNumeric = __webpack_require__(23);
+
+	size = function(val) {
+	  if (!val) {
+	    return;
+	  }
+	  if (isNumeric(val)) {
+	    return val + 'px';
+	  } else {
+	    return val;
+	  }
+	};
+
+	module.exports = {
+	  props: {
+	    align: {
+	      type: String,
+	      "default": 'center middle'
+	    },
+	    background: {
+	      type: String,
+	      validator: function(val) {
+	        return val === 'cover' || val === 'contain' || val === '';
+	      }
+	    },
+	    backgroundPosition: {
+	      type: String,
+	      "default": 'center center'
+	    }
+	  },
+	  computed: {
+	    containerStyles: function() {
+	      return {
+	        width: size(this.width),
+	        height: size(this.height)
+	      };
+	    },
+	    containerClasses: function() {
+	      return {
+	        'vv-block': this.displayBlock,
+	        'vv-fill': this.fill,
+	        'vv-loading': this.loadingThrottled,
+	        'vv-loaded': this.loadedThrottled,
+	        'vv-poster-loading': this.posterLoading,
+	        'vv-poster-loaded': this.posterLoaded,
+	        'vv-image-loading': this.imageLoading,
+	        'vv-image-loaded': this.imageLoaded,
+	        'vv-video-loading': this.videoLoading,
+	        'vv-video-loaded': this.videoLoaded,
+	        'vv-fallback-loading': this.fallbackLoading,
+	        'vv-fallback-loaded': this.fallbackLoaded,
+	        'vv-poster-in-viewport': this.posterInViewport,
+	        'vv-image-in-viewport': this.imageInViewport,
+	        'vv-video-in-viewport': this.videoInViewport,
+	        'vv-playing': this.playing
+	      };
+	    },
+	    assetClasses: function() {
+	      return {
+	        'vv-has-width': this.width,
+	        'vv-has-height': this.height,
+	        'vv-fill-asset': this.shouldFill,
+	        'vv-background-cover': this.background === 'cover',
+	        'vv-background-contain': this.background === 'contain',
+	        'vv-video-letterbox': this.videoContainEffect === 'letterbox',
+	        'vv-video-pillarbox': this.videoContainEffect === 'pillarbox'
+	      };
+	    },
+	    transitionClasses: function() {
+	      return {
+	        'vv-fill': this.shouldFill
+	      };
+	    },
+	    slotClasses: function() {
+	      return {
+	        'vv-align-left': this.align.indexOf('left') !== -1 && this.$slots["default"],
+	        'vv-align-center': this.align.indexOf('center') !== -1 && this.$slots["default"],
+	        'vv-align-right': this.align.indexOf('right') !== -1 && this.$slots["default"],
+	        'vv-align-bottom': this.align.indexOf('bottom') !== -1 && this.$slots["default"],
+	        'vv-align-middle': this.align.indexOf('middle') !== -1 && this.$slots["default"],
+	        'vv-align-top': this.align.indexOf('top') !== -1 && this.$slots["default"]
+	      };
+	    },
+	    shimClasses: function() {
+	      return {
+	        'vv-align-bottom': this.align.indexOf('bottom') !== -1 && this.$slots["default"],
+	        'vv-align-middle': this.align.indexOf('middle') !== -1 && this.$slots["default"],
+	        'vv-align-top': this.align.indexOf('top') !== -1 && this.$slots["default"]
+	      };
+	    },
+	    displayBlock: function() {
+	      return this.aspect || this.background;
+	    },
+	    shouldFill: function() {
+	      return this.fill || this.aspect || this.background;
+	    },
+	    showShim: function() {
+	      switch (false) {
+	        case !this.aspect:
+	          return true;
+	        case !(this.$slots["default"] && this.hasVerticalAlign):
+	          return true;
+	      }
+	    },
+	    hasVerticalAlign: function() {
+	      return this.align.indexOf('bottom') || this.align.indexOf('middle') || this.align.indexOf('top');
+	    }
+	  },
+	  methods: {
+	    backgroundStyles: function(asset) {
+	      return {
+	        backgroundImage: "url('" + this[asset + 'Src'] + "')",
+	        backgroundPosition: this.backgroundPosition
+	      };
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 25 */
+/***/ function(module, exports) {
+
+	
+	/*
+	Configuration related to animation between loading states
+	 */
+	module.exports = {
+	  props: {
+	    transition: String,
+	    transitionPoster: String,
+	    transitionImage: String,
+	    transitionVideo: String,
+	    transitionLoader: String
+	  },
+	  computed: {
+	    posterShouldRender: function() {
+	      switch (false) {
+	        case !((this.imageShouldRender && this.imageLoaded) || (this.videoShouldRender && this.videoLoaded) || (this.fallbackShouldRender && this.fallbackLoaded)):
+	          return false;
+	        default:
+	          return this.assetShouldRender('poster');
+	      }
+	    },
+	    imageShouldRender: function() {
+	      switch (false) {
+	        case !((this.videoShouldRender && this.videoLoaded) || (this.fallbackShouldRender && this.fallbackLoaded)):
+	          return false;
+	        default:
+	          return this.assetShouldRender('image');
+	      }
+	    },
+	    videoShouldRender: function() {
+	      switch (false) {
+	        case !this.useFallback:
+	          return false;
+	        default:
+	          return this.assetShouldRender('video');
+	      }
+	    },
+	    fallbackShouldRender: function() {
+	      switch (false) {
+	        case !!this.useFallback:
+	          return false;
+	        default:
+	          return this.assetShouldRender('fallback');
+	      }
+	    }
+	  },
+	  methods: {
+	    assetShouldRender: function(asset) {
+	      var hasDelayedLoad, hasTransition;
+	      hasTransition = !!this.assetPropVal(asset, 'transition');
+	      hasDelayedLoad = this.assetReadyToLoad(asset) !== true;
+	      switch (false) {
+	        case !!this[asset]:
+	          return false;
+	        case !hasTransition:
+	          return this[asset + 'Loaded'];
+	        case !hasDelayedLoad:
+	          return this[asset + 'Loaded'];
+	        default:
+	          return true;
+	      }
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 26 */
+/***/ function(module, exports) {
+
+	
+	/*
+	Configuration related to video support
+	 */
+	var canAutoplayVideo, canPlay, mime;
+
+	canPlay = function(url) {
+	  var video;
+	  video = document.createElement('video');
+	  return (video != null ? video.canPlayType(mime(url)) : void 0) !== 'no';
+	};
+
+	mime = function(url) {
+	  var ref;
+	  switch ((ref = url.match(/\.(\w+)/)) != null ? ref[1] : void 0) {
+	    case 'mp4':
+	      return 'video/mp4';
+	    case 'webm':
+	      return 'video/webm';
+	    case 'ogg':
+	      return 'video/ogg';
+	  }
+	};
+
+	canAutoplayVideo = function() {
+	  return !navigator.userAgent.match(/Mobile|Android|BlackBerry/i);
+	};
+
+	module.exports = {
+	  props: {
+	    autoplay: [String, Boolean],
+	    autopause: String,
+	    loop: Boolean,
+	    muted: Boolean,
+	    controls: Boolean
+	  },
+	  data: function() {
+	    return {
+	      videoNativeWidth: null,
+	      videoNativeHeight: null,
+	      playing: false
+	    };
+	  },
+	  computed: {
+	    canPlayVideo: function() {
+	      var i, len, ref, video;
+	      if (!this.video) {
+	        return false;
+	      }
+	      ref = this.videoSources;
+	      for (i = 0, len = ref.length; i < len; i++) {
+	        video = ref[i];
+	        if (canPlay(video)) {
+	          return true;
+	        }
+	      }
+	      return false;
+	    },
+	    videoSources: function() {
+	      switch (false) {
+	        case typeof this.video !== 'string':
+	          return [this.video];
+	        case typeof this.video !== 'array':
+	          return this.video;
+	      }
+	    },
+	    videoNativeAspect: function() {
+	      return this.videoNativeWidth / this.videoNativeHeight;
+	    },
+	    videoContainEffect: function() {
+	      if (!this.videoNativeAspect) {
+	        return void 0;
+	      }
+	      if (this.containerAspect > this.videoNativeAspect) {
+	        return 'pillarbox';
+	      } else {
+	        return 'letterbox';
+	      }
+	    }
+	  },
+	  watch: {
+	    playing: function() {
+	      if (!this.$refs.video) {
+	        return this.playing = false;
+	      }
+	      if (this.playing) {
+	        return this.$refs.video.play();
+	      } else {
+	        return this.$refs.video.pause();
+	      }
+	    },
+	    autoplay: function() {
+	      return this.respondToAutoplay();
+	    },
+	    autopause: function() {
+	      return this.respondToAutopause();
+	    },
+	    videoLoaded: function() {
+	      return this.respondToAutoplay();
+	    },
+	    videoInViewport: function(visible) {
+	      if (visible) {
+	        return this.respondToAutoplay();
+	      } else {
+	        return this.respondToAutopause();
+	      }
+	    }
+	  },
+	  methods: {
+	    play: function() {
+	      return this.playing = true;
+	    },
+	    pause: function() {
+	      return this.playing = false;
+	    },
+	    restart: function() {
+	      if (this.$refs.video) {
+	        this.$refs.video.currentTime = 0;
+	      }
+	      return this.play();
+	    },
+	    togglePlayback: function(play) {
+	      if (play == null) {
+	        play = null;
+	      }
+	      if (play = null) {
+	        return this.togglePlayback(!this.playing);
+	      }
+	      if (play) {
+	        return this.play();
+	      } else {
+	        return this.pause();
+	      }
+	    },
+	    respondToAutoplay: function() {
+	      switch (false) {
+	        case this.autoplay !== true:
+	          return this.play();
+	        case !(this.autoplay === 'visible' && this.videoInViewport):
+	          return this.play();
+	      }
+	    },
+	    respondToAutopause: function() {
+	      switch (false) {
+	        case !(this.autopause === 'visible' && !this.videoInViewport):
+	          return this.pause();
+	      }
+	    },
+	    mime: function(url) {
+	      return mime(url);
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	
+	/*
+	Configuration related to the relationship between the component and the viewport
+	 */
+	var fireWhenReady, resizeAllVms, resizingVms, scrollMonitor, throttle;
+
+	scrollMonitor = __webpack_require__(28);
+
+	throttle = __webpack_require__(9);
+
+	fireWhenReady = __webpack_require__(29);
+
+	resizingVms = [];
+
+	resizeAllVms = function() {
+	  var i, len, results, vm;
+	  results = [];
+	  for (i = 0, len = resizingVms.length; i < len; i++) {
+	    vm = resizingVms[i];
+	    results.push(vm.handleWindowResizeThrottled());
+	  }
+	  return results;
+	};
+
+	window.addEventListener('resize', function() {
+	  return resizeAllVms();
+	});
+
+	fireWhenReady(resizeAllVms);
+
+	module.exports = {
+	  props: {
+	    offset: {
+	      type: [Number, String, Object],
+	      "default": 0
+	    },
+	    offsetPoster: [Number, String, Object],
+	    offsetImage: [Number, String, Object],
+	    offsetVideo: [Number, String, Object]
+	  },
+	  data: function() {
+	    return {
+	      windowWidth: null,
+	      containerWidth: null,
+	      containerHeight: null,
+	      posterInViewport: null,
+	      imageInViewport: null,
+	      videoInViewport: null
+	    };
+	  },
+	  mounted: function() {
+	    if (this.shouldWatchComponentSize || this.hasResponsiveAsset) {
+	      resizingVms.push(this);
+	      this.handleWindowResize();
+	      this.handleWindowResizeThrottled = throttle(this.handleWindowResize, 100);
+	    }
+	    return ['poster', 'image', 'video'].forEach((function(_this) {
+	      return function(asset) {
+	        return _this.$watch((function() {
+	          return _this.assetScrollId(asset);
+	        }), (function(active) {
+	          if (active) {
+	            return _this.addScrollListeners(asset);
+	          } else {
+	            return _this.removeScrollListeners(asset);
+	          }
+	        }), {
+	          immediate: true
+	        });
+	      };
+	    })(this));
+	  },
+	  destroyed: function() {
+	    var asset, i, len, ref;
+	    ref = ['poster', 'image', 'video'];
+	    for (i = 0, len = ref.length; i < len; i++) {
+	      asset = ref[i];
+	      this.removeScrollListeners(asset);
+	    }
+	    return resizingVms.splice(resizingVms.indexOf(this), 1);
+	  },
+	  methods: {
+	    assetScrollId: function(asset) {
+	      var offset;
+	      if (this.assetUsesScroll(asset)) {
+	        offset = this.assetPropVal(asset, 'offset');
+	        return JSON.stringify(offset);
+	      }
+	    },
+	    assetUsesScroll: function(asset) {
+	      switch (false) {
+	        case !!this[asset]:
+	          return false;
+	        case this.assetPropVal(asset, 'load') !== 'visible':
+	          return true;
+	        case !(asset === 'video' && this.autoplay === 'visible'):
+	          return true;
+	        case !(asset === 'video' && this.autopause === 'visible'):
+	          return true;
+	      }
+	    },
+	    addScrollListeners: function(asset) {
+	      var offset;
+	      this.removeScrollListeners(asset);
+	      if (!(this.$el && this[asset])) {
+	        return;
+	      }
+	      offset = this.assetPropVal(asset, 'offset');
+	      if (typeof offset === 'string') {
+	        offset = parseInt(offset, 10);
+	      }
+	      this[asset + 'ScrollMonitor'] = scrollMonitor.create(this.$el, offset);
+	      this[asset + 'ScrollMonitor'].on('stateChange', (function(_this) {
+	        return function() {
+	          return _this.updateInViewport(asset);
+	        };
+	      })(this));
+	      return fireWhenReady((function(_this) {
+	        return function() {
+	          window.dispatchEvent(new Event('scroll'));
+	          return _this.updateInViewport(asset);
+	        };
+	      })(this));
+	    },
+	    updateInViewport: function(asset) {
+	      return this[asset + 'InViewport'] = this[asset + 'ScrollMonitor'].isInViewport;
+	    },
+	    removeScrollListeners: function(asset) {
+	      if (this[asset + 'ScrollMonitor']) {
+	        return this[asset + 'ScrollMonitor'].destroy();
+	      }
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 28 */
+/***/ function(module, exports) {
+
+	module.exports = __WEBPACK_EXTERNAL_MODULE_28__;
+
+/***/ },
+/* 29 */
 /***/ function(module, exports) {
 
 	module.exports = function(cb) {
@@ -1555,7 +1731,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 20 */
+/* 30 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;
@@ -1564,7 +1740,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    class: _vm.containerClasses,
 	    style: (_vm.containerStyles)
 	  }, [(_vm.showShim) ? _h('div', {
-	    staticClass: "vv-aspect-shim",
+	    staticClass: "vv-shim",
 	    class: _vm.shimClasses,
 	    style: ({
 	      paddingTop: _vm.aspectPadding
