@@ -14,15 +14,16 @@ module.exports = {
 	'image should render when general offset reached': function (browser) { browser
 		.execute('scrollTo(0, 1)')
 
-		.waitForElementPresent('.vv-image', 500)
+		.waitForElementPresent('.vv-image', 1000)
 		.assert.elementNotPresent('.vv-video')
 	},
 
 	'video should render when offset override reached': function (browser) { browser
 		.execute('scrollTo(0, 200 + 1)')
 
-		.waitForElementPresent('.vv-image', 500)
-		.waitForElementPresent('.vv-video', 500)
+		// When the video has loaded, the image will be removed
+		.waitForElementNotPresent('.vv-image', 1000)
+		.assert.elementPresent('.vv-video')
 	},
 
 	'video should stop playing when scrolling back up': function (browser) { browser
