@@ -27,7 +27,6 @@ module.exports =
 		loop:            Boolean
 		muted:           Boolean
 		controls:        Boolean
-		requireAutoplay: Boolean
 
 	##############################################################################
 	data: ->

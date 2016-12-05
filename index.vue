@@ -5,7 +5,7 @@
 	:class='containerClasses')
 
 	//- Prop aspect-based sizing open
-	.vv-aspect-shim(
+	.vv-shim(
 		v-if='showShim'
 		:style='{ paddingTop: aspectPadding }'
 		:class='shimClasses')
@@ -117,8 +117,7 @@ module.exports =
 	mixins: [
 		require './src/accessibility'
 		require './src/assets'
-		require './src/load'
-		require './src/show'
+		require './src/loading'
 		require './src/size'
 		require './src/style'
 		require './src/transition'
@@ -173,7 +172,7 @@ module.exports =
 	height 100%
 
 // This shim props open aspect-based sizes
-.vv-aspect-shim
+.vv-shim
 	display inline-block
 	height 100%
 
@@ -225,19 +224,6 @@ module.exports =
 		width auto
 		height calc(100% + 1px) // Cover rounding errors
 
-// The standard fading transition
-.vv-fade-enter-active, .vv-fade-leave-active
-	transition opacity .3s
-.vv-fade-enter, .vv-fade-leave-active
-	opacity 0
-
-// Alternative scale animation
-.vv-scale-enter-active, .vv-scale-leave-active
-	transition opacity .3s, transform .3s
-.vv-scale-enter, .vv-scale-leave-active
-	opacity 0
-	transform scale(0.5)
-
 // Slot containrs
 .vv-slot, .vv-slot-prepend
 	font-size 1rem // Restore font size
@@ -259,5 +245,13 @@ module.exports =
 	text-align center
 .vv-align-right
 	text-align right
+
+// The standard fading transition
+.vv-fade-enter
+	opacity 0
+.vv-fade-enter-active
+	transition opacity .3s
+.vv-fade-leave-active
+	transition-delay .31s
 
 </style>

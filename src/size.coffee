@@ -23,23 +23,6 @@ module.exports =
 	##############################################################################
 	computed:
 
-		# Whether to display:block
-		displayBlock: -> @aspect or @background
-
-		# Whether the visual is filling it's container
-		shouldFill: -> @fill or @aspect or @background
-
-		# Check whether the shim is needed
-		showShim: -> switch
-			when @aspect then true
-			when @$slots.default and @hasVerticalAlign then true
-
-		# Check if vertical-alignment choice was made
-		hasVerticalAlign: ->
-			@align.indexOf('bottom') or
-			@align.indexOf('middle') or
-			@align.indexOf('top')
-
 		# Does this visual need to keep track of it's own width / height
 		shouldWatchComponentSize: -> switch
 			when @aspect then false

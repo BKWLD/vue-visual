@@ -6,6 +6,9 @@ Configuration related to loading of assets
 Vue = require 'vue'
 throttle = require 'lodash/throttle'
 
+# DRY load validation options
+loadRules = (val) -> val in [ false, true, 'visible' ]
+
 # The mixin
 module.exports =
 
@@ -13,10 +16,10 @@ module.exports =
 	props:
 
 		# How to load
-		load:           { type: [String, Boolean], default: true }
-		loadPoster:     { type: [String, Boolean], default: null }
-		loadImage:      { type: [String, Boolean], default: null }
-		loadVideo:      { type: [String, Boolean], default: null }
+		load:       { type: [String, Boolean], default: true, validator: loadRules }
+		loadPoster: { type: [String, Boolean], default: null, validator: loadRules }
+		loadImage:  { type: [String, Boolean], default: null, validator: loadRules }
+		loadVideo:  { type: [String, Boolean], default: null, validator: loadRules }
 
 		# Loader config
 		loader:         [String, Object]

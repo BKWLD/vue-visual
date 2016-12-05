@@ -8,15 +8,15 @@ body {
  * fading out through the asset fading in while testing.
  */
 
-.long-fade-enter-active, .long-fade-leave-active {
-  transition: opacity 5s;
-}
-.long-fade-enter {
-  opacity: 0.2;
-}
-.long-fade-leave-active {
-  opacity: 0;
-}
+ .long-fade-enter {
+ 	opacity: 0;
+ }
+ .long-fade-enter-active {
+ 	transition: opacity 5s;
+ }
+ .long-fade-leave-active {
+ 	transition-delay: 5.1s;
+ }
 
 .long-scale-enter-active, .long-scale-leave-active {
   transition: opacity 5s, transform 5s;
@@ -29,6 +29,8 @@ body {
 	opacity: 0;
 	transform: scale(0.5);
 }
+
+
 
 .spinner {
 	width: 100px;

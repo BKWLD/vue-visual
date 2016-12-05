@@ -10,10 +10,11 @@ module.exports =
 
 	##############################################################################
 	props:
-		poster:   [String, Object]
-		image:    [String, Object]
-		video:    [String, Object]
-		fallback: [String, Object]
+		poster:          [String, Object]
+		image:           [String, Object]
+		video:           [String, Object]
+		fallback:        [String, Object]
+		requireAutoplay: { type: Boolean, default: true }
 
 	##############################################################################
 	mounted: ->

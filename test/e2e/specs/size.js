@@ -16,11 +16,11 @@ module.exports = {
   },
 
 	'it should support aspect ratios strings': function (browser) { browser
-		.assert.attributeContains('.test-ratio .vv-aspect-shim', 'style', `padding-top: ${9/16*100}%;`)
+		.assert.attributeContains('.test-ratio .vv-shim', 'style', `padding-top: ${9/16*100}%;`)
   },
 
   'it should support aspect fraction numbers': function (browser) { browser
-		.assert.attributeContains('.test-fraction .vv-aspect-shim', 'style', `padding-top: ${9/16*100}%;`)
+		.assert.attributeContains('.test-fraction .vv-shim', 'style', `padding-top: ${9/16*100}%;`)
   },
 
 	'it should support fill': function (browser) { browser

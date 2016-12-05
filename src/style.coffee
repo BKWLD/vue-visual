@@ -23,6 +23,9 @@ module.exports =
 	##############################################################################
 	computed:
 
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# CSS classes
+
 		# Assemble inline styles of container div
 		containerStyles: ->
 			width: size @width
@@ -87,6 +90,26 @@ module.exports =
 			'vv-align-bottom': @align.indexOf('bottom') != -1 and @$slots.default
 			'vv-align-middle': @align.indexOf('middle') != -1 and @$slots.default
 			'vv-align-top': @align.indexOf('top') != -1 and @$slots.default
+
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# Utils
+
+		# Whether to display:block
+		displayBlock: -> @aspect or @background
+
+		# Whether the visual is filling it's container
+		shouldFill: -> @fill or @aspect or @background
+
+		# Check whether the shim is needed
+		showShim: -> switch
+			when @aspect then true
+			when @$slots.default and @hasVerticalAlign then true
+
+		# Check if vertical-alignment choice was made
+		hasVerticalAlign: ->
+			@align.indexOf('bottom') or
+			@align.indexOf('middle') or
+			@align.indexOf('top')
 
 	##############################################################################
 	methods:

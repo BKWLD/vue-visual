@@ -31,7 +31,7 @@ This renders:
 
 ```html
 <div class='vv-visual'>
-	<img image="image.png" class='vv-asset'>
+	<img image="image.png" class='vv-asset vv-image'>
 </div>
 ```
 
@@ -45,32 +45,11 @@ This renders:
 
 ```html
 <div class='vv-visual' style='width: 350px; height: 150px;'>
-	<img image="image.png" class='vv-asset vue-vv-image'>
+	<img image="image.png" class='vv-asset vv-image'>
 </div>
 ```
 
 The width and height are applied to the container as well so that loader graphics or other element that are inserted through the `<slot>` can make use of those dimensions.  The Visual stylesheet will add `width: 100%; height: 100%` to the img so that it fills the container.
-
-
-### Wait to render until image loaded
-
-```html
-<visual image='image.png' load='now'></visual>
-```
-
-This initially renders:
-
-```html
-<div class='vue-visual vv-loading'></div>
-```
-
-Then, when the image is loaded:
-
-```html
-<div class='vue-visual vv-loaded'>
-	<img image='image.png' class='vv-asset'>
-</div>
-```
 
 
 ### Lazy load a simple image tag
@@ -86,7 +65,7 @@ Then, when the image is loaded:
 This initially renders:
 
 ```html
-<div class='vue-visual vv-pending'></div>
+<div class='vue-visual'></div>
 ```
 
 Then, when the `visual` comes within `200px` of the viewport, it starts loading:
@@ -99,33 +78,9 @@ And finally, upon load:
 
 ```html
 <div class='vue-visual vv-loaded'>
-	<img image="image.png" class='vv-asset'>
+	<img image="image.png" class='vv-asset vv-image'>
 </div>
 ```
-
-
-### Declare a Vue transition for when load finishes
-
-```html
-<visual
-	image='image.png'
-	load='now'
-	transition='fade'>
-</visual>
-```
-
-This functions like the `load='now'` example above, except that, internally, the `<img>` is wrapped in a [Vue transition](http://vuejs.org/v2/guide/transitions.html) with the name you provide.  For instance, if you add the following styles:
-
-```css
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s
-}
-.fade-enter, .fade-leave-active {
-  opacity: 0
-}
-```
-
-Then the image will fade in once it's done loading.
 
 
 ### Use a low rez poster image
@@ -134,24 +89,45 @@ Then the image will fade in once it's done loading.
 <visual
 	poster='low-rez.png'
 	image='image.png'
-	load='visible'
-	transition='fade'>
+	load='visible'>
 </visual>
 ```
 
-In this case, the poster image will be loaded immediately and the main image will be loaded only once the Visual enters the viewport.  To lazy load the poster as well as the image:
+In ths case, the poster image will be loaded when the Visual enters the viewport.  Then, once it's finished loading, the main image will be loaded.  To load a poster immediately and only lazy load the image:
 
 ```html
 <visual
 	poster='low-rez.png'
-	load-poster='visible'
 	image='image.png'
 	load='visible'
-	offset='300'
-	transition='fade'>
+	:load-poster='true'
+	offset='200'>
 </visual>
 ```
 
+
+### Declare a Vue transition for when load finishes
+
+```html
+<visual
+	image='image.png'
+	transition='vv-fade'>
+</visual>
+```
+
+The `<img>` will not be rendered until it loaded.  In addition, the asset is wrapped in a [Vue transition](http://vuejs.org/v2/guide/transitions.html) called `vv-fade`.  This is a real transition that ships with this component and makes newly-loaded assets fade in on top of previously loaded assets before they are removed.  It is a good default for background-image rendered assets (described later).
+
+```css
+.vv-fade-enter {
+	opacity: 0
+}
+.vv-fade-enter-active {
+	transition: opacity .3s
+}
+.vv-fade-leave-active {
+	transition-delay: .31s
+}
+```
 
 ### Render image as a CSS background
 
@@ -164,13 +140,13 @@ This renders:
 ```html
 <div class='vv-visual'>
 	<div
-		class='vv-asset vv-background vv-background-cover'
+		class='vv-asset vv-image vv-background-cover vv-fill-asset'
 		style='background: url("image.png");'>
 	</div>
 </div>
 ```
 
-The `vv-cover` class adds `background-size: cover` to the asset.  Additionally, you may also set `background` to `contain` for `background-size: contain`.
+The `vv-background-cover` class adds `background-size: cover` to the asset.  Additionally, you may set `background` to `contain` for `background-size: contain`.
 
 
 ### Use an aspect ratio for the size
@@ -189,25 +165,15 @@ This renders:
 
 ```html
 <div class='vv-visual'>
+	<div class='vv-shim' style='padding-top: 56.25%'></div>
 	<div
-		class='vv-asset vv-background vv-background-cover vv-aspect'
+		class='vv-asset vv-image vv-background-cover vv-fill-asset'
 		style='background: url("image.png");'>
-		<div class='vue-vv-aspect-prop' style='padding-top: 56.25%'></div>
 	</div>
 </div>
 ```
 
 You can also pass in a number for the aspect, like: `:aspect='16/9'`.
-
-You can also use the measured dimensions of the `image` or `poster` for the aspect, although these can't be determined until the image has actually fully loaded:
-
-```html
-<visual
-	image='image.png'
-	background='cover'
-	aspect='image'>
-</visual>
-```
 
 
 ### Render a video instead
@@ -229,56 +195,25 @@ This renders:
 Many `<video>` attributes may be passed through:
 
 ```html
-<visual video='video.mp4' controls loop mute></visual>
+<visual video='video.mp4' controls loop mute autoplay></visual>
 ```
 
-Instead of `autoplay` and `preload`, though, use these Visual props:
+You may also set autoplay to `visible` to make the video start playing only when it enters the viewport.  In addition, you may set `autopause` to `visible` to have it pause when you leave the viewport.  The viewport measuremnts are modified by the same `offset` value used for loading.
 
 ```html
 <visual
 	video='video.mp4'
-	load-video='now'
+	load='visible'
 	autoplay='visible'
 	autopause='visible'>
 </visual>
 ```
 
-These work like the `load` values above.  In other words, the video will start loading as soon as the component is mounted.  However, if won't play until it enters the viewport.  And then the video will pause again once it leaves the viewport.
-
-
-### Play videos on hover
+Videos may also be rendered using the same `background` settings.  Thus, you can end up with something like:
 
 ```html
 <visual
-	image='image.png'
-	video='video.mp4'
-	load-video='mouseover'
-	autoplay='mouseover'
-	autopause='mouseout'
-	transition='fade'>
-</visual>
-```
-
-In this case, an image will be loaded initially into the visual.  Then, when the user hovers the image, the video will be loaded.  Once it's ready to play, if the user is still hovering the Visual, it will be animated in using the `fade` transition.  When the user stops hovering, the video will pause.
-
-
-### Show a fallback on non-autoplaying devices
-
-Mobile devices like iOS and Android phones do not support autoplaying videos.  You can supply a fallback image that is shown for devices that don't support autoplaying videos (or videos at all).  This is great when used with a preview gif of the video.
-
-```html
-<visual
-	video='video.mp4'
-	fallback='fallback.gif'>
-</visual>
-```
-
-
-### Add markup within the Visual
-
-```html
-<visual
-	transition='fade'
+	transition='vv-fade'
 	background='cover'
 	aspect='16:9'
 
@@ -293,9 +228,34 @@ Mobile devices like iOS and Android phones do not support autoplaying videos.  Y
 	autoplay='visible'
 	autopause='visible'
 	loop
-	muted
+	muted>
 
+</visual>
+```
+
+This creates a Visual component with a 16:9 aspect ratio and immediately loads a low rez poster image.  Once it loads completely, it will fade in.  When the Visual enters the viewport, the `image` image will load in.  When it completes, it will fade in and, if the Visual is still in the viewport, the `video` will load.  Once enough has loaded that it can play without interruption, the video will fade in and begin playing (with looping) until it is scrolled out of the viewport.
+
+
+### Show a fallback on non-autoplaying devices
+
+Mobile devices like iOS and Android phones do not support autoplaying videos.  You can supply a fallback image that is shown for devices that don't support autoplaying videos (or videos at all).  This is great when used with a preview gif of the video.
+
+```html
+<visual
+	video='video.mp4'
 	fallback='fallback.gif'>
+</visual>
+```
+
+
+### Slot markup within the Visual
+
+```html
+<visual
+	background='cover'
+	aspect='16:9'
+	image='image.png'
+	align='middle left'>
 
 	<h1>I am the title of a marquee</h1>
 	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -303,23 +263,23 @@ Mobile devices like iOS and Android phones do not support autoplaying videos.  Y
 </visual>
 ```
 
-This creates a Visual component with a 16:9 aspect ratio and immediately loads a low rez poster image.  Once it loads completely, it will fade in.  When the Visual enters the viewport, the `image` image will load in.  When it completes, if the Visual is still in the viewport, the `video` will load.  Once enough has loaded that it can play without interruption, it will play (looping) until it is scrolled out of the viewport.  Finally, in the event that the user's device doesn't support autoplaying video, instead of loading a video, after the `image` loads, the `fallback` gif would have been loaded instead.
+This renders:
 
-In addition, the `<h1>` and `<p>` will be inserted inside the component via the default Vue slot.
-
-
-### Set defaults
-
-Vue-visual was designed to mimic regular `<img>` and `<video>` tag behavior with it's base config.  It renders as `inline-block`, the asset loads immediately, the asset is shown at it's native size, etc.  However, it's more common that you will want to render assets using `background-size: cover`, lazy load, and fade in when they are ready.  To override the default, opt-in themed configuration, you can do the following:
-
-```js
-Vue = require('vue')
-Vue.component('visual', require('vue-visual')).options.setDefaults({
-	background: 'cover',
-	load: 'visible',
-	transition: 'vv-fade'
-})
+```html
+<div class='vv-visual'>
+	<div class='vv-shim vv-align-middle' style='padding-top: 56.25%'></div>
+	<div
+		class='vv-asset vv-image vv-background-cover vv-fill-asset'
+		style='background: url("image.png");'>
+	</div>
+	<div class='vv-slot vv-align-middle vv-align-left'>
+		<h1>I am the title of a marquee</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+	</div>
+</div>
 ```
+
+Slotting in content is a great way to create marquees of websites with rich background assets.  The shim-based approach to aligning the slot content means that the slot content will stay centered in the Visual until the slot height is greater than the aspect radio (like as you reach a mobile viewport width), in which case the slot will prop the Visual open as needed.
 
 
 ### Add a spinner graphic
@@ -345,6 +305,21 @@ Vue.component('spinner', {
 It's up to you to style the spinner.  The component is added after the assets and the slot in the DOM.
 
 
+### Override vue-visual defaults
+
+Vue-visual was designed to mimic regular `<img>` and `<video>` tag behavior with it's base config.  It renders as `inline-block`, the asset loads immediately, the asset is shown at it's native size, etc.  However, it's more common that you will want to render assets using `background-size: cover`, lazy load, and fade in when they are ready.  To override the default, opt-in themed configuration, you can do the following:
+
+```js
+Vue = require('vue')
+Vue.component('visual', require('vue-visual')).options.setDefaults({
+	background: 'cover',
+	load: 'visible',
+	loadPoster: true,
+	transition: 'vv-fade'
+})
+```
+
+
 ## Props
 
 A list of the [component properties](http://vuejs.org/v2/guide/components.html#Props) that may be set on the Visual component.
@@ -363,6 +338,8 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 - `fallback (string|object)` : An image that is loaded after the `image` when the user's device doesn't support video or doesn't support auto-playing video and `require-autoplay` is truthy.  See `image` for object schema.
 
+- `require-autoplay (boolean)` - *Default: `true`.* If `false`, the `fallback` is shown only if the user's device lacks video support.  If `true`, the `fallback`, will be shown also when a device cannot autoplay videos (like most mobile phones).
+
 
 #### Size
 
@@ -372,15 +349,10 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 - `aspect (number|string)` : Force the Visual to a specific aspect ratio.  This works by making the asset `position:absolute` and then using an inner div with a `padding-top` set to a percentage.  Can be set as a number like `:aspect='16/9'` or as a string like `aspect='16:9'`.  May also use any of the asset properties (`poster`, `image`, `video`, `fallback`) to use the native aspect ratio of the asset.  Note, these values cannot be read until the asset has loaded, so the Visual will be dimension-less until load has completed.
 
-- `fill (boolean)` : Make the Visual fill it's container via CSS.
+- `fill (boolean)` : Make the Visual fill it's container via CSS using absolute positioning.
 
 
-#### Rendering
-
-- `render (string)` - By default, the asset is rendered into the DOM immediately.  If set to `load`, it will be rendered only after it finishes loading.  The render will automatically be delayed if there is `transition` defined or if `load` is not set to `true`. Different render values can be set for each asset type:
-	- `render-poster (string)`
-	- `render-image (string)`
-	- `render-video (string)` - Also applies to the `fallback`
+#### Style
 
 - `background (string)` - May be `cover` or `contain`. When set, image assets as a CSS `background-image` with either `background-size: cover` or `background-size: contain` depending on the value of the prop. Video assets will be made to mimic this display style by using javascript to transform the offset of the asset, masking clipped regions with `overflow: hidden`.
 
@@ -408,7 +380,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Transition
 
-- `transition (string)` -  A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied to the `v-if` directives that are applied to assets that have `load` setting.  The Visual component ships with a `vv-fade` transition that fades in assets over previously loaded assets.  Setting a `transition` will automatically set `render='load'`.  Different transition values can be set for each asset type (as well as the loader):
+- `transition (string)` -  A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied to the `v-if` directives that are applied to assets that have `load` setting.  The Visual component ships with a `vv-fade` transition that fades in assets over previously loaded assets.  Different transition values can be set for each asset type (as well as the loader):
 	- `transition-poster (string)`
 	- `transition-image (string)`
 	- `transition-video (string)` - Also applies to the `fallback`
@@ -426,8 +398,6 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 - `muted (boolean)` - Sets `<video>` `muted`
 
 - `controls (boolean)` - Sets `<video>` `controls`
-
-- `require-autoplay (boolean)` - If false, the `fallback` is shown only if the user's device lacks video support.  If truthy, the `fallback`, will be shown also when a device cannot autoplay videos (like most mobile phones).
 
 
 #### Accessibility
@@ -455,6 +425,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 - `restart()` - Tell `video` to restart playback from beginning.
 
 - `togglePlayback(bool = null)` - Call without an argument to toggle between playing and paused.  Or call with `true` to play and `false` to pause.
+
 
 #### Component
 

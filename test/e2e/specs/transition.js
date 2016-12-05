@@ -7,10 +7,10 @@ module.exports = {
 		.url('http://localhost:8080/transition/')
 		.waitForElementVisible('#app', 1000)
 
-		.assert.cssClassPresent('.vv-poster-transition', 'long-scale-leave-active')
-		.assert.cssClassPresent('.vv-image-transition', 'long-scale-leave-active')
-		.assert.cssClassPresent('.vv-video-transition', 'long-scale-enter-active')
-		
+		.assert.cssClassPresent('.vv-poster-transition', 'long-fade-leave-active')
+		.assert.cssClassPresent('.vv-image-transition', 'long-fade-leave-active')
+		.assert.cssClassPresent('.vv-video-transition', 'long-fade-enter-active')
+
 		.end()
 	},
 
