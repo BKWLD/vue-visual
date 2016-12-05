@@ -1,4 +1,4 @@
-# Vue Visual [![npm](https://img.shields.io/npm/v/npm.svg)](https://github.com/BKWLD/vue-visual) [![Build Status](https://travis-ci.org/BKWLD/vue-visual.svg?branch=master)](https://travis-ci.org/BKWLD/vue-visual)
+# Vue Visual [![npm](https://img.shields.io/npm/v/vue-visual.svg)](https://www.npmjs.com/package/vue-visual) [![Build Status](https://img.shields.io/travis/BKWLD/vue-visual.svg)](https://travis-ci.org/BKWLD/vue-visual)
 
 Vue 2 image and video loader supporting lazy loading, cover videos, and more
 
