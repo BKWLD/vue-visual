@@ -58,6 +58,11 @@ module.exports =
 			# Video playback
 			'vv-playing': @playing
 
+			# Centering
+			'vv-align-left': @align.indexOf('left') != -1 and @$slots.default
+			'vv-align-center': @align.indexOf('center') != -1 and @$slots.default
+			'vv-align-right': @align.indexOf('right') != -1 and @$slots.default
+
 		# Asset classes
 		assetClasses: ->
 
@@ -78,9 +83,6 @@ module.exports =
 
 		# Slot classes
 		slotClasses: ->
-			'vv-align-left': @align.indexOf('left') != -1 and @$slots.default
-			'vv-align-center': @align.indexOf('center') != -1 and @$slots.default
-			'vv-align-right': @align.indexOf('right') != -1 and @$slots.default
 			'vv-align-bottom': @align.indexOf('bottom') != -1 and @$slots.default
 			'vv-align-middle': @align.indexOf('middle') != -1 and @$slots.default
 			'vv-align-top': @align.indexOf('top') != -1 and @$slots.default
