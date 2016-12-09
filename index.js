@@ -1272,7 +1272,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        'vv-poster-in-viewport': this.posterInViewport,
 	        'vv-image-in-viewport': this.imageInViewport,
 	        'vv-video-in-viewport': this.videoInViewport,
-	        'vv-playing': this.playing
+	        'vv-playing': this.playing,
+	        'vv-align-left': this.align.indexOf('left') !== -1 && this.$slots["default"],
+	        'vv-align-center': this.align.indexOf('center') !== -1 && this.$slots["default"],
+	        'vv-align-right': this.align.indexOf('right') !== -1 && this.$slots["default"]
 	      };
 	    },
 	    assetClasses: function() {
@@ -1293,9 +1296,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    slotClasses: function() {
 	      return {
-	        'vv-align-left': this.align.indexOf('left') !== -1 && this.$slots["default"],
-	        'vv-align-center': this.align.indexOf('center') !== -1 && this.$slots["default"],
-	        'vv-align-right': this.align.indexOf('right') !== -1 && this.$slots["default"],
 	        'vv-align-bottom': this.align.indexOf('bottom') !== -1 && this.$slots["default"],
 	        'vv-align-middle': this.align.indexOf('middle') !== -1 && this.$slots["default"],
 	        'vv-align-top': this.align.indexOf('top') !== -1 && this.$slots["default"]
