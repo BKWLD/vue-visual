@@ -99,8 +99,7 @@ module.exports =
 			@[asset+'ScrollMonitor'] = scrollMonitor.create @$el, offset
 
 			# Set initial state and listen for updates
-			@[asset+'ScrollMonitor'].on 'stateChange', =>
-				 @updateInViewport asset
+			@[asset+'ScrollMonitor'].on 'stateChange', => @updateInViewport asset
 
 			# Trigger fake scrolls to get scrollMonitor to recalculate itself when
 			# document becomes ready.  In addition, updateInViewport is manually being

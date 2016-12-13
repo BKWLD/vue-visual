@@ -112,6 +112,7 @@ ucfirst = require './src/utils/ucfirst'
 
 # The component definition
 module.exports =
+	name: 'VueVisual'
 
 	# The src code has been broken up into modules to make it eaier to read
 	mixins: [
