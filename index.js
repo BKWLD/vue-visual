@@ -64,7 +64,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	__vue_exports__ = __webpack_require__(2)
 
 	/* template */
-	var __vue_template__ = __webpack_require__(30)
+	var __vue_template__ = __webpack_require__(31)
 	__vue_options__ = __vue_exports__ = __vue_exports__ || {}
 	if (
 	  typeof __vue_exports__.default === "object" ||
@@ -1185,18 +1185,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return (1 / this.aspectProp * 100) + '%';
 	      }
 	    }
-	  },
-	  methods: {
-	    handleWindowResize: function() {
-	      this.windowWidth = window.innerWidth;
-	      if (this.shouldWatchComponentSize) {
-	        return this.updateContainerSize();
-	      }
-	    },
-	    updateContainerSize: function() {
-	      this.containerWidth = this.$el.offsetWidth;
-	      return this.containerHeight = this.$el.offsetHeight;
-	    }
 	  }
 	};
 
@@ -1582,6 +1570,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	fireWhenReady = __webpack_require__(29);
 
+	__webpack_require__(30);
+
 	resizingVms = [];
 
 	resizeAllVms = function() {
@@ -1689,7 +1679,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      })(this));
 	      return fireWhenReady((function(_this) {
 	        return function() {
-	          window.dispatchEvent(new Event('scroll'));
+	          window.dispatchEvent(new CustomEvent('scroll'));
 	          return _this.updateInViewport(asset);
 	        };
 	      })(this));
@@ -1701,6 +1691,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (this[asset + 'ScrollMonitor']) {
 	        return this[asset + 'ScrollMonitor'].destroy();
 	      }
+	    },
+	    handleWindowResize: function() {
+	      this.windowWidth = window.innerWidth;
+	      if (this.shouldWatchComponentSize) {
+	        return this.updateContainerSize();
+	      }
+	    },
+	    updateContainerSize: function() {
+	      this.containerWidth = this.$el.offsetWidth;
+	      return this.containerHeight = this.$el.offsetHeight;
 	    }
 	  }
 	};
@@ -1732,6 +1732,31 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 30 */
+/***/ function(module, exports) {
+
+	/**
+	 * CustomEvent polyfill for IE from MDN
+	 * https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent
+	 */
+	(function () {
+
+	  if ( typeof window.CustomEvent === "function" ) return false;
+
+	  function CustomEvent ( event, params ) {
+	    params = params || { bubbles: false, cancelable: false, detail: undefined };
+	    var evt = document.createEvent( 'CustomEvent' );
+	    evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+	    return evt;
+	   }
+
+	  CustomEvent.prototype = window.Event.prototype;
+
+	  window.CustomEvent = CustomEvent;
+	})();
+
+
+/***/ },
+/* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;
