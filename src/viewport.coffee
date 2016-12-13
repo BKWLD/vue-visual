@@ -67,6 +67,9 @@ module.exports =
 	##############################################################################
 	methods:
 
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# Scrolling
+
 		# Per-asset value that triggers scrollMonitor to re-init.  The id is just
 		# the stringified offset (which will trigger re-init if the offset changes)
 		# if there is scrolling or null if there is no scroll listening.
@@ -114,3 +117,16 @@ module.exports =
 		# Destroy scrollMonitor
 		removeScrollListeners: (asset) ->
 			@[asset+'ScrollMonitor'].destroy() if @[asset+'ScrollMonitor']
+
+		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+		# Container sizing
+
+		# Update the internal measurement of the window size
+		handleWindowResize: ->
+			@windowWidth = window.innerWidth
+			@updateContainerSize() if @shouldWatchComponentSize
+
+		# Update the container size
+		updateContainerSize: ->
+			@containerWidth = @$el.offsetWidth
+			@containerHeight = @$el.offsetHeight

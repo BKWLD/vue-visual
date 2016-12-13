@@ -44,16 +44,3 @@ module.exports =
 			when isNumeric @aspect then @aspect
 			when @aspect.match ':' then aspectFromString @aspect
 		aspectPadding: -> (1 / @aspectProp * 100) + '%' if @aspectProp
-
-	##############################################################################
-	methods:
-
-		# Update the internal measurement of the window size
-		handleWindowResize: ->
-			@windowWidth = window.innerWidth
-			@updateContainerSize() if @shouldWatchComponentSize
-
-		# Update the container size
-		updateContainerSize: ->
-			@containerWidth = @$el.offsetWidth
-			@containerHeight = @$el.offsetHeight
