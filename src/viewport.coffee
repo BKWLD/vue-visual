@@ -6,6 +6,7 @@ Configuration related to the relationship between the component and the viewport
 scrollMonitor = require 'scrollmonitor'
 throttle = require 'lodash/throttle'
 fireWhenReady = require './utils/fire-when-ready'
+require './utils/custom-event'
 
 # Make a single window resize listener
 resizingVms = []
@@ -107,7 +108,7 @@ module.exports =
 			# page) the manual scroll event wasn't sufficient to recognize the inital
 			# state.
 			fireWhenReady =>
-				window.dispatchEvent new Event 'scroll'
+				window.dispatchEvent new CustomEvent 'scroll'
 				@updateInViewport asset
 
 		# Update whether asset is in the viewport
