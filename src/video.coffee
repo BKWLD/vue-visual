@@ -14,9 +14,6 @@ mime = (url) -> switch url.match(/\.(\w+)/)?[1]
 	when 'webm' then 'video/webm'
 	when 'ogg' then 'video/ogg'
 
-# Test whether the device can autoplay video
-canAutoplayVideo = -> !navigator.userAgent.match /Mobile|Android|BlackBerry/i
-
 # The mixin
 module.exports =
 
@@ -48,6 +45,9 @@ module.exports =
 			for video in @videoSources
 				return true if canPlay video
 			return false
+
+		# Test whether the device can autoplay video
+		canAutoplayVideo: -> !navigator.userAgent.match /Mobile|Android|BlackBerry/i
 
 		# Turn video sources into an array of URls
 		videoSources: -> switch

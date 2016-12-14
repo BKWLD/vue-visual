@@ -36,9 +36,8 @@ module.exports =
 
 		# Return whether a fallback image should be shown
 		useFallback: -> switch
-			when not @fallback then false
 			when not @canPlayVideo then true
-			when @requireAutoplay and !canAutoplayVideo() then true
+			when @requireAutoplay and !@canAutoplayVideo then true
 
 	##############################################################################
 	methods:
