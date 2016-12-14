@@ -112,6 +112,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	ucfirst = __webpack_require__(3);
 
 	module.exports = {
+	  name: 'VueVisual',
 	  mixins: [__webpack_require__(4), __webpack_require__(5), __webpack_require__(7), __webpack_require__(22), __webpack_require__(24), __webpack_require__(25), __webpack_require__(26), __webpack_require__(27)],
 	  methods: {
 	    assetPropVal: function(asset, prop) {
@@ -203,11 +204,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    useFallback: function() {
 	      switch (false) {
-	        case !!this.fallback:
-	          return false;
 	        case !!this.canPlayVideo:
 	          return true;
-	        case !(this.requireAutoplay && !canAutoplayVideo()):
+	        case !(this.requireAutoplay && !this.canAutoplayVideo):
 	          return true;
 	      }
 	    }
@@ -1403,7 +1402,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/*
 	Configuration related to video support
 	 */
-	var canAutoplayVideo, canPlay, mime;
+	var canPlay, mime;
 
 	canPlay = function(url) {
 	  var video;
@@ -1421,10 +1420,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    case 'ogg':
 	      return 'video/ogg';
 	  }
-	};
-
-	canAutoplayVideo = function() {
-	  return !navigator.userAgent.match(/Mobile|Android|BlackBerry/i);
 	};
 
 	module.exports = {
@@ -1456,6 +1451,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	      return false;
+	    },
+	    canAutoplayVideo: function() {
+	      return !navigator.userAgent.match(/Mobile|Android|BlackBerry/i);
 	    },
 	    videoSources: function() {
 	      switch (false) {
