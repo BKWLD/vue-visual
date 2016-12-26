@@ -124,7 +124,12 @@ module.exports =
 				when alreadyLoading then true # Already loading or loaded
 				when not @[asset] then false # Require asset src
 				when loadNow then true
-				when loadWhenVisible and @[asset+'InViewport'] then true
+				when loadWhenVisible and @[@inViewportProp(asset)] then true
+
+		# Get inViewport property to use.  The fallback should use video's
+		inViewportProp: (asset) -> switch asset
+			when 'fallback' then 'videoInViewport'
+			else asset+'InViewport'
 
 		# Load an asset
 		loadAsset: (asset) -> switch asset
