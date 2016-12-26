@@ -117,6 +117,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  methods: {
 	    assetPropVal: function(asset, prop) {
 	      var assetProp, ref;
+	      if (asset === 'fallback' && (prop === 'load' || prop === 'offset' || prop === 'transition')) {
+	        asset = 'video';
+	      }
 	      assetProp = prop + ucfirst(asset);
 	      return (ref = this[assetProp]) != null ? ref : this[prop];
 	    }
