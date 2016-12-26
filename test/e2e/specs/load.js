@@ -27,7 +27,11 @@ module.exports = {
 		.assert.elementNotPresent('.test-fallback .vv-poster')
 		.assert.elementNotPresent('.test-fallback .vv-image')
 		.assert.elementNotPresent('.test-fallback .vv-video')
+	},
 
+	'fallback should use video prop': function (browser) { browser
+		.assert.elementNotPresent('.fallback-uses-video-props .vv-fallback')
+		.assert.attributeContains('.fallback-uses-video-props .vv-image', 'src', 'image.png')
 		.end()
 	},
 
