@@ -4,7 +4,7 @@
 module.exports = {
 
 	'poster should render and load': function (browser) { browser
-		.url('http://localhost:8080/assets/')
+		.url('http://localhost:8080/load/')
 		.waitForElementVisible('#app', 1000)
 
 		.assert.attributeContains('.test-poster .vv-poster', 'src', 'poster.png')
