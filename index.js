@@ -411,8 +411,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return false;
 	        case !loadNow:
 	          return true;
-	        case !(loadWhenVisible && this[asset + 'InViewport']):
+	        case !(loadWhenVisible && this[this.inViewportProp(asset)]):
 	          return true;
+	      }
+	    },
+	    inViewportProp: function(asset) {
+	      switch (asset) {
+	        case 'fallback':
+	          return 'videoInViewport';
+	        default:
+	          return asset + 'InViewport';
 	      }
 	    },
 	    loadAsset: function(asset) {
