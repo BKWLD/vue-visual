@@ -132,7 +132,15 @@ module.exports =
 		# Get value of a prop that has an asset-level override.  For instance,
 		# `render` may be overrode by `renderPoster`
 		assetPropVal: (asset, prop) ->
-			assetProp = prop + ucfirst(asset) # ie: renderPoster
+
+			# For some props, fallback uses the video prop
+			if asset == 'fallback' and prop in ['load', 'offset', 'transition']
+				asset = 'video'
+
+			# Make the prop attribute, ie: renderPoster
+			assetProp = prop + ucfirst(asset)
+
+			# Default to general prop if not defined
 			@[assetProp] ? @[prop]
 
 	# Merge config as prop defaults
