@@ -76,7 +76,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	if (typeof __vue_options__ === "function") {
 	  __vue_options__ = __vue_options__.options
 	}
-	__vue_options__.__file = "/Users/reinhard/Work/Coachella/Site/wp-content/themes/coachella2017/src/workbench/vue-visual/index.vue"
+	__vue_options__.__file = "/Users/reinhard/Work/Open Source/vue-visual/index.vue"
 	__vue_options__.render = __vue_template__.render
 	__vue_options__.staticRenderFns = __vue_template__.staticRenderFns
 
@@ -87,9 +87,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (!hotAPI.compatible) return
 	  module.hot.accept()
 	  if (!module.hot.data) {
-	    hotAPI.createRecord("data-v-252cd8aa", __vue_options__)
+	    hotAPI.createRecord("data-v-0fb8d972", __vue_options__)
 	  } else {
-	    hotAPI.reload("data-v-252cd8aa", __vue_options__)
+	    hotAPI.reload("data-v-0fb8d972", __vue_options__)
 	  }
 	})()}
 	if (__vue_options__.functional) {console.error("[vue-loader] index.vue: functional components are not supported and should be defined in plain js files using render functions.")}
@@ -395,6 +395,58 @@ return /******/ (function(modules) { // webpackBootstrap
 	          return Vue.component(this.loader);
 	        case 'object':
 	          return this.loader;
+	      }
+	    }
+	  },
+	  watch: {
+	    loading: function(bool) {
+	      if (bool) {
+	        return this.$emit('loading');
+	      }
+	    },
+	    loaded: function(bool) {
+	      if (bool) {
+	        return this.$emit('loaded');
+	      }
+	    },
+	    posterLoading: function(bool) {
+	      if (bool) {
+	        return this.$emit('poster-loading');
+	      }
+	    },
+	    posterLoaded: function(bool) {
+	      if (bool) {
+	        return this.$emit('poster-loaded');
+	      }
+	    },
+	    imageLoading: function(bool) {
+	      if (bool) {
+	        return this.$emit('image-loading');
+	      }
+	    },
+	    imageLoaded: function(bool) {
+	      if (bool) {
+	        return this.$emit('image-loaded');
+	      }
+	    },
+	    videoLoading: function(bool) {
+	      if (bool) {
+	        return this.$emit('video-loading');
+	      }
+	    },
+	    videoLoaded: function(bool) {
+	      if (bool) {
+	        return this.$emit('video-loaded');
+	      }
+	    },
+	    fallbackLoading: function(bool) {
+	      if (bool) {
+	        return this.$emit('fallback-loading');
+	      }
+	    },
+	    fallbackLoaded: function(bool) {
+	      if (bool) {
+	        return this.$emit('fallback-loaded');
 	      }
 	    }
 	  },
@@ -1894,7 +1946,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	if (false) {
 	  module.hot.accept()
 	  if (module.hot.data) {
-	     require("vue-hot-reload-api").rerender("data-v-252cd8aa", module.exports)
+	     require("vue-hot-reload-api").rerender("data-v-0fb8d972", module.exports)
 	  }
 	}
 
