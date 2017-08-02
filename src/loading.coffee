@@ -111,6 +111,21 @@ module.exports =
 			when 'object' then @loader
 
 	##############################################################################
+	watch:
+
+		# Fire events when assets finish loading
+		loading:         (bool) -> @$emit 'loading' if bool
+		loaded:          (bool) -> @$emit 'loaded' if bool
+		posterLoading:   (bool) -> @$emit 'poster-loading' if bool
+		posterLoaded:    (bool) -> @$emit 'poster-loaded' if bool
+		imageLoading:    (bool) -> @$emit 'image-loading' if bool
+		imageLoaded:     (bool) -> @$emit 'image-loaded' if bool
+		videoLoading:    (bool) -> @$emit 'video-loading' if bool
+		videoLoaded:     (bool) -> @$emit 'video-loaded' if bool
+		fallbackLoading: (bool) -> @$emit 'fallback-loading' if bool
+		fallbackLoaded:  (bool) -> @$emit 'fallback-loaded' if bool
+
+	##############################################################################
 	methods:
 
 		# DRY per-asset logic for determining whetehr an asset is ready to load.
