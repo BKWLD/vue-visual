@@ -113,6 +113,13 @@ module.exports =
 		# Update whether asset is in the viewport
 		updateInViewport: (asset) ->
 			@[asset+'InViewport'] = @[asset+'ScrollMonitor'].isInViewport
+			@removeScrollListeners asset if @canRemoveScrollListeners asset
+
+		# Do we only need to listen to the initial entering into the viewport
+		canRemoveScrollListeners: (asset) ->
+			return false unless @[asset+'InViewport']
+			if asset = 'video' then return 'visible' in [@autoplay, @autopause]
+			else return true
 
 		# Destroy scrollMonitor
 		removeScrollListeners: (asset) ->
