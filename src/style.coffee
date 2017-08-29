@@ -50,11 +50,6 @@ module.exports =
 			'vv-fallback-loading': @fallbackLoading
 			'vv-fallback-loaded': @fallbackLoaded
 
-			# Offset
-			'vv-poster-in-viewport': @posterInViewport
-			'vv-image-in-viewport': @imageInViewport
-			'vv-video-in-viewport': @videoInViewport
-
 			# Video playback
 			'vv-playing': @playing
 
