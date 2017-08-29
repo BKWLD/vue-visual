@@ -133,7 +133,9 @@ module.exports =
 			@windowWidth = window.innerWidth
 			@updateContainerSize() if @shouldWatchComponentSize
 
-		# Update the container size
+		# Update the container size.  Note, if there is no video specified we don't
+		# need to know the height.  This saves some CPU:
+		# https://jsperf.com/does-reading-one-offset-improve-performance
 		updateContainerSize: ->
 			@containerWidth = @$el.offsetWidth
-			@containerHeight = @$el.offsetHeight
+			@containerHeight = @$el.offsetHeight if @video
