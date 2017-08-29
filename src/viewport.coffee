@@ -41,7 +41,7 @@ module.exports =
 	mounted: ->
 
 		# Start listening to window resizing
-		if @shouldWatchComponentSize or @hasResponsiveAsset
+		if @shouldWatchComponentSize
 			resizingVms.push this
 			@handleWindowResize()
 			@handleWindowResizeThrottled = throttle @handleWindowResize, 100

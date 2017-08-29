@@ -25,6 +25,7 @@ module.exports =
 
 		# Does this visual need to keep track of it's own width / height
 		shouldWatchComponentSize: -> switch
+			when @hasResponsiveAsset then true
 			when @aspect then false
 			when @video and @background then true # For Backgrounded vidoes
 

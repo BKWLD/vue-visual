@@ -51,5 +51,5 @@ module.exports =
 			breaks = sortObjByKey @[asset]
 			for width, src of breaks
 				choice = src
-				return choice if width >= @windowWidth
+				return choice if width >= @containerWidth
 			return choice # Return the largest one when end is reached

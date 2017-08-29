@@ -327,7 +327,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Assets
 
-- `image (string|object)` : An image to load.  If a string, the URL of an image.  If an object, a list of image URLs keyed to `max-width`-style breakpoints:
+- `image (string|object)` : An image to load.  If a string, the URL of an image.  If an object, a list of image URLs keyed to `max-width`-style breakpoints that are compared against the size of the Visual instance (rather than the window):
 	```
 	:image='{ 500: 'image-mobile.png', 768: 'image-tablet.png' }'
 	```
