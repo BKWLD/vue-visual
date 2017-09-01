@@ -253,6 +253,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    fallbackSrc: function() {
 	      return this.imgSrc('fallback');
 	    },
+	    videoSrc: function() {
+	      return this.video;
+	    },
 	    useFallback: function() {
 	      switch (false) {
 	        case !!this.canPlayVideo:
