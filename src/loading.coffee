@@ -137,7 +137,7 @@ module.exports =
 			loadWhenVisible = @assetPropVal(asset, 'load') == 'visible'
 			switch
 				when alreadyLoading then true # Already loading or loaded
-				when not @[asset] then false # Require asset src
+				when not @[asset+'Src'] then false # Require asset src
 				when loadNow then true
 				when loadWhenVisible and @[@inViewportProp(asset)] then true
 

@@ -511,7 +511,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      switch (false) {
 	        case !alreadyLoading:
 	          return true;
-	        case !!this[asset]:
+	        case !!this[asset + 'Src']:
 	          return false;
 	        case !loadNow:
 	          return true;
