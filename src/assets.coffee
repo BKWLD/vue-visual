@@ -34,6 +34,7 @@ module.exports =
 		posterSrc: -> @imgSrc 'poster'
 		imageSrc: -> @imgSrc 'image'
 		fallbackSrc: -> @imgSrc 'fallback'
+		videoSrc: -> @video # Passthrough, so all assets have a src
 
 		# Return whether a fallback image should be shown
 		useFallback: -> switch
