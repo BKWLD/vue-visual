@@ -21,7 +21,6 @@ module.exports =
 
 
 	output:
-		library: 'vue-visual'
 		libraryTarget: 'umd'
 		filename: if '-p' in process.argv then '[name].min.js' else '[name].js'
 
