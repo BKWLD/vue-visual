@@ -56,9 +56,9 @@ module.exports =
 			'vv-playing': @playing
 
 			# Centering
-			'vv-align-left': @align.indexOf('left') != -1 and @$slots.default
-			'vv-align-center': @align.indexOf('center') != -1 and @$slots.default
-			'vv-align-right': @align.indexOf('right') != -1 and @$slots.default
+			'vv-align-left': @align.indexOf('left') != -1 and @filledSlot
+			'vv-align-center': @align.indexOf('center') != -1 and @filledSlot
+			'vv-align-right': @align.indexOf('right') != -1 and @filledSlot
 
 		# Asset classes
 		assetClasses: ->
@@ -80,15 +80,15 @@ module.exports =
 
 		# Slot classes
 		slotClasses: ->
-			'vv-align-bottom': @align.indexOf('bottom') != -1 and @$slots.default
-			'vv-align-middle': @align.indexOf('middle') != -1 and @$slots.default
-			'vv-align-top': @align.indexOf('top') != -1 and @$slots.default
+			'vv-align-bottom': @align.indexOf('bottom') != -1 and @filledSlot
+			'vv-align-middle': @align.indexOf('middle') != -1 and @filledSlot
+			'vv-align-top': @align.indexOf('top') != -1 and @filledSlot
 
 		# Shim classes
 		shimClasses: ->
-			'vv-align-bottom': @align.indexOf('bottom') != -1 and @$slots.default
-			'vv-align-middle': @align.indexOf('middle') != -1 and @$slots.default
-			'vv-align-top': @align.indexOf('top') != -1 and @$slots.default
+			'vv-align-bottom': @align.indexOf('bottom') != -1 and @filledSlot
+			'vv-align-middle': @align.indexOf('middle') != -1 and @filledSlot
+			'vv-align-top': @align.indexOf('top') != -1 and @filledSlot
 
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Utils
@@ -102,7 +102,10 @@ module.exports =
 		# Check whether the shim is needed
 		showShim: -> switch
 			when @aspect then true
-			when @$slots.default and @hasVerticalAlign then true
+			when @filledSlot and @hasVerticalAlign then true
+
+		# Has slottted content
+		filledSlot: -> !!@$slots.default
 
 		# Check if vertical-alignment choice was made
 		hasVerticalAlign: ->

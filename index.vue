@@ -91,7 +91,7 @@
 
 	//- The main content slot
 	.vv-slot(
-		v-if='$slots.default'
+		v-if='filledSlot'
 		:class='slotClasses')
 		slot
 
