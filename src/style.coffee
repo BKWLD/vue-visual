@@ -5,6 +5,7 @@ properties that add classes to the component.
 
 # Deps
 isNumeric = require 'is-numeric'
+pickBy = require 'lodash/pickBy'
 
 # Make a size value from a string or number input
 size = (val) ->
@@ -26,10 +27,11 @@ module.exports =
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# CSS classes
 
-		# Assemble inline styles of container div
-		containerStyles: ->
-			width: size @width
-			height: size @height
+		# Assemble inline styles of container div, where the value is not empty
+		containerStyles: -> pickBy
+				width: size @width
+				height: size @height
+			, (val) -> !!val
 
 		# Assemble additional classes
 		containerClasses: ->
