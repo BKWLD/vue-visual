@@ -3,10 +3,10 @@
 		module.exports = factory(require("vue"), require("is-numeric"), require("scrollmonitor"));
 	else if(typeof define === 'function' && define.amd)
 		define(["vue", "is-numeric", "scrollmonitor"], factory);
-	else if(typeof exports === 'object')
-		exports["vue-visual"] = factory(require("vue"), require("is-numeric"), require("scrollmonitor"));
-	else
-		root["vue-visual"] = factory(root["vue"], root["is-numeric"], root["scrollmonitor"]);
+	else {
+		var a = typeof exports === 'object' ? factory(require("vue"), require("is-numeric"), require("scrollmonitor")) : factory(root["vue"], root["is-numeric"], root["scrollmonitor"]);
+		for(var i in a) (typeof exports === 'object' ? exports : root)[i] = a[i];
+	}
 })(this, function(__WEBPACK_EXTERNAL_MODULE_9__, __WEBPACK_EXTERNAL_MODULE_24__, __WEBPACK_EXTERNAL_MODULE_29__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -1522,7 +1522,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	canPlay = function(url) {
 	  var video;
-	  video = document.createElement('video');
+	  video = typeof document !== "undefined" && document !== null ? document.createElement('video') : void 0;
 	  return (video != null ? video.canPlayType(mime(url)) : void 0) !== 'no';
 	};
 
@@ -1698,9 +1698,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return results;
 	};
 
-	window.addEventListener('resize', function() {
-	  return resizeAllVms();
-	});
+	if (typeof window !== "undefined" && window !== null) {
+	  window.addEventListener('resize', function() {
+	    return resizeAllVms();
+	  });
+	}
 
 	fireWhenReady(resizeAllVms);
 
@@ -1848,7 +1850,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = function(cb) {
 	  var handler;
 	  cb();
-	  if (document.readyState === 'loading') {
+	  if ((typeof document !== "undefined" && document !== null ? document.readyState : void 0) === 'loading') {
 	    return document.addEventListener('readystatechange', handler = function() {
 	      cb();
 	      if (document.readyState === 'complete') {
@@ -1869,7 +1871,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	(function () {
 
-	  if ( typeof window.CustomEvent === "function" ) return false;
+	  if (typeof window === 'undefined' ||
+	    typeof window.CustomEvent === "function" ) {
+	    return false;
+	  }
 
 	  function CustomEvent ( event, params ) {
 	    params = params || { bubbles: false, cancelable: false, detail: undefined };
