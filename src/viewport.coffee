@@ -11,7 +11,7 @@ require './utils/custom-event'
 # Make a single window resize listener
 resizingVms = []
 resizeAllVms = -> vm.handleWindowResizeThrottled() for vm in resizingVms
-window.addEventListener 'resize', -> resizeAllVms()
+window?.addEventListener 'resize', -> resizeAllVms()
 fireWhenReady resizeAllVms
 
 # The mixin

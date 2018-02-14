@@ -3,7 +3,7 @@ module.exports = (cb) ->
 	cb()
 
 	# If the document is still loading, add a listener for whent that changes
-	if document.readyState == 'loading'
+	if document?.readyState == 'loading'
 		document.addEventListener 'readystatechange', handler = ->
 			cb()
 
