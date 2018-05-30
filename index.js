@@ -5399,7 +5399,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return false;
 	    },
 	    canAutoplayVideo: function() {
-	      return !navigator.userAgent.match(/Mobile|Android|BlackBerry/i);
+	      return !navigator.userAgent.match(/BlackBerry/i);
 	    },
 	    videoSources: function() {
 	      switch (false) {
@@ -5478,8 +5478,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    },
 	    respondToAutoplay: function() {
+	      var ref;
 	      switch (false) {
-	        case this.autoplay !== true:
+	        case (ref = this.autoplay) !== true && ref !== '':
 	          return this.play();
 	        case !(this.autoplay === 'visible' && this.videoInViewport):
 	          return this.play();
@@ -5819,6 +5820,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    attrs: {
 	      "controls": _vm.controls,
 	      "loop": _vm.loop,
+	      "playsinline": "playsinline",
 	      "preload": "auto",
 	      "aria-label": _vm.alt
 	    },
