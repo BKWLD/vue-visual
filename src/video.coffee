@@ -107,7 +107,7 @@ module.exports =
 
 		# Control video playback based on autoplaying setting
 		respondToAutoplay: -> switch
-			when @autoplay == true then @play()
+			when @autoplay in [true, ''] then @play()
 			when @autoplay == 'visible' and @videoInViewport then @play()
 
 		# Control video playback based on autipause setting
