@@ -78,6 +78,7 @@
 				:controls='controls'
 				:loop='loop'
 				:muted='muted'
+				playsinline
 				ref='video'
 				preload='auto'
 				:aria-label='alt')

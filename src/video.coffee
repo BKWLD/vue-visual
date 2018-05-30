@@ -47,7 +47,7 @@ module.exports =
 			return false
 
 		# Test whether the device can autoplay video
-		canAutoplayVideo: -> !navigator.userAgent.match /Mobile|Android|BlackBerry/i
+		canAutoplayVideo: -> !navigator.userAgent.match /BlackBerry/i
 
 		# Turn video sources into an array of URls
 		videoSources: -> switch
