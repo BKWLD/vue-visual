@@ -3107,6 +3107,12 @@ vue-hot-reload-api@^2.0.1:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.1.0.tgz#9ca58a6e0df9078554ce1708688b6578754d86de"
 
+vue-in-viewport-directive@^1.1.4:
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/vue-in-viewport-directive/-/vue-in-viewport-directive-1.1.4.tgz#7389242c0fe15a1c755c6d929b2cf65acef98501"
+  dependencies:
+    scrollmonitor "^1.1.3"
+
 vue-loader@^10.0.1:
   version "10.3.0"
   resolved "https://registry.yarnpkg.com/vue-loader/-/vue-loader-10.3.0.tgz#436421736e9ad0f1c481330327c376963db86a19"
