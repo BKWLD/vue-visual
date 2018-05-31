@@ -112,6 +112,7 @@ module.exports =
 
 		# Update whether asset is in the viewport
 		updateInViewport: (asset) ->
+			return unless @[asset+'ScrollMonitor']
 			@[asset+'InViewport'] = @[asset+'ScrollMonitor'].isInViewport
 			@removeScrollListeners asset if @canRemoveScrollListeners asset
 
@@ -123,7 +124,9 @@ module.exports =
 
 		# Destroy scrollMonitor
 		removeScrollListeners: (asset) ->
-			@[asset+'ScrollMonitor'].destroy() if @[asset+'ScrollMonitor']
+			if @[asset+'ScrollMonitor']
+				@[asset+'ScrollMonitor'].destroy()
+				delete @[asset+'ScrollMonitor']
 
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Container sizing
