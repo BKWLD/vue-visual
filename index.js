@@ -5632,6 +5632,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      })(this));
 	    },
 	    updateInViewport: function(asset) {
+	      if (!this[asset + 'ScrollMonitor']) {
+	        return;
+	      }
 	      this[asset + 'InViewport'] = this[asset + 'ScrollMonitor'].isInViewport;
 	      if (this.canRemoveScrollListeners(asset)) {
 	        return this.removeScrollListeners(asset);
@@ -5649,7 +5652,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    removeScrollListeners: function(asset) {
 	      if (this[asset + 'ScrollMonitor']) {
-	        return this[asset + 'ScrollMonitor'].destroy();
+	        this[asset + 'ScrollMonitor'].destroy();
+	        return delete this[asset + 'ScrollMonitor'];
 	      }
 	    },
 	    handleWindowResize: function() {
