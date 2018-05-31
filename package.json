@@ -48,7 +48,6 @@
     "stylus": "^0.54.5",
     "stylus-loader": "^2.4.0",
     "vue": "^2.1.0",
-    "vue-in-viewport-directive": "^1.1.4",
     "vue-loader": "^10.0.1",
     "vue-template-compiler": "^2.1.0",
     "webpack": "^1.13.3",
