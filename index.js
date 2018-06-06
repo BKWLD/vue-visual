@@ -5399,7 +5399,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return false;
 	    },
 	    canAutoplayVideo: function() {
-	      return !navigator.userAgent.match(/BlackBerry/i);
+	      switch (false) {
+	        case !navigator.userAgent.match(/BlackBerry/i):
+	          return false;
+	        case !(navigator.userAgent.match(/(iPhone|iPod)/gi) && !('playsInline' in document.createElement('video'))):
+	          return false;
+	        default:
+	          return true;
+	      }
 	    },
 	    videoSources: function() {
 	      switch (false) {
