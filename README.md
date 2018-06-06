@@ -235,7 +235,7 @@ Videos may also be rendered using the same `background` settings.  Thus, you can
 
 This creates a Visual component with a 16:9 aspect ratio and immediately loads a low rez poster image.  Once it loads completely, it will fade in.  When the Visual enters the viewport, the `image` image will load in.  When it completes, it will fade in and, if the Visual is still in the viewport, the `video` will load.  Once enough has loaded that it can play without interruption, the video will fade in and begin playing (with looping) until it is scrolled out of the viewport.
 
-This package sets [playsinline](https://webkit.org/blog/6784/new-video-policies-for-ios/) automatically and uses [iphone-inline-video](https://github.com/bfred-it/iphone-inline-video) to add support to iOS 8 and 9.  Note, to autoplay inline on Android, make sure to also set the `muted` attribute.
+This package sets [playsinline](https://webkit.org/blog/6784/new-video-policies-for-ios/) automatically.  Note, to autoplay inline on Android, make sure to also set the `muted` attribute.
 
 
 ### Show a fallback on non-autoplaying devices
