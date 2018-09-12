@@ -35,7 +35,7 @@ module.exports =
 		posterSrc: -> @imgSrc 'poster'
 		imageSrc: -> @imgSrc 'image'
 		fallbackSrc: -> @imgSrc 'fallback'
-		videoSrc: -> @mutateAsset 'video', @video
+		videoSrc: -> @applyAssetMutation 'video', @video
 
 		# Return whether a fallback image should be shown
 		useFallback: -> switch
@@ -57,7 +57,7 @@ module.exports =
 			return unless @[asset]
 			
 			# Get the src and return if a string
-			src = @mutateAsset asset, @[asset]
+			src = @applyAssetMutation asset, @[asset]
 			return src if typeof src == 'string'
 
 			# Loop through breaks and find the src for the largest src for the width
@@ -68,7 +68,7 @@ module.exports =
 			return choice # Return the largest one when end is reached
 
 		# Apply mutations if they were defined
-		mutateAsset: (asset, src) ->
+		applyAssetMutation: (asset, src) ->
 			if @mutateAsset
 			then @mutateAsset 
 				asset: asset

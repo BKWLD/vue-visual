@@ -255,7 +255,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.imgSrc('fallback');
 	    },
 	    videoSrc: function() {
-	      return this.mutateAsset('video', this.video);
+	      return this.applyAssetMutation('video', this.video);
 	    },
 	    useFallback: function() {
 	      switch (false) {
@@ -276,7 +276,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!this[asset]) {
 	        return;
 	      }
-	      src = this.mutateAsset(asset, this[asset]);
+	      src = this.applyAssetMutation(asset, this[asset]);
 	      if (typeof src === 'string') {
 	        return src;
 	      }
@@ -290,7 +290,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	      return choice;
 	    },
-	    mutateAsset: function(asset, src) {
+	    applyAssetMutation: function(asset, src) {
 	      if (this.mutateAsset) {
 	        return this.mutateAsset({
 	          asset: asset,
