@@ -229,7 +229,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    requireAutoplay: {
 	      type: Boolean,
 	      "default": true
-	    }
+	    },
+	    mutateAsset: Function
 	  },
 	  mounted: function() {
 	    return ['poster', 'image', 'fallback'].forEach((function(_this) {
@@ -254,7 +255,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return this.imgSrc('fallback');
 	    },
 	    videoSrc: function() {
-	      return this.video;
+	      return this.mutateAsset('video', this.video);
 	    },
 	    useFallback: function() {
 	      switch (false) {
@@ -275,8 +276,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!this[asset]) {
 	        return;
 	      }
-	      if (typeof this[asset] === 'string') {
-	        return this[asset];
+	      src = this.mutateAsset(asset, this[asset]);
+	      if (typeof src === 'string') {
+	        return src;
 	      }
 	      breaks = sortObjByKey(this[asset]);
 	      for (width in breaks) {
@@ -287,6 +289,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	      return choice;
+	    },
+	    mutateAsset: function(asset, src) {
+	      if (this.mutateAsset) {
+	        return this.mutateAsset({
+	          asset: asset,
+	          src: src,
+	          ref: this
+	        });
+	      } else {
+	        return prop;
+	      }
 	    }
 	  }
 	};

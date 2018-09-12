@@ -16,6 +16,7 @@ module.exports =
 		fallback:        [String, Object]
 		posterFromImage: { type: Boolean, default: false }
 		requireAutoplay: { type: Boolean, default: true }
+		mutateAsset:     Function
 
 	##############################################################################
 	mounted: ->
@@ -34,7 +35,7 @@ module.exports =
 		posterSrc: -> @imgSrc 'poster'
 		imageSrc: -> @imgSrc 'image'
 		fallbackSrc: -> @imgSrc 'fallback'
-		videoSrc: -> @video # Passthrough, so all assets have a src
+		videoSrc: -> @mutateAsset 'video', @video
 
 		# Return whether a fallback image should be shown
 		useFallback: -> switch
@@ -54,9 +55,10 @@ module.exports =
 
 			# Otherwise, require an asset
 			return unless @[asset]
-
-			# Return simple urls
-			return @[asset] if typeof @[asset] == 'string'
+			
+			# Get the src and return if a string
+			src = @mutateAsset asset, @[asset]
+			return src if typeof src == 'string'
 
 			# Loop through breaks and find the src for the largest src for the width
 			breaks = sortObjByKey @[asset]
@@ -64,3 +66,12 @@ module.exports =
 				choice = src
 				return choice if width >= @containerWidth
 			return choice # Return the largest one when end is reached
+
+		# Apply mutations if they were defined
+		mutateAsset: (asset, src) ->
+			if @mutateAsset
+			then @mutateAsset 
+				asset: asset
+				src: src
+				ref: @
+			else prop
