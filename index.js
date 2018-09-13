@@ -230,7 +230,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      type: Boolean,
 	      "default": true
 	    },
-	    mutateAsset: Function
+	    assetMutator: Function
 	  },
 	  mounted: function() {
 	    return ['poster', 'image', 'fallback'].forEach((function(_this) {
@@ -291,12 +291,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return choice;
 	    },
 	    applyAssetMutation: function(asset, src) {
-	      if (src && this.mutateAsset) {
-	        return this.mutateAsset({
-	          asset: asset,
-	          src: src,
-	          vm: this
-	        });
+	      if (this.assetMutator) {
+	        return this.assetMutator(asset, src, this);
 	      } else {
 	        return src;
 	      }
@@ -1270,11 +1266,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    width: [String, Number],
 	    height: [String, Number],
 	    aspect: [String, Number],
-	    fill: Boolean
+	    fill: Boolean,
+	    watchSize: Boolean
 	  },
 	  computed: {
 	    shouldWatchComponentSize: function() {
 	      switch (false) {
+	        case !this.watchSize:
+	          return true;
 	        case !this.hasResponsiveAsset:
 	          return true;
 	        case !this.aspect:
@@ -5684,7 +5683,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    updateContainerSize: function() {
 	      this.containerWidth = this.$el.offsetWidth;
-	      if (this.video) {
+	      if (this.video || this.watchSize) {
 	        return this.containerHeight = this.$el.offsetHeight;
 	      }
 	    }
