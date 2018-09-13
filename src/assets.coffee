@@ -76,4 +76,4 @@ module.exports =
 				asset: asset
 				src: src
 				vm: @
-			else prop
+			else src

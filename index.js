@@ -298,7 +298,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          vm: this
 	        });
 	      } else {
-	        return prop;
+	        return src;
 	      }
 	    }
 	  }
