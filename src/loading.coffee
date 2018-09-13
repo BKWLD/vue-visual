@@ -71,6 +71,7 @@ module.exports =
 
 		# Test whether video is ready to load
 		videoShouldLoad: -> switch
+			when @videoLoading or @videoLoaded then true # If already loading, don't reset
 			when (@poster and !@posterLoaded) or (@image and !@imageLoaded) then false
 			when @useFallback then false
 			when @playng then true # If someone manually starts playing it

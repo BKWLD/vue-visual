@@ -411,6 +411,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    videoShouldLoad: function() {
 	      switch (false) {
+	        case !(this.videoLoading || this.videoLoaded):
+	          return true;
 	        case !((this.poster && !this.posterLoaded) || (this.image && !this.imageLoaded)):
 	          return false;
 	        case !this.useFallback:
