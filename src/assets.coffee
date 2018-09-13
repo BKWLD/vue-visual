@@ -71,7 +71,7 @@ module.exports =
 
 		# Apply mutations if they were defined
 		applyAssetMutation: (asset, src) ->
-			if @mutateAsset
+			if src and @mutateAsset
 			then @mutateAsset 
 				asset: asset
 				src: src

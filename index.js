@@ -291,7 +291,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return choice;
 	    },
 	    applyAssetMutation: function(asset, src) {
-	      if (this.mutateAsset) {
+	      if (src && this.mutateAsset) {
 	        return this.mutateAsset({
 	          asset: asset,
 	          src: src,
