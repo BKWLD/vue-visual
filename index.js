@@ -269,18 +269,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	  methods: {
 	    imgSrc: function(asset) {
 	      var breaks, choice, imageBreaks, src, width;
-	      if (asset === 'poster' && this.posterFromImage && typeof this.image === 'object') {
-	        imageBreaks = sortObjByKey(this.image);
+	      src = this.applyAssetMutation(asset, this[asset]);
+	      if (asset === 'poster' && this.posterFromImage && typeof src === 'object') {
+	        imageBreaks = sortObjByKey(src);
 	        return imageBreaks[Object.keys(imageBreaks)[0]];
 	      }
-	      if (!this[asset]) {
+	      if (!src) {
 	        return;
 	      }
-	      src = this.applyAssetMutation(asset, this[asset]);
 	      if (typeof src === 'string') {
 	        return src;
 	      }
-	      breaks = sortObjByKey(this[asset]);
+	      breaks = sortObjByKey(src);
 	      for (width in breaks) {
 	        src = breaks[width];
 	        choice = src;
@@ -295,7 +295,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this.mutateAsset({
 	          asset: asset,
 	          src: src,
-	          ref: this
+	          vm: this
 	        });
 	      } else {
 	        return prop;

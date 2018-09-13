@@ -47,21 +47,23 @@ module.exports =
 
 		# Get the source of images, which may be using breakpoints
 		imgSrc: (asset) ->
+			
+			# Get the src
+			src = @applyAssetMutation asset, @[asset]
 
 			# Optionally read the poster from the image prop
-			if asset == 'poster' and @posterFromImage and typeof @image == 'object'
-				imageBreaks = sortObjByKey @image
-				return imageBreaks[Object.keys(imageBreaks)[0]]
+			if asset == 'poster' and @posterFromImage and typeof src == 'object'
+					imageBreaks = sortObjByKey src
+					return imageBreaks[Object.keys(imageBreaks)[0]]
 
 			# Otherwise, require an asset
-			return unless @[asset]
+			return unless src
 			
-			# Get the src and return if a string
-			src = @applyAssetMutation asset, @[asset]
+			# Return simple string urls
 			return src if typeof src == 'string'
 
 			# Loop through breaks and find the src for the largest src for the width
-			breaks = sortObjByKey @[asset]
+			breaks = sortObjByKey src
 			for width, src of breaks
 				choice = src
 				return choice if width >= @containerWidth
@@ -73,5 +75,5 @@ module.exports =
 			then @mutateAsset 
 				asset: asset
 				src: src
-				ref: @
+				vm: @
 			else prop
