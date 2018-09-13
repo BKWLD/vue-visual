@@ -16,7 +16,7 @@ module.exports =
 		fallback:        [String, Object]
 		posterFromImage: { type: Boolean, default: false }
 		requireAutoplay: { type: Boolean, default: true }
-		mutateAsset:     Function
+		assetMutator:     Function
 
 	##############################################################################
 	mounted: ->
@@ -71,8 +71,8 @@ module.exports =
 
 		# Apply mutations if they were defined
 		applyAssetMutation: (asset, src) ->
-			if @mutateAsset
-			then @mutateAsset 
+			if @assetMutator
+			then @assetMutator 
 				asset: asset
 				src: src
 				vm: @
