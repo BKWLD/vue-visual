@@ -15,16 +15,18 @@ module.exports =
 
 	##############################################################################
 	props:
-		width:  [String, Number]
-		height: [String, Number]
-		aspect: [String, Number]
-		fill:   Boolean
+		width:    [String, Number]
+		height:   [String, Number]
+		aspect:   [String, Number]
+		fill:      Boolean
+		watchSize: Boolean # Force watching size
 
 	##############################################################################
 	computed:
 
 		# Does this visual need to keep track of it's own width / height
 		shouldWatchComponentSize: -> switch
+			when @watchSize then true
 			when @hasResponsiveAsset then true
 			when @aspect then false
 			when @video and @background then true # For Backgrounded vidoes

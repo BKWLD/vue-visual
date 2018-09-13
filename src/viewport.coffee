@@ -141,4 +141,4 @@ module.exports =
 		# https://jsperf.com/does-reading-one-offset-improve-performance
 		updateContainerSize: ->
 			@containerWidth = @$el.offsetWidth
-			@containerHeight = @$el.offsetHeight if @video
+			@containerHeight = @$el.offsetHeight if @video or @watchSize
