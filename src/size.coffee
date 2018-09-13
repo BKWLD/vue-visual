@@ -19,7 +19,9 @@ module.exports =
 		height:   [String, Number]
 		aspect:   [String, Number]
 		fill:      Boolean
-		watchSize: Boolean # Force watching size
+	
+	 # Force watching size
+	data: -> watchSize: false
 
 	##############################################################################
 	computed:

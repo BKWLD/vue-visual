@@ -355,8 +355,6 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 - `fill (boolean)` : Make the Visual fill it's container via CSS using absolute positioning.
 
-- `watch-size (boolean)` : Force Visual to keep `containerWidth` and `containerHeight` values up to date.
-
 
 #### Style
 

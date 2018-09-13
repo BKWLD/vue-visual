@@ -1266,8 +1266,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    width: [String, Number],
 	    height: [String, Number],
 	    aspect: [String, Number],
-	    fill: Boolean,
-	    watchSize: Boolean
+	    fill: Boolean
+	  },
+	  data: function() {
+	    return {
+	      watchSize: false
+	    };
 	  },
 	  computed: {
 	    shouldWatchComponentSize: function() {
