@@ -131,7 +131,7 @@ The `<img>` will not be rendered until it loaded.  In addition, the asset is wra
 
 ### Render image as a CSS background
 
-```html
+```
 <visual image='image.png' background='cover'></visual>
 ```
 
