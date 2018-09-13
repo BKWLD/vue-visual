@@ -23,7 +23,7 @@ Vue 2 image and video loader supporting lazy loading, cover videos, and more
 
 ### Create a simple image tag
 
-```html
+```
 <visual image='image.png'></visual>
 ```
 
@@ -37,7 +37,7 @@ This renders:
 
 You may also specify the width and height:
 
-```html
+```
 <visual image='image.png' width='350' height='150'></visual>
 ```
 
@@ -54,7 +54,7 @@ The width and height are applied to the container as well so that loader graphic
 
 ### Lazy load a simple image tag
 
-```html
+```
 <visual
 	image='image.png'
 	load='visible'
@@ -85,7 +85,7 @@ And finally, upon load:
 
 ### Use a low rez poster image
 
-```html
+```
 <visual
 	poster='low-rez.png'
 	image='image.png'
@@ -95,7 +95,7 @@ And finally, upon load:
 
 In ths case, the poster image will be loaded when the Visual enters the viewport.  Then, once it's finished loading, the main image will be loaded.  To load a poster immediately and only lazy load the image:
 
-```html
+```
 <visual
 	poster='low-rez.png'
 	image='image.png'
@@ -108,7 +108,7 @@ In ths case, the poster image will be loaded when the Visual enters the viewport
 
 ### Declare a Vue transition for when load finishes
 
-```html
+```
 <visual
 	image='image.png'
 	transition='vv-fade'>
@@ -131,7 +131,7 @@ The `<img>` will not be rendered until it loaded.  In addition, the asset is wra
 
 ### Render image as a CSS background
 
-```html
+```
 <visual image='image.png' background='cover'></visual>
 ```
 
@@ -153,7 +153,7 @@ The `vv-background-cover` class adds `background-size: cover` to the asset.  Add
 
 It is often more useful in responsive layouts to set an aspect ratio for the Visual rather than a fixed width and height:
 
-```html
+```
 <visual
 	image='image.png'
 	background='cover'
@@ -178,7 +178,7 @@ You can also pass in a number for the aspect, like: `:aspect='16/9'`.
 
 ### Render a video instead
 
-```html
+```
 <visual video='video.mp4'></visual>
 ```
 
@@ -194,13 +194,13 @@ This renders:
 
 Many `<video>` attributes may be passed through:
 
-```html
+```
 <visual video='video.mp4' controls loop mute autoplay></visual>
 ```
 
 You may also set autoplay to `visible` to make the video start playing only when it enters the viewport.  In addition, you may set `autopause` to `visible` to have it pause when you leave the viewport.  The viewport measuremnts are modified by the same `offset` value used for loading.
 
-```html
+```
 <visual
 	video='video.mp4'
 	load='visible'
@@ -211,7 +211,7 @@ You may also set autoplay to `visible` to make the video start playing only when
 
 Videos may also be rendered using the same `background` settings.  Thus, you can end up with something like:
 
-```html
+```
 <visual
 	transition='vv-fade'
 	background='cover'
@@ -242,7 +242,7 @@ This package sets [playsinline](https://webkit.org/blog/6784/new-video-policies-
 
 Mobile devices like iOS and Android phones do not support autoplaying videos.  You can supply a fallback image that is shown for devices that don't support autoplaying videos (or videos at all).  This is great when used with a preview gif of the video.
 
-```html
+```
 <visual
 	video='video.mp4'
 	fallback='fallback.gif'>
@@ -252,7 +252,7 @@ Mobile devices like iOS and Android phones do not support autoplaying videos.  Y
 
 ### Slot markup within the Visual
 
-```html
+```
 <visual
 	background='cover'
 	aspect='16:9'
@@ -296,7 +296,7 @@ Vue.component('spinner', {
 	template: '<div class="spinner"></div>'
 })
 ```
-```html
+```
 <visual
 	image='image.png'
 	loader='spinner'
