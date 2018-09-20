@@ -5418,9 +5418,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    canAutoplayVideo: function() {
 	      switch (false) {
-	        case !navigator.userAgent.match(/BlackBerry/i):
+	        case !(typeof navigator !== "undefined" && navigator !== null ? navigator.userAgent.match(/BlackBerry/i) : void 0):
 	          return false;
-	        case !(navigator.userAgent.match(/(iPhone|iPod)/gi) && !('playsInline' in document.createElement('video'))):
+	        case !((typeof navigator !== "undefined" && navigator !== null ? navigator.userAgent.match(/(iPhone|iPod)/gi) : void 0) && !('playsInline' in document.createElement('video'))):
 	          return false;
 	        default:
 	          return true;
