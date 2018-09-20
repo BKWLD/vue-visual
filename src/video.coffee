@@ -49,8 +49,8 @@ module.exports =
 		# Test whether the device can autoplay video
 		# https://stackoverflow.com/a/39885697/59160
 		canAutoplayVideo: -> switch
-			when navigator.userAgent.match(/BlackBerry/i) then false
-			when navigator.userAgent.match(/(iPhone|iPod)/gi) and
+			when navigator?.userAgent.match(/BlackBerry/i) then false
+			when navigator?.userAgent.match(/(iPhone|iPod)/gi) and
 				not ('playsInline' of document.createElement('video')) then false
 			else true
 
