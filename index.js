@@ -1211,7 +1211,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      })(this));
 	      return fireWhenReady((function(_this) {
 	        return function() {
-	          window.dispatchEvent(new CustomEvent('scroll'));
+	          _this.$nextTick(function() {
+	            return window.dispatchEvent(new CustomEvent('scroll'));
+	          });
 	          return _this.updateInViewport(asset);
 	        };
 	      })(this));

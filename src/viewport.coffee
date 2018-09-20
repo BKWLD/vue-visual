@@ -107,7 +107,7 @@ module.exports =
 			# page) the manual scroll event wasn't sufficient to recognize the inital
 			# state.
 			fireWhenReady =>
-				window.dispatchEvent new CustomEvent 'scroll'
+				@$nextTick -> window.dispatchEvent new CustomEvent 'scroll'
 				@updateInViewport asset
 
 		# Update whether asset is in the viewport
