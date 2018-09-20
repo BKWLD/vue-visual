@@ -1,6 +1,7 @@
 minify = '-p' in process.argv
 webpack = require 'webpack'
 ExtractText = require 'extract-text-webpack-plugin'
+nodeExternals = require 'webpack-node-externals'
 
 module.exports =
 
@@ -25,9 +26,7 @@ module.exports =
 		filename: if '-p' in process.argv then '[name].min.js' else '[name].js'
 
 	# Every non-relative module is external
-	externals: [
-		/^[a-z\-0-9]+$/,
-	]
+	externals: [nodeExternals()]
 
 # Turn off warnings during minifcation.  They aren't particularly helpfull.
 if minify then module.exports.plugins = module.exports.plugins.concat [
