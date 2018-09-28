@@ -50,7 +50,7 @@ module.exports =
 			hasTransition = !!@assetPropVal(asset, 'transition')
 			hasDelayedLoad = @assetReadyToLoad(asset) != true
 			switch
-				when not @[asset] then false # Require asset src
+				when not @[asset+'Src'] then false # Require asset src
 				when hasTransition then @[asset+'Loaded'] # There is a transition
 				when hasDelayedLoad then @[asset+'Loaded'] # Not loading right away
 				else true # Can be rendered immediately

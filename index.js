@@ -904,7 +904,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      hasTransition = !!this.assetPropVal(asset, 'transition');
 	      hasDelayedLoad = this.assetReadyToLoad(asset) !== true;
 	      switch (false) {
-	        case !!this[asset]:
+	        case !!this[asset + 'Src']:
 	          return false;
 	        case !hasTransition:
 	          return this[asset + 'Loaded'];
