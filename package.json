@@ -35,7 +35,7 @@
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "babel-loader": "^8.0.5",
-    "chromedriver": "^2.25.1",
+    "chromedriver": "^2.35",
     "coffee-loader": "^0.9.0",
     "coffeescript": "^2.4.0",
     "cross-spawn": "^5.0.1",
