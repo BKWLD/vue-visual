@@ -3,7 +3,8 @@
 Vue = require 'vue'
 
 # Component that will host the mixin
-Vue.component 'visual', require 'vue-visual'
+import visual from 'vue-visual'
+Vue.component 'visual', visual
 
 # Set defaults
 Vue.component('visual').options.setDefaults

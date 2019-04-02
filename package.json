@@ -8,6 +8,7 @@
     "build": "webpack",
     "version": "npm run build && git add -A",
     "postversion": "git push --follow-tags",
+    "serve": "PORT=3000 node examples/server",
     "test:e2e": "node test/e2e/runner.js"
   },
   "repository": {
