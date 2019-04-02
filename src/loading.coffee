@@ -35,6 +35,8 @@ export default
 		videoLoaded:     false
 		fallbackLoading: false
 		fallbackLoaded:  false
+		loadingThrottled: false
+		loadedThrottled: false
 
 	##############################################################################
 	mounted: ->
@@ -90,12 +92,6 @@ export default
 		loading: -> @posterLoading or @imageLoading or @videoLoading or @fallbackLoading
 		loaded: -> @posterLoaded or @imageLoaded or @videoLoaded or @fallbackLoaded
 
-		# Try to reduce the loading state flickering back and forth when one asset
-		# finishes and the next begins.  Also will prevent the loader showing for
-		# super quck loads.
-		loadingThrottled: throttle (-> @loading), @loaderThrottle
-		loadedThrottled: throttle (-> @loaded), @loaderThrottle
-
 		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 		# Loader
 
@@ -125,6 +121,18 @@ export default
 		videoLoaded:     (bool) -> @$emit 'video-loaded' if bool
 		fallbackLoading: (bool) -> @$emit 'fallback-loading' if bool
 		fallbackLoaded:  (bool) -> @$emit 'fallback-loaded' if bool
+		
+		# Create throttling functions
+		loaderThrottle:
+			immediate: true
+			handler: (amount) ->
+				@getLoadingThrottled = throttle (=> @loading), amount
+				@getLoadedThrottled = throttle (=> @loaded), amount
+		
+		# Create the throttled loading values
+		loading: (bool) -> @loadingThrottled = @getLoadingThrottled()
+		loaded: (bool) -> @loadedThrottled = @getLoadedThrottled()
+	
 
 	##############################################################################
 	methods:
