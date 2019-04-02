@@ -1,34 +1,36 @@
-minify = '-p' in process.argv
 webpack = require 'webpack'
-ExtractText = require 'extract-text-webpack-plugin'
+VueLoaderPlugin = require 'vue-loader/lib/plugin'
+MiniCssExtractPlugin = require 'mini-css-extract-plugin'
 nodeExternals = require 'webpack-node-externals'
 
-module.exports =
+module.exports = (env, argv) ->
+	
+	mode: 'production'
 
 	entry: index: './index.vue'
 
-	resolve: extensions: ['', '.js', '.coffee', '.vue']
+	resolve: extensions: ['.js', '.coffee', '.vue']
+
+	module: rules: [
+		{ test: /\.coffee$/, loader: 'babel-loader!coffee-loader' }
+		{ test: /\.pug$/, loader: 'pug-plain-loader' }
+		{ test: /\.vue$/, loader: 'vue-loader' }
+		{ test: /\.styl(us)?$/, use: [
+			MiniCssExtractPlugin.loader,
+			'css-loader',
+			'stylus-loader'
+		]}
+	]
 
 	plugins: [
-		new ExtractText '[name].css', allChunks: true
+		new VueLoaderPlugin
+		new MiniCssExtractPlugin filename: 'index.css'
 	]
-
-	module: loaders: [
-		{ test: /\.coffee$/, loader: 'coffee-loader' }
-		{ test: /\.jade$/, loader: 'apply-loader!jade-loader' }
-		{ test: /\.vue$/, loader: 'vue-loader' }
-	]
-	vue: loaders: stylus: ExtractText.extract 'css-loader!stylus-loader'
-
 
 	output:
-		libraryTarget: 'umd'
-		filename: if '-p' in process.argv then '[name].min.js' else '[name].js'
+		path: __dirname
+		libraryTarget: 'commonjs2'
+		filename: '[name].js'
 
 	# Every non-relative module is external
 	externals: [nodeExternals()]
-
-# Turn off warnings during minifcation.  They aren't particularly helpfull.
-if minify then module.exports.plugins = module.exports.plugins.concat [
-	new webpack.optimize.UglifyJsPlugin compress: warnings: false
-]

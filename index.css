@@ -1,1 +1,98 @@
-.vv-visual{display:inline-block;font-size:0;overflow:hidden;position:relative}.vv-block{display:block}.vv-has-width{width:100%}.vv-has-height,.vv-shim{height:100%}.vv-shim{display:inline-block}.vv-fill{display:block;position:absolute;top:0;bottom:0;left:0;right:0}.vv-fill-asset{position:absolute;width:100%;height:100%}.vv-asset[class*=vv-background-]{background-repeat:no-repeat}.vv-background-cover{background-size:cover}.vv-background-contain{background-size:contain}.vv-video.vv-background-contain,.vv-video.vv-background-cover{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}.vv-video.vv-background-contain.vv-video-letterbox,.vv-video.vv-background-cover.vv-video-pillarbox{width:calc(100% + 1px);height:auto}.vv-video.vv-background-contain.vv-video-pillarbox,.vv-video.vv-background-cover.vv-video-letterbox{width:auto;height:calc(100% + 1px)}.vv-slot,.vv-slot-prepend{font-size:1rem;position:relative;display:inline-block}.vv-align-bottom{vertical-align:bottom}.vv-align-middle{vertical-align:middle}.vv-align-top{vertical-align:top}.vv-align-left{text-align:left}.vv-align-center{text-align:center}.vv-align-right{text-align:right}.vv-fade-enter{opacity:0}.vv-fade-enter-active{transition:opacity .3s}.vv-fade-leave-active{transition-delay:.31s}
+/**
+ * Styles are all single selectors that don't use inheritance so that
+ * Visuals that reside within Visuals don't inherit parent parent values
+ * inadvertently.  I didn't want to use direct descendent selectors because
+ * overriding would be a pain.
+ */
+.vv-visual {
+  display: inline-block;
+  font-size: 0;
+  overflow: hidden;
+  position: relative;
+}
+.vv-block {
+  display: block;
+}
+.vv-has-width {
+  width: 100%;
+}
+.vv-has-height {
+  height: 100%;
+}
+.vv-shim {
+  display: inline-block;
+  height: 100%;
+}
+.vv-fill {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.vv-fill-asset {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.vv-asset[class*='vv-background-'] {
+  background-repeat: no-repeat;
+}
+.vv-background-cover {
+  background-size: cover;
+}
+.vv-background-contain {
+  background-size: contain;
+}
+.vv-video.vv-background-cover,
+.vv-video.vv-background-contain {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.vv-video.vv-background-cover.vv-video-pillarbox,
+.vv-video.vv-background-contain.vv-video-letterbox {
+  width: calc(100% + 1px);
+  height: auto;
+}
+.vv-video.vv-background-cover.vv-video-letterbox,
+.vv-video.vv-background-contain.vv-video-pillarbox {
+  width: auto;
+  height: calc(100% + 1px);
+}
+.vv-slot,
+.vv-slot-prepend {
+  font-size: 1rem;
+  position: relative;
+  display: inline-block;
+}
+.vv-align-bottom {
+  vertical-align: bottom;
+}
+.vv-align-middle {
+  vertical-align: middle;
+}
+.vv-align-top {
+  vertical-align: top;
+}
+.vv-align-left {
+  text-align: left;
+}
+.vv-align-center {
+  text-align: center;
+}
+.vv-align-right {
+  text-align: right;
+}
+.vv-fade-enter {
+  opacity: 0;
+}
+.vv-fade-enter-active {
+  transition: opacity 0.3s;
+}
+.vv-fade-leave-active {
+  transition-delay: 0.31s;
+}
+
