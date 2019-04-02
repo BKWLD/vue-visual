@@ -5,7 +5,10 @@ nodeExternals = require 'webpack-node-externals'
 
 module.exports = (env, argv) ->
 	
+	# Build for production but don't uglify so the transpiled code is more
+	# readable
 	mode: 'production'
+	optimization: minimize: false
 
 	entry: index: './index.vue'
 
