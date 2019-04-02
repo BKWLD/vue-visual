@@ -3,14 +3,14 @@ Configuration related to loading of assets
 ###
 
 # Deps
-Vue = require 'vue'
-throttle = require 'lodash/throttle'
+import Vue from 'vue'
+import throttle from 'lodash/throttle'
 
 # DRY load validation options
 loadRules = (val) -> val in [ false, true, 'visible' ]
 
 # The mixin
-module.exports =
+export default
 
 	##############################################################################
 	props:

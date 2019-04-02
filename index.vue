@@ -109,10 +109,10 @@
 <script lang='coffee'>
 
 # Deps
-ucfirst = require './src/utils/ucfirst'
+import ucfirst from './src/utils/ucfirst'
 
 # The component definition
-module.exports =
+export default
 	name: 'VueVisual'
 
 	# The src code has been broken up into modules to make it eaier to read

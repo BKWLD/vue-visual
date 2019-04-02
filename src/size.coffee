@@ -3,7 +3,7 @@ Configuration related to sizing of the component
 ###
 
 # Deps
-isNumeric = require 'is-numeric'
+import isNumeric from 'is-numeric'
 
 # Make an aspect fraction from an aspect ratio string
 aspectFromString = (str) ->
@@ -11,7 +11,7 @@ aspectFromString = (str) ->
 	return parseInt(parts[0], 10) / parseInt(parts[1], 10)
 
 # The mixin
-module.exports =
+export default
 
 	##############################################################################
 	props:

@@ -15,7 +15,7 @@ mime = (url) -> switch url.match(/\.(\w+)/)?[1]
 	when 'ogg' then 'video/ogg'
 
 # The mixin
-module.exports =
+export default
 
 	##############################################################################
 	props:

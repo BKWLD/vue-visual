@@ -1,5 +1,5 @@
 # Fire a callback now, when document is interactive, and when complete
-module.exports = (cb) ->
+export default (cb) ->
 	cb()
 
 	# If the document is still loading, add a listener for whent that changes

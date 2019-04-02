@@ -3,10 +3,10 @@ Configuration related to the specification of assets
 ###
 
 # Deps
-sortObjByKey = require './utils/sort-obj-by-key'
+import sortObjByKey from './utils/sort-obj-by-key'
 
 # The mixin
-module.exports =
+export default
 
 	##############################################################################
 	props:

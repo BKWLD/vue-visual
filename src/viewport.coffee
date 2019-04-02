@@ -3,10 +3,10 @@ Configuration related to the relationship between the component and the viewport
 ###
 
 # Deps
-scrollMonitor = require 'scrollmonitor'
-throttle = require 'lodash/throttle'
-fireWhenReady = require './utils/fire-when-ready'
-require './utils/custom-event'
+import scrollMonitor from 'scrollmonitor'
+import throttle from 'lodash/throttle'
+import fireWhenReady from './utils/fire-when-ready'
+import './utils/custom-event'
 
 # Make a single window resize listener
 resizingVms = []
@@ -15,7 +15,7 @@ window?.addEventListener 'resize', -> resizeAllVms()
 fireWhenReady resizeAllVms
 
 # The mixin
-module.exports =
+export default
 
 	##############################################################################
 	props:

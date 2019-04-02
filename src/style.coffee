@@ -4,8 +4,8 @@ properties that add classes to the component.
 ###
 
 # Deps
-isNumeric = require 'is-numeric'
-pickBy = require 'lodash/pickBy'
+import isNumeric from 'is-numeric'
+import pickBy from 'lodash/pickBy'
 
 # Make a size value from a string or number input
 size = (val) ->
@@ -13,7 +13,7 @@ size = (val) ->
 	if isNumeric val then val+'px' else val
 
 # The mixin
-module.exports =
+export default
 
 	##############################################################################
 	props:

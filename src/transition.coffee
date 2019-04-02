@@ -3,7 +3,7 @@ Configuration related to animation between loading states
 ###
 
 # The mixin
-module.exports =
+export default
 
 	##############################################################################
 	props:

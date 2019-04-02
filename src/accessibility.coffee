@@ -3,7 +3,7 @@ Configuration related accessibilty support
 ###
 
 # The mixin
-module.exports =
+export default
 
 	##############################################################################
 	props:
