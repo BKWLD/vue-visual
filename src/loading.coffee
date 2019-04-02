@@ -109,10 +109,24 @@ export default
 
 	##############################################################################
 	watch:
+		
+		# Create throttling functions
+		loaderThrottle:
+			immediate: true
+			handler: (amount) ->
+				@getLoadingThrottled = throttle (=> @loading), amount
+				@getLoadedThrottled = throttle (=> @loaded), amount
 
+		# Fire general loading/loaded events as well as trigger changes to throttled
+		# properties
+		loading:         (bool) -> 
+			@$emit 'loading' if bool
+			@loadingThrottled = @getLoadingThrottled()
+		loaded:          (bool) -> 
+			@$emit 'loaded' if bool
+			@loadedThrottled = @getLoadedThrottled()
+			
 		# Fire events when assets finish loading
-		loading:         (bool) -> @$emit 'loading' if bool
-		loaded:          (bool) -> @$emit 'loaded' if bool
 		posterLoading:   (bool) -> @$emit 'poster-loading' if bool
 		posterLoaded:    (bool) -> @$emit 'poster-loaded' if bool
 		imageLoading:    (bool) -> @$emit 'image-loading' if bool
@@ -122,17 +136,6 @@ export default
 		fallbackLoading: (bool) -> @$emit 'fallback-loading' if bool
 		fallbackLoaded:  (bool) -> @$emit 'fallback-loaded' if bool
 		
-		# Create throttling functions
-		loaderThrottle:
-			immediate: true
-			handler: (amount) ->
-				@getLoadingThrottled = throttle (=> @loading), amount
-				@getLoadedThrottled = throttle (=> @loaded), amount
-		
-		# Create the throttled loading values
-		loading: (bool) -> @loadingThrottled = @getLoadingThrottled()
-		loaded: (bool) -> @loadedThrottled = @getLoadedThrottled()
-	
 
 	##############################################################################
 	methods:
