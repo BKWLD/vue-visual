@@ -1,4 +1,4 @@
-<template lang='jade'>
+<template lang='pug'>
 
 .vv-visual(
 	:style='containerStyles'
