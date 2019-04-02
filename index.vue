@@ -111,20 +111,24 @@
 # Deps
 import ucfirst from './src/utils/ucfirst'
 
+# Mixins
+import accessibility from './src/accessibility'
+import assets from './src/assets'
+import loading from './src/loading'
+import size from './src/size'
+import style from './src/style'
+import transition from './src/transition'
+import video from './src/video'
+import viewport from './src/viewport'
+
 # The component definition
 export default
 	name: 'VueVisual'
 
 	# The src code has been broken up into modules to make it eaier to read
 	mixins: [
-		require './src/accessibility'
-		require './src/assets'
-		require './src/loading'
-		require './src/size'
-		require './src/style'
-		require './src/transition'
-		require './src/video'
-		require './src/viewport'
+		accessibility, assets, loading, size, 
+		style, transition, video, viewport,
 	]
 
 	# Shared utility methods
