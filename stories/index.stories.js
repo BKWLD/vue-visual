@@ -1,8 +1,6 @@
-/* eslint-disable react/react-in-jsx-scope, react/no-this-in-sfc */
-
+// Storybook includes
 import { storiesOf } from '@storybook/vue';
-import { action } from '@storybook/addon-actions';
-import { linkTo } from '@storybook/addon-links';
+import { withKnobs, text, boolean } from '@storybook/addon-knobs';
 
 // Import Visual
 import Visual from '../index.vue';
@@ -14,17 +12,26 @@ import video from '../examples/resources/video.mp4';
 import fallback from '../examples/resources/fallback.png';
 
 storiesOf('Examples', module)
+  .addDecorator(withKnobs)
+
   .add('Image', () => ({
     components: { Visual },
-    template: `<visual image="${image}"/>`,
-    methods: { 
-      action: linkTo('Button') 
+    props: {
+      image: { default: text('Image', image) }
     },
+    template: `<visual 
+      :image='image'
+    />`
   }))
+  
   .add('Video', () => ({
     components: { Visual },
-    template: `<visual video="${video}" autoplay/>`,
-    methods: { 
-      action: linkTo('Button') 
+    props: {
+      video: { default: text('Video', video) },
+      autoplay: { default: boolean('Autoplay', true) }
     },
+    template: `<visual 
+      :video='video'
+      :autoplay='autoplay'
+    />`
   }))
