@@ -160,7 +160,7 @@ storiesOf('Size', module)
   .add('Aspect ratio', () => ({
     components: { Visual },
     props: {
-      aspect: { default: number('aspect', 16/9,) },
+      aspect: props.aspect(),
       background: props.background(),
       image: { default: text('image', image) },
     },
