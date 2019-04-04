@@ -22,16 +22,16 @@ infoDefaults({
 
 // Shared or wordy props
 const props = {
-  aspect: (def = 350/150) => { return { default: number('aspect', def, { 
+  aspect: (def = 640/360) => { return { default: number('aspect', def, { 
     range: true, 
     min: 0.5, 
     max: 3,
     step: 0.1,
   })}},
-  width: () => { return { default: number('width', 350, { 
+  width: () => { return { default: number('width', 480, { 
     range: true, 
-    min: 200, 
-    max: 600,
+    min: 320, 
+    max: 1280,
     step: 10
   })}},
   background: () => { return { default: options('background', {
@@ -68,10 +68,10 @@ const props = {
 import Visual from '../index.vue';
 
 // Import assets
-import poster from '../examples/resources/poster.png';
-import image from '../examples/resources/image.png';
-import video from '../examples/resources/video.mp4';
-import fallback from '../examples/resources/fallback.png';
+import poster from './assets/poster.jpg';
+import image from './assets/image.jpg';
+import video from './assets/video.mp4';
+import fallback from './assets/fallback.gif';
 
 // Containner of all stories
 storiesOf('Assets', module)
@@ -83,6 +83,7 @@ storiesOf('Assets', module)
     },
     template: `<visual 
       :image='image'
+      width='100%'
     />`
   }), { info: { summary: 
     `Example of rendering a simple image.` 
@@ -112,7 +113,8 @@ storiesOf('Assets', module)
         :video='video' 
         :fallback='fallback' 
         :autoplay='autoplay' muted
-        :loop='loop' />
+        :loop='loop'
+        width='100%' />
     </div>`
   }), { info: { summary: 
     `Loads autoplaying, looping video.` 
@@ -127,7 +129,7 @@ storiesOf('Assets', module)
       }) },
     },
     template: `<visual
-      :aspect='350/150' 
+      :aspect='640/360' 
       background='cover'
       :image='image'
     />`
@@ -209,7 +211,11 @@ storiesOf('Style', module)
       :image='image' 
       :align='align'
       background='cover'>
-      <p style='font-size: 2rem; color: white;'>
+      <p style='
+        font-size: 2rem; 
+        color: white; 
+        text-shadow: 0 2px 20px rgba(0,0,0,.8)
+      '>
         Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum 
         nibh, ut fermentum massa justo sit amet risus. Donec id elit non mi 
         porta  gravida at eget metus. Lorem ipsum dolor sit amet, consectetur 
