@@ -1,6 +1,7 @@
 // Storybook includes
 import { storiesOf, addDecorator } from '@storybook/vue'
 import { withInfo, setDefaults as infoDefaults } from 'storybook-addon-vue-info'
+import { action } from '@storybook/addon-actions';
 import { 
   withKnobs, 
   number, 
@@ -48,11 +49,19 @@ storiesOf('Examples', module)
       autoplay: { default: boolean('autoplay', true) },
       loop: { default: boolean('loop', true) },
     },
-    template: `<visual 
-      :video='video'
-      :autoplay='autoplay'
-      :loop='loop'
-    />`
+    methods: {
+      pause: function() { this.$refs.visual.pause() },
+      play: function() { this.$refs.visual.play() },
+      restart: function() { this.$refs.visual.restart() },
+    },
+    template: `<div>
+      <div style='margin-bottom: 0.5em'>
+        <button @click='pause'>Pause</button>
+        <button @click='play'>Play</button>
+        <button @click='restart'>Restart</button>
+      </div>
+      <visual ref='visual' :video='video' :autoplay='autoplay' :loop='loop' />
+    </div>`
   }), { info: { summary: 
     `Loads autoplaying, looping video.` 
   }})
@@ -105,9 +114,9 @@ storiesOf('Examples', module)
       poster: { default: text('poster', poster) },
       image: { default: text('image', image) },
       video: { default: text('video', video) },
+      fallback: { default: text('fallback', fallback) },
       autoplay: { default: boolean('autoplay', true) },
       loop: { default: boolean('loop', true) },
-      fallback: { default: text('fallback', fallback) },
       width: { default: number('width', 350, { range: true, min: 200, max: 600}) },
       aspect: { default: number('aspect', 350/150,) },
       transition: { default: text('transition', 'vv-fade') },
@@ -116,6 +125,9 @@ storiesOf('Examples', module)
         'Contain': 'contain',
         'None': ''
       }, 'cover', { display: 'inline-radio' }) },
+    },
+    methods: {
+      onLoadEvent: (event) => action(event)()
     },
     template: `<visual
       :poster='poster'
@@ -128,9 +140,21 @@ storiesOf('Examples', module)
       :background='background'
       :autoplay='autoplay'
       :loop='loop'
+      @loading='onLoadEvent("loading")'
+      @loaded='onLoadEvent("loaded")'
+      @poster-loading='onLoadEvent("poster-loading")'
+      @poster-loaded='onLoadEvent("poster-loaded")'
+      @image-loading='onLoadEvent("image-loading")'
+      @image-loaded='onLoadEvent("image-loaded")'
+      @video-loading='onLoadEvent("video-loading")'
+      @video-loaded='onLoadEvent("video-loaded")'
+      @fallback-loading='onLoadEvent("fallback-loading")'
+      @fallback-loaded='onLoadEvent("fallback-loaded")'
     />`
   }), { info: { summary: 
-    `Loads the poster first, then the image, then the video and only loads 
-    the fallback if the device doesn't support videos. Using an aspect and
-    background cover so there is no pop in during the transition.`
+    `Vue Visual loads the poster first, then the image, then the video and only 
+    loads the fallback if the device doesn't support videos. Using an aspect and
+    background cover so there is no pop in during the transition. Check out the 
+    Actions tab for the loading events that are fired and the order in which
+    they were triggered.`
   }})
