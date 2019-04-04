@@ -1,6 +1,7 @@
 # Vue Visual [![npm](https://img.shields.io/npm/v/vue-visual.svg)](https://www.npmjs.com/package/vue-visual) [![Build Status](https://img.shields.io/travis/BKWLD/vue-visual.svg)](https://travis-ci.org/BKWLD/vue-visual)
 
-Vue 2 image and video loader supporting lazy loading, cover videos, and more!  Examples at https://bkwld.github.io/vue-visual.
+Vue 2 image and video loader supporting lazy loading, cover videos, and more!  
+Examples at https://bkwld.github.io/vue-visual.
 
 
 ## Installation
