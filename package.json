@@ -70,6 +70,5 @@
     "webpack-cli": "^3.3.0",
     "webpack-dev-middleware": "^3.6.1",
     "webpack-node-externals": "^1.7.2"
-  },
-  "sideEffects": false
+  }
 }
