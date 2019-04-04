@@ -1,4 +1,12 @@
-import { configure } from '@storybook/vue';
+import { configure, addParameters } from '@storybook/vue';
+
+// Option defaults:
+addParameters({
+  options: {
+    name: 'Vue Visual',
+    panelPosition: 'right',
+  }
+})
 
 // automatically import all files ending in *.stories.js
 const req = require.context('../stories', true, /\.stories\.js$/);
