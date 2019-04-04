@@ -4,6 +4,7 @@ import { configure, addParameters } from '@storybook/vue';
 addParameters({
   options: {
     name: 'Vue Visual',
+    url: 'https://github.com/BKWLD/vue-visual',
   }
 })
 
