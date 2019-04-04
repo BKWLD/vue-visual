@@ -52,6 +52,11 @@ const props = {
       'right bottom': 'right bottom',
     }, 'center middle', { display: 'inline-radio' }
   )}},
+  transition: () => { return { default: options('transition', {
+      'vv-fade': 'vv-fade',
+      'none': '',
+    }, 'vv-fade', { display: 'inline-radio' }
+  )}},
 }
 
 // Import Visual
@@ -132,10 +137,10 @@ storiesOf('Size', module)
   .add('Fixed size', () => ({
     components: { Visual },
     props: {
-      image: { default: text('image', image) },
       width: { default: number('width', 400, { range: true, min: 200, max: 600}) },
       height: { default: number('height', 300, { range: true, min: 200, max: 600}) },
       background: props.background(),
+      image: { default: text('image', image) },
     },
     template: `<visual 
       :image='image'
@@ -150,9 +155,9 @@ storiesOf('Size', module)
   .add('Aspect ratio', () => ({
     components: { Visual },
     props: {
-      image: { default: text('image', image) },
       aspect: { default: number('aspect', 16/9,) },
       background: props.background(),
+      image: { default: text('image', image) },
     },
     template: `<visual 
       :image='image'
@@ -225,7 +230,7 @@ storiesOf('Loading', module)
       loop: { default: boolean('loop', true) },
       width: props.width(),
       aspect: props.aspect(),
-      transition: { default: text('transition', 'vv-fade') },
+      transition: props.transition(),
       background: props.background(),
     },
     methods: {
@@ -265,6 +270,7 @@ storiesOf('Loading', module)
     components: { Visual },
     props: {
       image: { default: text('image', image) },
+      transition: props.transition(),
     },
     methods: {
       load: function() { this.$refs.visual.loadAsset('image') },
@@ -278,6 +284,7 @@ storiesOf('Loading', module)
         ref='visual'
         :load='false'
         :image='image'
+        :transition='transition'
         @loading='onLoadEvent("loading")'
         @loaded='onLoadEvent("loaded")'
       />
