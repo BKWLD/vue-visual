@@ -158,3 +158,29 @@ storiesOf('Examples', module)
     Actions tab for the loading events that are fired and the order in which
     they were triggered.`
   }})
+  
+  .add('Manual load', () => ({
+    components: { Visual },
+    props: {
+      image: { default: text('image', image) },
+    },
+    methods: {
+      load: function() { this.$refs.visual.loadAsset('image') },
+      onLoadEvent: function(event) { action(event)() },
+    },
+    template: `<div>
+      <div style='margin-bottom: 0.5em'>
+        <button @click='load'>Load</button>
+      </div>
+      <visual 
+        ref='visual'
+        :load='false'
+        :image='image'
+        @loading='onLoadEvent("loading")'
+        @loaded='onLoadEvent("loaded")'
+      />
+    </div>`
+  }), { info: { summary: 
+    `Dont't load assets until manually initiated. Watch the Actions tab to
+    view loading events.`
+  }})
