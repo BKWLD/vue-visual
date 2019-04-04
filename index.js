@@ -82,7 +82,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -93,30 +93,74 @@ module.exports = require("lodash/throttle");
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = require("is-numeric");
+// extracted by mini-css-extract-plugin
 
 /***/ }),
 /* 2 */
 /***/ (function(module, exports) {
 
-module.exports = require("vue");
+module.exports = require("is-numeric");
 
 /***/ }),
 /* 3 */
 /***/ (function(module, exports) {
 
-module.exports = require("lodash/pickBy");
+module.exports = require("vue");
 
 /***/ }),
 /* 4 */
 /***/ (function(module, exports) {
 
-module.exports = require("scrollmonitor");
+module.exports = require("lodash/pickBy");
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports) {
+
+module.exports = require("scrollmonitor");
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+/**
+ * CustomEvent polyfill for IE from MDN
+ * https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent
+ */
+(function () {
+
+  if (typeof window === 'undefined' ||
+    typeof window.CustomEvent === "function" ) {
+    return false;
+  }
+
+  function CustomEvent ( event, params ) {
+    params = params || { bubbles: false, cancelable: false, detail: undefined };
+    var evt = document.createEvent( 'CustomEvent' );
+    evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+    return evt;
+   }
+
+  CustomEvent.prototype = window.Event.prototype;
+
+  window.CustomEvent = CustomEvent;
+})();
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_stylus_loader_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_stylus_loader_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_stylus_loader_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__);
+/* unused harmony reexport * */
+ /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_stylus_loader_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
+/***/ }),
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -315,6 +359,8 @@ var staticRenderFns = []
 render._withStripped = true
 
 
+// CONCATENATED MODULE: ./index.vue?vue&type=template&id=6de5ab34&lang=pug&
+
 // CONCATENATED MODULE: ./src/utils/ucfirst.coffee
 // Uppercase first letter of string
 /* harmony default export */ var ucfirst_coffee = (function (str) {
@@ -458,7 +504,7 @@ Configuration related to the specification of assets
   }
 });
 // EXTERNAL MODULE: external "vue"
-var external_vue_ = __webpack_require__(2);
+var external_vue_ = __webpack_require__(3);
 var external_vue_default = /*#__PURE__*/__webpack_require__.n(external_vue_);
 
 // EXTERNAL MODULE: external "lodash/throttle"
@@ -817,11 +863,10 @@ loadRules = function loadRules(val) {
       }); // Store the native size of the video in case of `background: cover`
 
       this.$refs.video.addEventListener('loadedmetadata', this.videoOnLoadedmetadata = function () {
-        _this4.videoNativeWidth = _this4.$refs.video.videoWidth;
-        _this4.videoNativeHeight = _this4.$refs.video.videoHeight;
-
         if (_this4.$refs.video) {
           // Check that Visual hasn't been removed since started
+          _this4.videoNativeWidth = _this4.$refs.video.videoWidth;
+          _this4.videoNativeHeight = _this4.$refs.video.videoHeight;
           return _this4.$refs.video.removeEventListener('loadedmetadata', _this4.videoOnLoadedmetadata);
         }
       }); // Start loading
@@ -845,7 +890,7 @@ loadRules = function loadRules(val) {
   }
 });
 // EXTERNAL MODULE: external "is-numeric"
-var external_is_numeric_ = __webpack_require__(1);
+var external_is_numeric_ = __webpack_require__(2);
 var external_is_numeric_default = /*#__PURE__*/__webpack_require__.n(external_is_numeric_);
 
 // CONCATENATED MODULE: ./src/size.coffee
@@ -941,7 +986,7 @@ aspectFromString = function aspectFromString(str) {
   }
 });
 // EXTERNAL MODULE: external "lodash/pickBy"
-var pickBy_ = __webpack_require__(3);
+var pickBy_ = __webpack_require__(4);
 var pickBy_default = /*#__PURE__*/__webpack_require__.n(pickBy_);
 
 // CONCATENATED MODULE: ./src/style.coffee
@@ -1195,14 +1240,14 @@ var canPlay, _mime; // Check for video support
 canPlay = function canPlay(url) {
   var video;
   video = typeof document !== "undefined" && document !== null ? document.createElement('video') : void 0;
-  return (video != null ? video.canPlayType(_mime(url)) : void 0) !== 'no';
+  return !!(video != null ? typeof video.canPlayType === "function" ? video.canPlayType(_mime(url)).replace('no', '') : void 0 : void 0);
 }; // Get the mimetupe of a video url given it's file extension
 
 
 _mime = function mime(url) {
   var ref;
 
-  switch ((ref = url.match(/\.(\w+)/)) != null ? ref[1] : void 0) {
+  switch ((ref = url.match(/\.(\w+)$/)) != null ? ref[1] : void 0) {
     case 'mp4':
       return 'video/mp4';
 
@@ -1302,15 +1347,22 @@ _mime = function mime(url) {
   watch: {
     // Directly control video element
     playing: function playing() {
+      var ref;
+
       if (!this.$refs.video) {
         // If the video isn't ready, it should be soon. At which point the
         // videoLoaded watcher will take over and trigger playback
         return this.playing = false;
-      } // Control the video element
+      } // Control the video element, handling the case that the browser denied
+      // the playback
 
 
       if (this.playing) {
-        return this.$refs.video.play();
+        return (ref = this.$refs.video.play()) != null ? ref.catch(function (e) {
+          console.error(e.message);
+          console.error("Vue Visual: try setting `muted` to true");
+          return this.playing = false;
+        }) : void 0;
       } else {
         return this.$refs.video.pause();
       }
@@ -1393,7 +1445,7 @@ _mime = function mime(url) {
   }
 });
 // EXTERNAL MODULE: external "scrollmonitor"
-var external_scrollmonitor_ = __webpack_require__(4);
+var external_scrollmonitor_ = __webpack_require__(5);
 var external_scrollmonitor_default = /*#__PURE__*/__webpack_require__.n(external_scrollmonitor_);
 
 // CONCATENATED MODULE: ./src/utils/fire-when-ready.coffee
@@ -1414,6 +1466,9 @@ var external_scrollmonitor_default = /*#__PURE__*/__webpack_require__.n(external
   }
 });
 ;
+// EXTERNAL MODULE: ./src/utils/custom-event.js
+var custom_event = __webpack_require__(6);
+
 // CONCATENATED MODULE: ./src/viewport.coffee
 /*
 Configuration related to the relationship between the component and the viewport
@@ -1680,6 +1735,9 @@ fire_when_ready_coffee(resizeAllVms);
 });
 // CONCATENATED MODULE: ./index.vue?vue&type=script&lang=coffee&
  /* harmony default export */ var indexvue_type_script_lang_coffee_ = (lib_vue_loader_options_indexvue_type_script_lang_coffee_); 
+// EXTERNAL MODULE: ./index.vue?vue&type=style&index=0&lang=stylus&
+var indexvue_type_style_index_0_lang_stylus_ = __webpack_require__(7);
+
 // CONCATENATED MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
 /* globals __VUE_SSR_CONTEXT__ */
 
