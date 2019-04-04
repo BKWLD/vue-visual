@@ -7,15 +7,52 @@ import {
   number, 
   text, 
   boolean, 
-  optionsKnob as options 
+  object,
+  optionsKnob as options,
 } from '@storybook/addon-knobs'
 
+// Setup Storybook
 addDecorator(withInfo)
+addDecorator(withKnobs)
 infoDefaults({
   useDocgen: false,
   docsInPanel: false,
   header: true
 })
+
+// Shared or wordy props
+const props = {
+  aspect: (def = 350/150) => { return { default: number('aspect', def, { 
+    range: true, 
+    min: 0.5, 
+    max: 3,
+    step: 0.1,
+  })}},
+  width: () => { return { default: number('width', 350, { 
+    range: true, 
+    min: 200, 
+    max: 600,
+    step: 10
+  })}},
+  background: () => { return { default: options('background', {
+      'cover': 'cover',
+      'contain': 'contain',
+      'none': ''
+    }, 'cover', { display: 'inline-radio' }
+  )}},
+  backgroundPosition: () => { return { default: options('background-position', {
+      'center center': 'center center',
+      'top left': 'top left',
+      'bottom right': 'bottom right'
+    }, 'center center', { display: 'inline-radio' }
+  )}},
+  align: () => { return { default: options('align', {
+      'center middle': 'center middle',
+      'left top': 'left top',
+      'right bottom': 'right bottom',
+    }, 'center middle', { display: 'inline-radio' }
+  )}},
+}
 
 // Import Visual
 import Visual from '../index.vue';
@@ -27,13 +64,12 @@ import video from '../examples/resources/video.mp4';
 import fallback from '../examples/resources/fallback.png';
 
 // Containner of all stories
-storiesOf('Examples', module)
-  .addDecorator(withKnobs)
+storiesOf('Assets', module)
 
   .add('Image', () => ({
     components: { Visual },
     props: {
-      image: { default: text('Image', image) },
+      image: { default: text('image', image) },
     },
     template: `<visual 
       :image='image'
@@ -66,17 +102,34 @@ storiesOf('Examples', module)
     `Loads autoplaying, looping video.` 
   }})
   
+  .add('Responsive src', () => ({
+    components: { Visual },
+    props: {
+      image: { default: object('image', {
+        500: poster,
+        1920: image,
+      }) },
+    },
+    template: `<visual
+      :aspect='350/150' 
+      background='cover'
+      :image='image'
+    />`
+  }), { info: { summary: 
+    `Reize your browser to load different image assets. Note, the breakpoints
+    are relative to Vue Visual's width, no the viewport`
+  }})
+
+
+storiesOf('Size', module)
+
   .add('Fixed size', () => ({
     components: { Visual },
     props: {
       image: { default: text('image', image) },
       width: { default: number('width', 400, { range: true, min: 200, max: 600}) },
       height: { default: number('height', 300, { range: true, min: 200, max: 600}) },
-      background: { default: options('background', {
-        'Cover': 'cover',
-        'Contain': 'contain',
-        'None': ''
-      }, 'cover', { display: 'inline-radio' }) },
+      background: props.background(),
     },
     template: `<visual 
       :image='image'
@@ -93,11 +146,7 @@ storiesOf('Examples', module)
     props: {
       image: { default: text('image', image) },
       aspect: { default: number('aspect', 16/9,) },
-      background: { default: options('background', {
-        'Cover': 'cover',
-        'Contain': 'contain',
-        'None': ''
-      }, 'cover', { display: 'inline-radio' }) },
+      background: props.background(),
     },
     template: `<visual 
       :image='image'
@@ -107,8 +156,59 @@ storiesOf('Examples', module)
   }), { info: { summary: 
     `Load an image into an image with a fixed aspect ratio.`
   }})
+
+storiesOf('Style', module)
+
+  .add('Background', () => ({
+    components: { Visual },
+    props: {
+      background: props.background(),
+      backgroundPosition: props.backgroundPosition(),
+      aspect: props.aspect(3),
+      image: { default: text('image', image) },
+    },
+    template: `<visual
+      :aspect='aspect'
+      :background='background'
+      :background-position='backgroundPosition'
+      :image='image'
+    />`
+  }), { info: { summary: 
+    `Example of background image options.` 
+  }})
   
-  .add('Loading assets', () => ({
+  .add('Slot', () => ({
+    components: { Visual },
+    props: {
+      align: props.align(),
+      aspect: props.aspect(3),
+      image: { default: text('image', image) },
+    },
+    template: `<visual 
+      :aspect='aspect' 
+      :image='image' 
+      :align='align'
+      background='cover'>
+      <p style='font-size: 2rem; color: white;'>
+        Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum 
+        nibh, ut fermentum massa justo sit amet risus. Donec id elit non mi 
+        porta  gravida at eget metus. Lorem ipsum dolor sit amet, consectetur 
+        adipiscing elit. Vestibulum id ligula porta felis euismod semper. 
+        Maecenas sed diam eget risus varius blandit sit amet non magna. Duis 
+        mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia 
+        odio sem nec elit. Maecenas sed diam eget risus varius blandit sit amet 
+        non magna.
+      </p>
+    </visual>`
+  }), { info: { summary: 
+    `Example of slot options.  Note how the default slot will push the height
+    of the Visual open; this is useful when Visual is the background of a
+    marquee.` 
+  }})
+
+storiesOf('Loading', module)
+
+  .add('Progressive', () => ({
     components: { Visual },
     props: {
       poster: { default: text('poster', poster) },
@@ -117,14 +217,10 @@ storiesOf('Examples', module)
       fallback: { default: text('fallback', fallback) },
       autoplay: { default: boolean('autoplay', true) },
       loop: { default: boolean('loop', true) },
-      width: { default: number('width', 350, { range: true, min: 200, max: 600}) },
-      aspect: { default: number('aspect', 350/150,) },
+      width: props.width(),
+      aspect: props.aspect(),
       transition: { default: text('transition', 'vv-fade') },
-      background: { default: options('background', {
-        'Cover': 'cover',
-        'Contain': 'contain',
-        'None': ''
-      }, 'cover', { display: 'inline-radio' }) },
+      background: props.background(),
     },
     methods: {
       onLoadEvent: (event) => action(event)()
@@ -159,7 +255,7 @@ storiesOf('Examples', module)
     they were triggered.`
   }})
   
-  .add('Manual load', () => ({
+  .add('Manual', () => ({
     components: { Visual },
     props: {
       image: { default: text('image', image) },
@@ -181,6 +277,6 @@ storiesOf('Examples', module)
       />
     </div>`
   }), { info: { summary: 
-    `Dont't load assets until manually initiated. Watch the Actions tab to
+    `Don't load assets until manually initiated. Watch the Actions tab to
     view loading events.`
   }})
