@@ -65,7 +65,7 @@ storiesOf('Examples', module)
       height: { default: number('height', 300, { range: true, min: 200, max: 600}) },
       background: { default: options('background', {
         'Cover': 'cover',
-        'Contain': 'Contain',
+        'Contain': 'contain',
         'None': ''
       }, 'cover', { display: 'inline-radio' }) },
     },
@@ -86,7 +86,7 @@ storiesOf('Examples', module)
       aspect: { default: number('aspect', 16/9,) },
       background: { default: options('background', {
         'Cover': 'cover',
-        'Contain': 'Contain',
+        'Contain': 'contain',
         'None': ''
       }, 'cover', { display: 'inline-radio' }) },
     },
@@ -113,7 +113,7 @@ storiesOf('Examples', module)
       transition: { default: text('transition', 'vv-fade') },
       background: { default: options('background', {
         'Cover': 'cover',
-        'Contain': 'Contain',
+        'Contain': 'contain',
         'None': ''
       }, 'cover', { display: 'inline-radio' }) },
     },
