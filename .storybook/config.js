@@ -4,7 +4,6 @@ import { configure, addParameters } from '@storybook/vue';
 addParameters({
   options: {
     name: 'Vue Visual',
-    panelPosition: 'right',
   }
 })
 
