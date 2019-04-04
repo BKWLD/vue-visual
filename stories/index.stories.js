@@ -101,7 +101,7 @@ storiesOf('Assets', module)
         ref='visual' 
         :video='video' 
         :fallback='fallback' 
-        :autoplay='autoplay' 
+        :autoplay='autoplay' muted
         :loop='loop' />
     </div>`
   }), { info: { summary: 
@@ -240,7 +240,7 @@ storiesOf('Loading', module)
       :fallback='fallback'
       :transition='transition'
       :background='background'
-      :autoplay='autoplay'
+      :autoplay='autoplay' muted
       :loop='loop'
       @loading='onLoadEvent("loading")'
       @loaded='onLoadEvent("loaded")'

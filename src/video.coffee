@@ -81,7 +81,7 @@ export default
 			if @playing 
 			then @$refs.video.play()?.catch (e) -> 
 				console.error e.message
-				console.error "Vue Visual: try setting `mute` to true"
+				console.error "Vue Visual: try setting `muted` to true"
 			else @$refs.video.pause()
 
 		# Respond to changes in autoplay/pause settings
