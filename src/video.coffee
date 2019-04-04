@@ -6,7 +6,7 @@ Configuration related to video support
 # http://stackoverflow.com/a/3587475/59160
 canPlay = (url) ->
 	video = document?.createElement 'video'
-	return video?.canPlayType?(mime(url)) != 'no'
+	return !!video?.canPlayType?(mime(url)).replace 'no', ''
 
 # Get the mimetupe of a video url given it's file extension
 mime = (url) -> switch url.match(/\.(\w+)/)?[1]
