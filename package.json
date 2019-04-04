@@ -58,6 +58,7 @@
     "pug": "^2.0.3",
     "pug-plain-loader": "^1.0.0",
     "selenium-server": "^2.53.1",
+    "storybook-addon-vue-info": "^1.0.1",
     "style-loader": "^0.13.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
