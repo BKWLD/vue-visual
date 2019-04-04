@@ -1,0 +1,13 @@
+# Mac
+.DS_Store
+
+# Dependency directory
+node_modules
+
+# Testing
+examples
+test
+
+# Storybook
+/.storybook
+/stories
