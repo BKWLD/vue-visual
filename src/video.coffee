@@ -9,7 +9,7 @@ canPlay = (url) ->
 	return !!video?.canPlayType?(mime(url)).replace 'no', ''
 
 # Get the mimetupe of a video url given it's file extension
-mime = (url) -> switch url.match(/\.(\w+)/)?[1]
+mime = (url) -> switch url.match(/\.(\w+)$/)?[1]
 	when 'mp4' then 'video/mp4'
 	when 'webm' then 'video/webm'
 	when 'ogg' then 'video/ogg'
