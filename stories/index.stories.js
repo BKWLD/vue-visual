@@ -57,6 +57,11 @@ const props = {
       'none': '',
     }, 'vv-fade', { display: 'inline-radio' }
   )}},
+  media: () => { return { default: options('media', {
+      'video': 'video',
+      'image': 'image',
+    }, 'video', { display: 'inline-radio' }
+  )}},
 }
 
 // Import Visual
@@ -176,16 +181,20 @@ storiesOf('Style', module)
       background: props.background(),
       backgroundPosition: props.backgroundPosition(),
       aspect: props.aspect(3),
+      media: props.media(),
       image: { default: text('image', image) },
+      video: { default: text('video', video) },
     },
     template: `<visual
       :aspect='aspect'
       :background='background'
       :background-position='backgroundPosition'
-      :image='image'
+      :image='media == "image" ? image : null'
+      :video='media == "video" ? video : null' 
+      autoplay mute loop
     />`
   }), { info: { summary: 
-    `Example of background image options.` 
+    `Examples of background options. Note how a "background-size:cover" effect can be applied to videos as well as images.` 
   }})
   
   .add('Slot', () => ({
