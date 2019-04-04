@@ -82,6 +82,7 @@ storiesOf('Assets', module)
     components: { Visual },
     props: {
       video: { default: text('video', video) },
+      fallback: { default: text('fallback', fallback) },
       autoplay: { default: boolean('autoplay', true) },
       loop: { default: boolean('loop', true) },
     },
@@ -96,7 +97,12 @@ storiesOf('Assets', module)
         <button @click='play'>Play</button>
         <button @click='restart'>Restart</button>
       </div>
-      <visual ref='visual' :video='video' :autoplay='autoplay' :loop='loop' />
+      <visual 
+        ref='visual' 
+        :video='video' 
+        :fallback='fallback' 
+        :autoplay='autoplay' 
+        :loop='loop' />
     </div>`
   }), { info: { summary: 
     `Loads autoplaying, looping video.` 

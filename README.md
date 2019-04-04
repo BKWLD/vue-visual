@@ -1,6 +1,6 @@
 # Vue Visual [![npm](https://img.shields.io/npm/v/vue-visual.svg)](https://www.npmjs.com/package/vue-visual) [![Build Status](https://img.shields.io/travis/BKWLD/vue-visual.svg)](https://travis-ci.org/BKWLD/vue-visual)
 
-Vue 2 image and video loader supporting lazy loading, cover videos, and more
+Vue 2 image and video loader supporting lazy loading, cover videos, and more!  Examples at https://bkwld.github.io/vue-visual.
 
 
 ## Installation
@@ -21,7 +21,7 @@ Vue 2 image and video loader supporting lazy loading, cover videos, and more
 
 ## Usage
 
-### Create a simple image tag
+### Create a simple image tag [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/assets--image)
 
 ```
 <visual image='image.png'></visual>
@@ -83,7 +83,7 @@ And finally, upon load:
 ```
 
 
-### Use a low rez poster image
+### Use a low rez poster image [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/loading--progressive)
 
 ```
 <visual
@@ -106,7 +106,7 @@ In ths case, the poster image will be loaded when the Visual enters the viewport
 ```
 
 
-### Declare a Vue transition for when load finishes
+### Declare a Vue transition for when load finishes [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/loading--progressive)
 
 ```
 <visual
@@ -129,7 +129,7 @@ The `<img>` will not be rendered until it loaded.  In addition, the asset is wra
 }
 ```
 
-### Render image as a CSS background
+### Render image as a CSS background [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/style--background)
 
 ```
 <visual image='image.png' background='cover'></visual>
@@ -149,7 +149,7 @@ This renders:
 The `vv-background-cover` class adds `background-size: cover` to the asset.  Additionally, you may set `background` to `contain` for `background-size: contain`.
 
 
-### Use an aspect ratio for the size
+### Use an aspect ratio for the size [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/style--background)
 
 It is often more useful in responsive layouts to set an aspect ratio for the Visual rather than a fixed width and height:
 
@@ -176,7 +176,7 @@ This renders:
 You can also pass in a number for the aspect, like: `:aspect='16/9'`.
 
 
-### Render a video instead
+### Render a video instead [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/assets--video)
 
 ```
 <visual video='video.mp4'></visual>
@@ -238,7 +238,7 @@ This creates a Visual component with a 16:9 aspect ratio and immediately loads a
 This package sets [playsinline](https://webkit.org/blog/6784/new-video-policies-for-ios/) automatically.  Note, to autoplay inline on Android, make sure to also set the `muted` attribute.
 
 
-### Show a fallback on non-autoplaying devices
+### Show a fallback on non-autoplaying devices [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/assets--video)
 
 Mobile devices like iOS and Android phones do not support autoplaying videos.  You can supply a fallback image that is shown for devices that don't support autoplaying videos (or videos at all).  This is great when used with a preview gif of the video.
 
@@ -250,7 +250,7 @@ Mobile devices like iOS and Android phones do not support autoplaying videos.  Y
 ```
 
 
-### Slot markup within the Visual
+### Slot markup within the Visual [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/style--slot)
 
 ```
 <visual
