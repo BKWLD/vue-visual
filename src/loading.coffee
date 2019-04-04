@@ -210,9 +210,9 @@ export default
 
 			# Store the native size of the video in case of `background: cover`
 			@$refs.video.addEventListener 'loadedmetadata', @videoOnLoadedmetadata = =>
-				@videoNativeWidth = @$refs.video.videoWidth
-				@videoNativeHeight = @$refs.video.videoHeight
 				if @$refs.video # Check that Visual hasn't been removed since started
+					@videoNativeWidth = @$refs.video.videoWidth
+					@videoNativeHeight = @$refs.video.videoHeight
 					@$refs.video.removeEventListener 'loadedmetadata', @videoOnLoadedmetadata
 
 			# Start loading

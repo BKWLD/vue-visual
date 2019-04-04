@@ -6,10 +6,10 @@ Configuration related to video support
 # http://stackoverflow.com/a/3587475/59160
 canPlay = (url) ->
 	video = document?.createElement 'video'
-	return video?.canPlayType(mime(url)) != 'no'
+	return !!video?.canPlayType?(mime(url)).replace 'no', ''
 
 # Get the mimetupe of a video url given it's file extension
-mime = (url) -> switch url.match(/\.(\w+)/)?[1]
+mime = (url) -> switch url.match(/\.(\w+)$/)?[1]
 	when 'mp4' then 'video/mp4'
 	when 'webm' then 'video/webm'
 	when 'ogg' then 'video/ogg'
@@ -77,8 +77,14 @@ export default
 			# videoLoaded watcher will take over and trigger playback
 			return @playing = false if !@$refs.video
 
-			# Control the video element
-			if @playing then @$refs.video.play() else @$refs.video.pause()
+			# Control the video element, handling the case that the browser denied
+			# the playback
+			if @playing 
+			then @$refs.video.play()?.catch (e) -> 
+				console.error e.message
+				console.error "Vue Visual: try setting `muted` to true"
+				@playing = false
+			else @$refs.video.pause()
 
 		# Respond to changes in autoplay/pause settings
 		autoplay: -> @respondToAutoplay()
