@@ -191,7 +191,7 @@ storiesOf('Style', module)
       :background-position='backgroundPosition'
       :image='media == "image" ? image : null'
       :video='media == "video" ? video : null' 
-      autoplay mute loop
+      autoplay muted loop
     />`
   }), { info: { summary: 
     `Examples of background options. Note how a "background-size:cover" effect can be applied to videos as well as images.` 
