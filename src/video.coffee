@@ -80,7 +80,7 @@ export default
 			# Control the video element, handling the case that the browser denied
 			# the playback
 			if @playing 
-			then @$refs.video.play()?.catch (e) -> 
+			then @$refs.video.play()?.catch (e) =>
 				console.error e.message
 				console.error "Vue Visual: try setting `muted` to true"
 				@playing = false
