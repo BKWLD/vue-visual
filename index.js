@@ -1347,6 +1347,8 @@ _mime = function mime(url) {
   watch: {
     // Directly control video element
     playing: function playing() {
+      var _this = this;
+
       var ref;
 
       if (!this.$refs.video) {
@@ -1361,7 +1363,7 @@ _mime = function mime(url) {
         return (ref = this.$refs.video.play()) != null ? ref.catch(function (e) {
           console.error(e.message);
           console.error("Vue Visual: try setting `muted` to true");
-          return this.playing = false;
+          return _this.playing = false;
         }) : void 0;
       } else {
         return this.$refs.video.pause();
