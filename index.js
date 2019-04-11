@@ -82,7 +82,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -119,38 +119,10 @@ module.exports = require("lodash/pickBy");
 /* 5 */
 /***/ (function(module, exports) {
 
-module.exports = require("scrollmonitor");
+module.exports = require("vue-in-viewport-mixin");
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports) {
-
-/**
- * CustomEvent polyfill for IE from MDN
- * https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent
- */
-(function () {
-
-  if (typeof window === 'undefined' ||
-    typeof window.CustomEvent === "function" ) {
-    return false;
-  }
-
-  function CustomEvent ( event, params ) {
-    params = params || { bubbles: false, cancelable: false, detail: undefined };
-    var evt = document.createEvent( 'CustomEvent' );
-    evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
-    return evt;
-   }
-
-  CustomEvent.prototype = window.Event.prototype;
-
-  window.CustomEvent = CustomEvent;
-})();
-
-
-/***/ }),
-/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -160,7 +132,7 @@ module.exports = require("scrollmonitor");
  /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_stylus_loader_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -786,18 +758,8 @@ loadRules = function loadRules(val) {
         case !loadNow:
           return true;
 
-        case !(loadWhenVisible && this[this.inViewportProp(asset)]):
+        case !(loadWhenVisible && this.inViewport.now):
           return true;
-      }
-    },
-    // Get inViewport property to use.  The fallback should use video's
-    inViewportProp: function inViewportProp(asset) {
-      switch (asset) {
-        case 'fallback':
-          return 'videoInViewport';
-
-        default:
-          return asset + 'InViewport';
       }
     },
     // Load an asset
@@ -1349,7 +1311,11 @@ _mime = function mime(url) {
     playing: function playing() {
       var _this = this;
 
-      var ref;
+      var ref; // Only relevant if there is a video asset
+
+      if (!this.video) {
+        return;
+      }
 
       if (!this.$refs.video) {
         // If the video isn't ready, it should be soon. At which point the
@@ -1381,7 +1347,7 @@ _mime = function mime(url) {
       return this.respondToAutoplay();
     },
     // Handle playback changes when the video moves in and out of viewport
-    videoInViewport: function videoInViewport(visible) {
+    'inViewport.now': function inViewportNow(visible) {
       if (visible) {
         return this.respondToAutoplay();
       } else {
@@ -1429,14 +1395,14 @@ _mime = function mime(url) {
         case (ref = this.autoplay) !== true && ref !== '':
           return this.play();
 
-        case !(this.autoplay === 'visible' && this.videoInViewport):
+        case !(this.autoplay === 'visible' && this.inViewport.now):
           return this.play();
       }
     },
     // Control video playback based on autipause setting
     respondToAutopause: function respondToAutopause() {
       switch (false) {
-        case !(this.autopause === 'visible' && !this.videoInViewport):
+        case !(this.autopause === 'visible' && !this.inViewport.now):
           return this.pause();
       }
     },
@@ -1446,10 +1412,6 @@ _mime = function mime(url) {
     }
   }
 });
-// EXTERNAL MODULE: external "scrollmonitor"
-var external_scrollmonitor_ = __webpack_require__(5);
-var external_scrollmonitor_default = /*#__PURE__*/__webpack_require__.n(external_scrollmonitor_);
-
 // CONCATENATED MODULE: ./src/utils/fire-when-ready.coffee
 // Fire a callback now, when document is interactive, and when complete
 /* harmony default export */ var fire_when_ready_coffee = (function (cb) {
@@ -1468,8 +1430,9 @@ var external_scrollmonitor_default = /*#__PURE__*/__webpack_require__.n(external
   }
 });
 ;
-// EXTERNAL MODULE: ./src/utils/custom-event.js
-var custom_event = __webpack_require__(6);
+// EXTERNAL MODULE: external "vue-in-viewport-mixin"
+var external_vue_in_viewport_mixin_ = __webpack_require__(5);
+var external_vue_in_viewport_mixin_default = /*#__PURE__*/__webpack_require__.n(external_vue_in_viewport_mixin_);
 
 // CONCATENATED MODULE: ./src/viewport.coffee
 /*
@@ -1503,16 +1466,54 @@ if (typeof window !== "undefined" && window !== null) {
 
 fire_when_ready_coffee(resizeAllVms);
 /* harmony default export */ var viewport_coffee = ({
-  //#############################################################################
   // The mixin
+  mixins: [external_vue_in_viewport_mixin_default.a],
+  //#############################################################################
   props: {
-    offset: {
-      type: [Number, String, Object],
-      default: 0
+    // Override the inViewportMixin's "active" prop and set the default value
+    // automatically based on whether we need to monitor the scroll position.
+    // The fallback asset is informed by the video setting here.  The "load"
+    // value check replicates the assetPropVal which can't be used here.
+    inViewportActive: {
+      type: Boolean,
+      default: function _default() {
+        var asset, i, len, ref, ref1;
+        ref = ['poster', 'image', 'video'];
+
+        for (i = 0, len = ref.length; i < len; i++) {
+          asset = ref[i];
+
+          switch (false) {
+            case !!this[asset]:
+              continue;
+
+            case ((ref1 = this["load".concat(ucfirst_coffee(asset))]) != null ? ref1 : this.load) !== 'visible':
+              return true;
+
+            case !(asset === 'video' && this.autoplay === 'visible'):
+              return true;
+
+            case !(asset === 'video' && this.autopause === 'visible'):
+              return true;
+          }
+        }
+
+        return false;
+      }
     },
-    offsetPoster: [Number, String, Object],
-    offsetImage: [Number, String, Object],
-    offsetVideo: [Number, String, Object]
+    // Override the inViewportMixin's "once" prop to set the default value based
+    // on other props.  Basically, it can be "once" unless we're using the
+    // visible status to toggle video playing state.
+    inViewportOnce: {
+      type: Boolean,
+      default: function _default() {
+        if (this.video) {
+          return 'visible' === this.autoplay || 'visible' === this.autopause;
+        } else {
+          return true;
+        }
+      }
+    }
   },
   //#############################################################################
   data: function data() {
@@ -1520,155 +1521,25 @@ fire_when_ready_coffee(resizeAllVms);
       // Measure dimensions
       windowWidth: null,
       containerWidth: null,
-      containerHeight: null,
-      // Whether asset is in viewport given offsets
-      posterInViewport: null,
-      imageInViewport: null,
-      videoInViewport: null
+      containerHeight: null
     };
   },
   //#############################################################################
   mounted: function mounted() {
-    var _this = this;
-
     // Start listening to window resizing
     if (this.shouldWatchComponentSize) {
       resizingVms.push(this);
       this.handleWindowResize();
-      this.handleWindowResizeThrottled = throttle_default()(this.handleWindowResize, 100);
-    } // Loop through asset types and create scroll watchers.  Note, fallback
-    // shares the video scroll listener.
-
-
-    return ['poster', 'image', 'video'].forEach(function (asset) {
-      return _this.$watch(function () {
-        return _this.assetScrollId(asset);
-      }, function (active) {
-        if (active) {
-          return _this.addScrollListeners(asset);
-        } else {
-          return _this.removeScrollListeners(asset);
-        }
-      }, {
-        immediate: true
-      });
-    });
+      return this.handleWindowResizeThrottled = throttle_default()(this.handleWindowResize, 100);
+    }
   },
   //#############################################################################
   destroyed: function destroyed() {
-    var asset, i, len, ref;
-    ref = ['poster', 'image', 'video'];
-
-    for (i = 0, len = ref.length; i < len; i++) {
-      asset = ref[i]; // Remove scroll watchers
-
-      this.removeScrollListeners(asset);
-    } // Remove resizing reference
-
-
+    // Remove resizing reference
     return resizingVms.splice(resizingVms.indexOf(this), 1);
   },
   //#############################################################################
   methods: {
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // Scrolling
-    // Per-asset value that triggers scrollMonitor to re-init.  The id is just
-    // the stringified offset (which will trigger re-init if the offset changes)
-    // if there is scrolling or null if there is no scroll listening.
-    assetScrollId: function assetScrollId(asset) {
-      var offset;
-
-      if (this.assetUsesScroll(asset)) {
-        offset = this.assetPropVal(asset, 'offset');
-        return JSON.stringify(offset);
-      }
-    },
-    // Per-asset check that an asset cares about inViewport
-    assetUsesScroll: function assetUsesScroll(asset) {
-      switch (false) {
-        case !!this[asset]:
-          return false;
-
-        case this.assetPropVal(asset, 'load') !== 'visible':
-          return true;
-
-        case !(asset === 'video' && this.autoplay === 'visible'):
-          return true;
-
-        case !(asset === 'video' && this.autopause === 'visible'):
-          return true;
-      }
-    },
-    // Create (or re-init) the scrollMonitor
-    addScrollListeners: function addScrollListeners(asset) {
-      var _this2 = this;
-
-      var offset; // Cleanup old scroll monitor
-
-      this.removeScrollListeners(asset);
-
-      if (!(this.$el && this[asset])) {
-        return;
-      } // Create new scroll monitor
-
-
-      offset = this.assetPropVal(asset, 'offset');
-
-      if (typeof offset === 'string') {
-        offset = parseInt(offset, 10);
-      }
-
-      this[asset + 'ScrollMonitor'] = external_scrollmonitor_default.a.create(this.$el, offset); // Set initial state and listen for updates
-
-      this[asset + 'ScrollMonitor'].on('stateChange', function () {
-        return _this2.updateInViewport(asset);
-      }); // Trigger fake scrolls to get scrollMonitor to recalculate itself when
-      // document becomes ready.  In addition, updateInViewport is manually being
-      // fired because in some cases (seems to be when scroll is at top of the
-      // page) the manual scroll event wasn't sufficient to recognize the inital
-      // state.
-
-      return fire_when_ready_coffee(function () {
-        _this2.$nextTick(function () {
-          return window.dispatchEvent(new CustomEvent('scroll'));
-        });
-
-        return _this2.updateInViewport(asset);
-      });
-    },
-    // Update whether asset is in the viewport
-    updateInViewport: function updateInViewport(asset) {
-      if (!this[asset + 'ScrollMonitor']) {
-        return;
-      }
-
-      this[asset + 'InViewport'] = this[asset + 'ScrollMonitor'].isInViewport;
-
-      if (this.canRemoveScrollListeners(asset)) {
-        return this.removeScrollListeners(asset);
-      }
-    },
-    // Do we only need to listen to the initial entering into the viewport
-    canRemoveScrollListeners: function canRemoveScrollListeners(asset) {
-      if (!this[asset + 'InViewport']) {
-        return false;
-      }
-
-      if (asset = 'video') {
-        return 'visible' === this.autoplay || 'visible' === this.autopause;
-      } else {
-        return true;
-      }
-    },
-    // Destroy scrollMonitor
-    removeScrollListeners: function removeScrollListeners(asset) {
-      if (this[asset + 'ScrollMonitor']) {
-        this[asset + 'ScrollMonitor'].destroy();
-        return delete this[asset + 'ScrollMonitor'];
-      }
-    },
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    // Container sizing
     // Update the internal measurement of the window size
     handleWindowResize: function handleWindowResize() {
       this.windowWidth = window.innerWidth;
@@ -1712,7 +1583,7 @@ fire_when_ready_coffee(resizeAllVms);
     assetPropVal: function assetPropVal(asset, prop) {
       var assetProp, ref; // For some props, fallback uses the video prop
 
-      if (asset === 'fallback' && (prop === 'load' || prop === 'offset' || prop === 'transition')) {
+      if (asset === 'fallback' && (prop === 'load' || prop === 'transition')) {
         asset = 'video';
       } // Make the prop attribute, ie: renderPoster
 
@@ -1738,7 +1609,7 @@ fire_when_ready_coffee(resizeAllVms);
 // CONCATENATED MODULE: ./index.vue?vue&type=script&lang=coffee&
  /* harmony default export */ var indexvue_type_script_lang_coffee_ = (lib_vue_loader_options_indexvue_type_script_lang_coffee_); 
 // EXTERNAL MODULE: ./index.vue?vue&type=style&index=0&lang=stylus&
-var indexvue_type_style_index_0_lang_stylus_ = __webpack_require__(7);
+var indexvue_type_style_index_0_lang_stylus_ = __webpack_require__(6);
 
 // CONCATENATED MODULE: ./node_modules/vue-loader/lib/runtime/componentNormalizer.js
 /* globals __VUE_SSR_CONTEXT__ */

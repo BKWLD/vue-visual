@@ -308,3 +308,39 @@ storiesOf('Loading', module)
     `Don't load assets until manually initiated. Watch the Actions tab to
     view loading events.`
   }})
+  
+  .add('In Viewport', () => ({
+    components: { Visual },
+    props: {
+      marginTop: { default: text('CSS margin-top', '100vh') },
+      poster: { default: text('poster', poster) },
+      image: { default: text('image', image) },
+      aspect: props.aspect(),
+      background: props.background(),
+      transition: props.transition(),
+    },
+    methods: {
+      onLoadEvent: function(event) { action(event)() },
+    },
+    template: `<visual 
+      :style='{ marginTop: marginTop }'
+      ref='visual'
+      load='visible'
+      :loadPoster='true'
+      :poster='poster'
+      :image='image'
+      :aspect='aspect'
+      :transition='transition'
+      :background='background'
+      in-viewport-root='[class^=".src-components-Docs-container"]'
+      @poster-loading='onLoadEvent("poster-loading")'
+      @poster-loaded='onLoadEvent("poster-loaded")'
+      @image-loading='onLoadEvent("image-loading")'
+      @image-loaded='onLoadEvent("image-loaded")'
+    />`
+  }), { info: { summary: 
+    `Load the poster image immediately but only load the image when some
+    distance into the viewport. You can check the network inspector or view the
+    Actions tab to verify that the image asset doesn't load until Visual is 
+    scrolled into the viewport.`
+  }})

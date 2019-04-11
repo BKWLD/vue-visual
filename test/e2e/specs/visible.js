@@ -7,23 +7,13 @@ module.exports = {
 		.url('http://localhost:8080/visible/')
 		.waitForElementVisible('#app', 1000)
 
-		.assert.elementNotPresent('.vv-image')
 		.assert.elementNotPresent('.vv-video')
 	},
 
-	'image should render when general offset reached': function (browser) { browser
+	'assets should render when general offset reached': function (browser) { browser
 		.execute('scrollTo(0, 1)')
 
-		.waitForElementPresent('.vv-image', 1000)
-		.assert.elementNotPresent('.vv-video')
-	},
-
-	'video should render when offset override reached': function (browser) { browser
-		.execute('scrollTo(0, 200 + 1)')
-
-		// When the video has loaded, the image will be removed
-		.waitForElementNotPresent('.vv-image', 1000)
-		.assert.elementPresent('.vv-video')
+		.waitForElementPresent('.vv-video', 1000)
 	},
 
 	'video should stop playing when scrolling back up': function (browser) { browser

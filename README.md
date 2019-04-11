@@ -19,6 +19,8 @@ Examples at https://bkwld.github.io/vue-visual.
 3. If not using Webpack, copy the css contents from `index.css` to your stylesheet.
 4. See "Usage" for examples
 
+Also, if you plan to use viewport-reacting features, like `load='visible'`, this package uses the [vue-in-viewport-mixin package](https://github.com/BKWLD/vue-in-viewport-mixin) which, in turn, uses the IntersectionObserver API.  You may need to [polyfill this](https://github.com/w3c/IntersectionObserver/tree/master/polyfill).
+
 
 ## Usage
 
@@ -59,7 +61,7 @@ The width and height are applied to the container as well so that loader graphic
 <visual
 	image='image.png'
 	load='visible'
-	offset='200'>
+	in-viewport-root-margin='-10% 0%'>
 </visual>
 ```
 
@@ -69,7 +71,7 @@ This initially renders:
 <div class='vue-visual'></div>
 ```
 
-Then, when the `visual` comes within `200px` of the viewport, it starts loading:
+Then, when the `visual` comes `10%` into the viewport, it starts loading:
 
 ```html
 <div class='vue-visual vv-loading'></div>
@@ -101,8 +103,7 @@ In ths case, the poster image will be loaded when the Visual enters the viewport
 	poster='low-rez.png'
 	image='image.png'
 	load='visible'
-	:load-poster='true'
-	offset='200'>
+	:load-poster='true'>
 </visual>
 ```
 
@@ -199,7 +200,7 @@ Many `<video>` attributes may be passed through:
 <visual video='video.mp4' controls loop mute autoplay></visual>
 ```
 
-You may also set autoplay to `visible` to make the video start playing only when it enters the viewport.  In addition, you may set `autopause` to `visible` to have it pause when you leave the viewport.  The viewport measuremnts are modified by the same `offset` value used for loading.
+You may also set autoplay to `visible` to make the video start playing only when it enters the viewport.  In addition, you may set `autopause` to `visible` to have it pause when you leave the viewport. 
 
 ```
 <visual
@@ -373,14 +374,18 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 	- `load-image (string|boolean)`
 	- `load-video (string|boolean)` - Also applies to the `fallback`
 
-- `offset (number|string|object)` - A number that either expands (if positive) or contracts (if negative) the effective bounds of the Visual as it is interpreted by any `visible` setting (i.e. `load`, `autoplay`, `autopause`).  Setting to positive will make a Visual with `load='visible'` start loading before it enters the viewport.  Setting to negative will make a Visual with `render="visible"` not transition in until after it enters the viewport.  May also be set to an object like so: `<visual load='visible' :offset='{ top: 20, bottom: 50 }'></visual>`.  Different offset values can be set for each asset type:
-	- `offset-poster (number|string|object)`
-	- `offset-image (number|string|object)`
-	- `offset-video (number|string|object)` - Also applies to the `fallback`
-
 - `loader (string|object)` - A Vue component that will be mounted and appended to `.vv-visual`.  If a string, the identifier of a Component already registered with `Vue.component()`.  If an object, a Vue component object.
 
 - `loader-throttle (number)` - *Default: `100`.*  How many milliseconds to throttle the check for whether to show the loader.  This prevents the loader from showing when a load is very quick.
+
+
+#### Viewport
+
+This package consumes the [vue-in-viewport-mixin package](https://github.com/BKWLD/vue-in-viewport-mixin).  As a result, all of it's props are available and modify all behavior involving `visible` behavior.  Here are the most commonly used props:
+
+- `in-viewport-root-margin` - Specify the [IntersectionObserver rootMargin](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver#Parameters).  For example, set to "-20% 0%" to delay the `inViewport.now` from switching state until your component is 20% of the viewport height into the page.
+
+- `in-viewport-root` - Specify the [IntersectionObserver root](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver#Parameters).  Defaults to the browser viewport.
 
 
 #### Transition
@@ -394,9 +399,9 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Video
 
-- `autoplay (boolean,string)` - If `true`, begins playing immediately.  If `visible`, begins playing when the Visual enters the viewport, as modified by the `offset` prop.
+- `autoplay (boolean,string)` - If `true`, begins playing immediately.  If `visible`, begins playing when the Visual enters the viewport.
 
-- `autopause  (string)` - If `visible`, begins playing when the Visual enters the viewport, as modified by the `offset` prop.
+- `autopause  (string)` - If `visible`, begins playing when the Visual enters the viewport.
 
 - `loop (boolean)` - Sets `<video>` `loop`
 

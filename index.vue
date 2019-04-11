@@ -139,7 +139,7 @@ export default
 		assetPropVal: (asset, prop) ->
 
 			# For some props, fallback uses the video prop
-			if asset == 'fallback' and prop in ['load', 'offset', 'transition']
+			if asset == 'fallback' and prop in ['load', 'transition']
 				asset = 'video'
 
 			# Make the prop attribute, ie: renderPoster

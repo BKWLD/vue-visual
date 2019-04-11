@@ -3,10 +3,10 @@ Configuration related to the relationship between the component and the viewport
 ###
 
 # Deps
-import scrollMonitor from 'scrollmonitor'
 import throttle from 'lodash/throttle'
 import fireWhenReady from './utils/fire-when-ready'
-import './utils/custom-event'
+import ucfirst from './utils/ucfirst'
+import inViewportMixin from 'vue-in-viewport-mixin'
 
 # Make a single window resize listener
 resizingVms = []
@@ -17,12 +17,32 @@ fireWhenReady resizeAllVms
 # The mixin
 export default
 
+	mixins: [ inViewportMixin ]
+
 	##############################################################################
 	props:
-		offset:         { type: [Number, String, Object], default: 0 }
-		offsetPoster:   [Number, String, Object]
-		offsetImage:    [Number, String, Object]
-		offsetVideo:    [Number, String, Object]
+		
+		# Override the inViewportMixin's "active" prop and set the default value
+		# automatically based on whether we need to monitor the scroll position.
+		# The fallback asset is informed by the video setting here.  The "load"
+		# value check replicates the assetPropVal which can't be used here.
+		inViewportActive:
+			type: Boolean
+			default: -> 
+				for asset in ['poster', 'image', 'video']
+					switch
+						when not @[asset] then continue
+						when (@["load#{ucfirst(asset)}"] ? @load) == 'visible' then return true
+						when asset == 'video' and @autoplay == 'visible' then return true
+						when asset == 'video' and @autopause == 'visible' then return true
+				return false
+		
+		# Override the inViewportMixin's "once" prop to set the default value based
+		# on other props.  Basically, it can be "once" unless we're using the
+		# visible status to toggle video playing state.
+		inViewportOnce:
+			type: Boolean
+			default: -> if @video then 'visible' in [@autoplay, @autopause] else true
 
 	##############################################################################
 	data: ->
@@ -31,11 +51,6 @@ export default
 		windowWidth:       null
 		containerWidth:    null
 		containerHeight:   null
-
-		# Whether asset is in viewport given offsets
-		posterInViewport: null
-		imageInViewport:  null
-		videoInViewport:  null
 
 	##############################################################################
 	mounted: ->
@@ -46,90 +61,14 @@ export default
 			@handleWindowResize()
 			@handleWindowResizeThrottled = throttle @handleWindowResize, 100
 
-		# Loop through asset types and create scroll watchers.  Note, fallback
-		# shares the video scroll listener.
-		['poster', 'image', 'video'].forEach (asset) =>
-			@$watch (=> @assetScrollId(asset))
-			, ((active) =>
-				if active
-				then @addScrollListeners(asset)
-				else @removeScrollListeners(asset))
-			, immediate: true
-
 	##############################################################################
 	destroyed: ->
-
-		# Remove scroll watchers
-		@removeScrollListeners asset for asset in ['poster', 'image', 'video']
 
 		# Remove resizing reference
 		resizingVms.splice(resizingVms.indexOf(this), 1)
 
 	##############################################################################
 	methods:
-
-		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		# Scrolling
-
-		# Per-asset value that triggers scrollMonitor to re-init.  The id is just
-		# the stringified offset (which will trigger re-init if the offset changes)
-		# if there is scrolling or null if there is no scroll listening.
-		assetScrollId: (asset) ->
-			if @assetUsesScroll(asset)
-				offset = @assetPropVal asset, 'offset'
-				return JSON.stringify offset
-
-		# Per-asset check that an asset cares about inViewport
-		assetUsesScroll: (asset) -> switch
-			when not @[asset] then false
-			when @assetPropVal(asset, 'load') == 'visible' then true
-			when asset == 'video' and @autoplay == 'visible' then true
-			when asset == 'video' and @autopause == 'visible' then true
-
-		# Create (or re-init) the scrollMonitor
-		addScrollListeners: (asset) ->
-
-			# Cleanup old scroll monitor
-			@removeScrollListeners asset
-			return unless @$el and @[asset]
-
-			# Create new scroll monitor
-			offset = @assetPropVal asset, 'offset'
-			offset = parseInt(offset, 10) if typeof offset == 'string'
-			@[asset+'ScrollMonitor'] = scrollMonitor.create @$el, offset
-
-			# Set initial state and listen for updates
-			@[asset+'ScrollMonitor'].on 'stateChange', => @updateInViewport asset
-
-			# Trigger fake scrolls to get scrollMonitor to recalculate itself when
-			# document becomes ready.  In addition, updateInViewport is manually being
-			# fired because in some cases (seems to be when scroll is at top of the
-			# page) the manual scroll event wasn't sufficient to recognize the inital
-			# state.
-			fireWhenReady =>
-				@$nextTick -> window.dispatchEvent new CustomEvent 'scroll'
-				@updateInViewport asset
-
-		# Update whether asset is in the viewport
-		updateInViewport: (asset) ->
-			return unless @[asset+'ScrollMonitor']
-			@[asset+'InViewport'] = @[asset+'ScrollMonitor'].isInViewport
-			@removeScrollListeners asset if @canRemoveScrollListeners asset
-
-		# Do we only need to listen to the initial entering into the viewport
-		canRemoveScrollListeners: (asset) ->
-			return false unless @[asset+'InViewport']
-			if asset = 'video' then return 'visible' in [@autoplay, @autopause]
-			else return true
-
-		# Destroy scrollMonitor
-		removeScrollListeners: (asset) ->
-			if @[asset+'ScrollMonitor']
-				@[asset+'ScrollMonitor'].destroy()
-				delete @[asset+'ScrollMonitor']
-
-		# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-		# Container sizing
 
 		# Update the internal measurement of the window size
 		handleWindowResize: ->

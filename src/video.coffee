@@ -72,6 +72,9 @@ export default
 
 		# Directly control video element
 		playing: ->
+			
+			# Only relevant if there is a video asset
+			return unless @video
 
 			# If the video isn't ready, it should be soon. At which point the
 			# videoLoaded watcher will take over and trigger playback
@@ -94,7 +97,7 @@ export default
 		videoLoaded: -> @respondToAutoplay()
 
 		# Handle playback changes when the video moves in and out of viewport
-		videoInViewport: (visible) ->
+		'inViewport.now': (visible) ->
 			if visible then @respondToAutoplay() else @respondToAutopause()
 
 	##############################################################################
@@ -119,11 +122,11 @@ export default
 		# Control video playback based on autoplaying setting
 		respondToAutoplay: -> switch
 			when @autoplay in [true, ''] then @play()
-			when @autoplay == 'visible' and @videoInViewport then @play()
+			when @autoplay == 'visible' and @inViewport.now then @play()
 
 		# Control video playback based on autipause setting
 		respondToAutopause: -> switch
-			when @autopause == 'visible' and !@videoInViewport then @pause()
+			when @autopause == 'visible' and not @inViewport.now then @pause()
 
 		# Passthrough to general mime util so it can be called from template
 		mime: (url) -> mime(url)

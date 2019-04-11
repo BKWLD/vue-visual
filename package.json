@@ -32,7 +32,7 @@
   "dependencies": {
     "is-numeric": "^0.0.5",
     "lodash": ">= 4.17.11",
-    "scrollmonitor": "^1.1.3"
+    "vue-in-viewport-mixin": "bkwld/vue-in-viewport-mixin#intersection-observer"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
