@@ -9313,9 +9313,10 @@ vue-hot-reload-api@^2.3.0:
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.3.tgz#2756f46cb3258054c5f4723de8ae7e87302a1ccf"
   integrity sha512-KmvZVtmM26BQOMK1rwUZsrqxEGeKiYSZGA7SNWE6uExx8UX/cj9hq2MRV/wWC3Cq6AoeDGk57rL9YMFRel/q+g==
 
-vue-in-viewport-mixin@bkwld/vue-in-viewport-mixin#intersection-observer:
-  version "1.1.0"
-  resolved "https://codeload.github.com/bkwld/vue-in-viewport-mixin/tar.gz/b22c88225c6e2f50fb88da79a951db2d9300b5eb"
+vue-in-viewport-mixin@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/vue-in-viewport-mixin/-/vue-in-viewport-mixin-2.0.0.tgz#696058b06608cfe777cc37c30321d71b11746f55"
+  integrity sha512-crTph/eA7Sub2rzCnHiCuEXrpEfFSqahCxrv2wtFkMBRtwjVUkN9knHMiYvcciVewxXyOvIRUzMAiSKImUGgsg==
 
 vue-loader@^15.7.0:
   version "15.7.0"
