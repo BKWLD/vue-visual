@@ -9,10 +9,10 @@
     "test:e2e": "node test/e2e/runner.js",
     "build": "webpack",
     "version": "npm run build && git add -A",
-    "postversion": "git push --follow-tags && yarn deploy-storybook",
+    "postversion": "git push --follow-tags && yarn storybook:build",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
-    "deploy-storybook": "storybook-to-ghpages"
+    "storybook:build": "build-storybook",
+    "storybook:deploy": "storybook-to-ghpages"
   },
   "repository": {
     "type": "git",
