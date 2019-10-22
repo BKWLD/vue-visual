@@ -12,7 +12,7 @@ export default
 	props:
 		poster:          [String, Object]
 		image:           [String, Object]
-		video:           [String, Object, Array]
+		video:           [String, Object]
 		fallback:        [String, Object]
 		posterFromImage: { type: Boolean, default: false }
 		requireAutoplay: { type: Boolean, default: true }
