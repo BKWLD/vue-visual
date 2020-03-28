@@ -34,7 +34,7 @@ const props = {
     max: 1280,
     step: 10
   })}},
-  background: () => { return { default: options('background', {
+  backgroundSize: () => { return { default: options('background-size', {
       'cover': 'cover',
       'contain': 'contain',
       'none': ''
@@ -156,14 +156,14 @@ storiesOf('Size', module)
     props: {
       width: { default: number('width', 400, { range: true, min: 200, max: 600}) },
       height: { default: number('height', 300, { range: true, min: 200, max: 600}) },
-      background: props.background(),
+      backgroundSize: props.backgroundSize(),
       image: { default: text('image', image) },
     },
     template: `<visual 
       :image='image'
       :width='width'
       :height='height'
-      :background='background'
+      :background-size='backgroundSize'
     />`
   }), { info: { summary: 
     `Load an image into a container with a fixed size.`
@@ -173,13 +173,13 @@ storiesOf('Size', module)
     components: { Visual },
     props: {
       aspect: props.aspect(),
-      background: props.background(),
+      backgroundSize: props.backgroundSize(),
       image: { default: text('image', image) },
     },
     template: `<visual 
       :image='image'
       :aspect='aspect'
-      :background='background'
+      :background-size='backgroundSize'
     />`
   }), { info: { summary: 
     `Load an image into an image with a fixed aspect ratio.`
@@ -190,7 +190,7 @@ storiesOf('Style', module)
   .add('Background', () => ({
     components: { Visual },
     props: {
-      background: props.background(),
+      backgroundSize: props.backgroundSize(),
       backgroundPosition: props.backgroundPosition(),
       aspect: props.aspect(3),
       media: props.media(),
@@ -199,7 +199,7 @@ storiesOf('Style', module)
     },
     template: `<visual
       :aspect='aspect'
-      :background='background'
+      :background-size='backgroundSize'
       :background-position='backgroundPosition'
       :image='media == "image" ? image : null'
       :video='media == "video" ? video : null' 
@@ -213,17 +213,18 @@ storiesOf('Style', module)
     components: { Visual },
     props: {
       align: props.align(),
-      aspect: props.aspect(3),
+      aspect: props.aspect(0.5),
       image: { default: text('image', image) },
     },
     template: `<visual 
       :aspect='aspect' 
       :image='image' 
-      :align='align'
-      background='cover'>
+      :align='align'>
       <p style='
         font-size: 2rem; 
         color: white; 
+        padding: 10px;
+        margin: 0;
         text-shadow: 0 2px 20px rgba(0,0,0,.8)
       '>
         Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum 

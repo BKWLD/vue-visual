@@ -8,7 +8,10 @@
 	:style='dimensionStyles')
 	
 	//- Set the aspect ratio
-	.vv-aspect-shim(v-if='aspect' :style='{ paddingTop: aspectPadding }')
+	.vv-aspect-shim(
+		v-if='hasAspect' 
+		:style='{ paddingTop: aspectPadding }'
+		:class='shimAlignClasses')
 	
 	//- Image asset
 	//- The wrapper constainer is needed for the object-fit polyfill
@@ -44,167 +47,49 @@
 			:loop='loop'
 			:muted='muted'
 			:controls='controls'
-			:aria-label='alt')
+			:aria-label='alt'
+			:style='assetStyles')
 			source(
 				v-for='{src, type} in videoSources'
 				:key='type'
 				:src='src'
 				:type='type')
+	
+	//- Render content after the assets
+	.vv-slot(:class='slotAlignClasses'): slot
 
 </template>
 
 <!-- ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– -->
 
 <script lang='coffee'>
+import fitsAssets from './concerns/fits-assets.coffee'
+import loadsAssets from './concerns/loads-assets.coffee'
+import slotsContent from './concerns/slots-content.coffee'
+import supportsImages from './concerns/supports-images'
+import supportsVideos from './concerns/supports-videos'
 export default
 
+	mixins: [
+		fitsAssets
+		loadsAssets
+		slotsContent
+		supportsImages
+		supportsVideos
+	]
+
 	props:
-
-		# Size
-		width: Number|String
-		height: Number|String
-		aspect: Number
-		maxWidth: Number
-		
-		# Presentation
-		backgroundSize: 
-			type: String
-			default: 'cover'
-		backgroundPosition: 
-			type: String
-			default: '50% 50%'
-
-		# Image asset
-		image: String
-		srcset: String
-		webpSrcset: String
-		sizes: String
 		alt: String
-
-		# Video asset
-		video: String | Array
-		autoplay: Boolean
-		loop: Boolean
-		muted: Boolean
-		controls: Boolean
-		
-		# Loading
-		lazyload: Boolean
-		autoload: 
-			type: Boolean
-			default: true
-		transition: 
-			type: String
-			default: 'vv-fade'
-
-		# Accessibility
-		alt: String
-
-	data: -> 
-		shouldLoad: @autoload
-		imageLoaded: false
-		videoLoaded: false
 
 	computed:
 
-		# Make the shim padding style
-		aspectPadding: -> "#{1 / @aspect * 100}%" if @hasAspect
-		hasAspect: -> !!@aspect
-
 		# Classes that get added to the visual container
-		containerClasses: -> 
-			'vv-has-aspect': @hasAspect
-			'vv-image-loaded': @imageLoaded
-			'vv-video-loaded': @videoLoaded
-			'vv-loaded': @allLoaded
-
-		# Determine whether all assets have been loaded
-		allLoaded: ->
-			return false if @image and not @imageLoaded
-			return false if @video and not @videoLoaded
-			return true
-
-		# Styles that get added to the parent container
-		dimensionStyles: ->
-			width: @autoUnit @width
-			height: @autoUnit @height
-			'max-width': @autoUnit @maxWidth
-
-		# Styles that go on the asset tags
-		assetStyles: -> {
-			objectFit: @backgroundSize
-			objectPosition: @backgroundPosition
-
-			# If there isn't an aspect ratio, apply the container dimensions to
-			# the asset as well. Necessary becauase the asset won't naturally match
-			# the container div.
-			...(unless @hasAspect then @dimensionStyles else {})
-		}
-	
-		# Make an easily parsed list of video soruces
-		videoSources: ->
-			return unless @video
-			sources = if Array.isArray @video then @video else [@video]
-			sources.map (url) -> 
-				src: url
-				type: switch url.match(/\.(\w+)$/)?[1] # Check file ext
-					when 'mp4' then 'video/mp4'
-					when 'webm' then 'video/webm'
-					when 'ogg' then 'video/ogg'
-
-	watch:
-
-		# If the asset srcs change, reset the loading state
-		image: -> @imageLoaded = false
-		video: -> @videoLoaded = false
-
-		# Trigger side effects of assets loading
-		imageLoaded: (loaded) -> 
-			if loaded
-				@applyObjectFitPolyfill 'image' 
-				@$emit 'loaded:image'
-		videoLoaded: (loaded) -> 
-			if loaded
-				@applyObjectFitPolyfill 'video' 
-				@$emit 'loaded:video'
-		allLoaded: (loaded) -> 
-			if loaded
-				@$emit 'loaded'
-	
-	methods:
-
-		# Handle an asset being loaded
-		onAssetLoad: (assetType) -> @["#{assetType}Loaded"] = true
-
-		# Enable the objectFitPolyfill if it was loaded
-		applyObjectFitPolyfill: (assetType) -> 
-			return unless window.objectFitPolyfill
-			@$refs[assetType].dataset.objectFit = @backgroundSize
-			@$refs[assetType].dataset.objectPosition = @backgroundPosition
-			window.objectFitPolyfill @$refs[assetType].$el
-
-		# Support plain numbers for px units
-		autoUnit: (val) -> if val?.match /^\d+$/ then "#{val}px" else val
-
-		###
-		Intended as external API
-		###
-
-		# Manually start loading
-		load: -> @shouldLoad = true
-
-		# Load (if not already) and start playing
-		play: -> 
-			@load()
-			@$nextTick => @$refs.video?.play()
-
-		# Pause playback
-		pause: -> @$refs.video?.pause()
-
-		# Play the video from the beginning
-		restart: -> 
-			@$refs.video?.currentTime = 0
-			@play()
+		containerClasses: -> [
+			@slotsContentContainerClasses
+			@fitsAssetsContainerClasses
+			@loadsAssetsContainerClasses
+		]
+		
 
 </script>
 
@@ -216,8 +101,8 @@ export default
 // Default container sizes
 .vv-visual
 	position relative
-	line-height 0
 	overflow hidden
+	font-size 0 // For slot alignment and clearing of line-height
 
 // Uses to prop block open when an aspect is passed in
 .vv-aspect-shim
@@ -230,8 +115,30 @@ export default
 		position absolute
 		left 0
 		top 0
-		right 0
-		bottom 0
+		width 100%
+		height 100%
+
+// Slot containrs
+.vv-slot
+	font-size 1rem // Restore font size
+	position relative // Layer above position:absolute backgrounds
+	display inline-block // Prep for vetical centering
+
+// Add vertical align rules
+.vv-align-bottom
+	vertical-align bottom
+.vv-align-middle
+	vertical-align middle
+.vv-align-top
+	vertical-align top
+
+// Add horizontal align rules
+.vv-align-left
+	text-align left
+.vv-align-center
+	text-align center
+.vv-align-right
+	text-align right
 
 // A simple, defualt, transition
 .vv-fade-enter-active, .vv-fade-leave-active
