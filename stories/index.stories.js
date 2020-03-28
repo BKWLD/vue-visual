@@ -92,7 +92,7 @@ storiesOf('Assets', module)
     `Example of rendering a simple image.` 
   }})
 
-  .add('Image w/ srcset & sizes', () => ({
+  .add('Image w/ srcset', () => ({
     components: { Visual },
     props: {
       image: { default: text('image', image) },
@@ -119,27 +119,30 @@ storiesOf('Assets', module)
     components: { Visual },
     props: {
       video: { default: text('video', video) },
-      fallback: { default: text('fallback', fallback) },
+      autoload: { default: boolean('autoload', true) },
       autoplay: { default: boolean('autoplay', true) },
       loop: { default: boolean('loop', true) },
     },
     methods: {
+      load: function() { this.$refs.visual.load() },
       pause: function() { this.$refs.visual.pause() },
       play: function() { this.$refs.visual.play() },
       restart: function() { this.$refs.visual.restart() },
     },
     template: `<div>
       <div style='margin-bottom: 0.5em'>
-        <button @click='pause'>Pause</button>
+      <button @click='load'>Load</button>  
+      <button @click='pause'>Pause</button>
         <button @click='play'>Play</button>
         <button @click='restart'>Restart</button>
       </div>
       <visual 
         ref='visual' 
         :video='video' 
-        :fallback='fallback' 
-        :autoplay='autoplay' muted
+        :autoload='autoload'
+        :autoplay='autoplay'
         :loop='loop'
+        muted
         width='100%' />
     </div>`
   }), { info: { summary: 

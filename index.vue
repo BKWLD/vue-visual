@@ -10,7 +10,8 @@
 	//- Set the aspect ratio
 	.vv-aspect-shim(v-if='aspect' :style='{ paddingTop: aspectPadding }')
 	
-	//- Image asset. The wrapper constainer is needed for the object-fit polyfill
+	//- Image asset
+	//- The wrapper constainer is needed for the object-fit polyfill
 	.vv-wrapper(v-if='image && shouldLoad')
 		transition(name='vv-fade'): picture(v-show='imageLoaded')
 
@@ -21,7 +22,7 @@
 				:srcset='webpSrcset'
 				:sizes='sizes')
 
-			//- The main img asset
+			//- Img tag /w srcset support
 			img.vv-asset.vv-image(
 				ref='image'
 				:src='image'
@@ -30,6 +31,25 @@
 				:alt='alt'
 				:style='assetStyles'
 				@load='onAssetLoad("image")')
+	
+	//- Video asset
+	.vv-wrapper(v-if='video && shouldLoad')
+
+		//- Video tag
+		video.vv-asset.vv-video(
+			ref='video'
+			playsinline
+			:preload='autoload'
+			:autoplay='autoplay'
+			:loop='loop'
+			:muted='muted'
+			:controls='controls'
+			:aria-label='alt')
+			source(
+				v-for='{src, type} in videoSources'
+				:key='type'
+				:src='src'
+				:type='type')
 
 </template>
 
@@ -37,11 +57,6 @@
 
 <script lang='coffee'>
 export default
-
-	data: -> 
-		shouldLoad: @autoLoad
-		imageLoaded: false
-		videoLoaded: false
 
 	props:
 
@@ -67,11 +82,15 @@ export default
 		alt: String
 
 		# Video asset
-		video: String
+		video: String | Array
+		autoplay: Boolean
+		loop: Boolean
+		muted: Boolean
+		controls: Boolean
 		
 		# Loading
-		lazyLoad: Boolean
-		autoLoad: 
+		lazyload: Boolean
+		autoload: 
 			type: Boolean
 			default: true
 		transition: 
@@ -80,6 +99,11 @@ export default
 
 		# Accessibility
 		alt: String
+
+	data: -> 
+		shouldLoad: @autoload
+		imageLoaded: false
+		videoLoaded: false
 
 	computed:
 
@@ -117,6 +141,17 @@ export default
 			...(unless @hasAspect then @dimensionStyles else {})
 		}
 	
+		# Make an easily parsed list of video soruces
+		videoSources: ->
+			return unless @video
+			sources = if Array.isArray @video then @video else [@video]
+			sources.map (url) -> 
+				src: url
+				type: switch url.match(/\.(\w+)$/)?[1] # Check file ext
+					when 'mp4' then 'video/mp4'
+					when 'webm' then 'video/webm'
+					when 'ogg' then 'video/ogg'
+
 	watch:
 
 		# If the asset srcs change, reset the loading state
@@ -151,10 +186,25 @@ export default
 		# Support plain numbers for px units
 		autoUnit: (val) -> if val?.match /^\d+$/ then "#{val}px" else val
 
-		# External API
+		###
+		Intended as external API
+		###
+
+		# Manually start loading
 		load: -> @shouldLoad = true
-		play: -> # TODO
-		pause: -> # TODO
+
+		# Load (if not already) and start playing
+		play: -> 
+			@load()
+			@$nextTick => @$refs.video?.play()
+
+		# Pause playback
+		pause: -> @$refs.video?.pause()
+
+		# Play the video from the beginning
+		restart: -> 
+			@$refs.video?.currentTime = 0
+			@play()
 
 </script>
 
