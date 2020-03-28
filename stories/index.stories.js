@@ -70,6 +70,9 @@ import Visual from '../index.vue';
 // Import assets
 import poster from './assets/poster.jpg';
 import image from './assets/image.jpg';
+import image320 from './assets/image-320.jpg';
+import imageWebP from './assets/image.webp';
+import imageWebP320 from './assets/image-320.webp';
 import video from './assets/video.mp4';
 import fallback from './assets/fallback.gif';
 
@@ -88,6 +91,29 @@ storiesOf('Assets', module)
   }), { info: { summary: 
     `Example of rendering a simple image.` 
   }})
+
+  .add('Image w/ srcset & sizes', () => ({
+    components: { Visual },
+    props: {
+      image: { default: text('image', image) },
+      srcSet: { default: text('srcset', `${image} 1080w, ${image320} 320w`) },
+      webpSrcset: { default: text('webpSrcset', 
+        `${imageWebP} 1080w, ${imageWebP320} 320w`) },
+      sizes: { default: text('sizes', '50vw') },
+    },
+    template: `<visual 
+      :image='image'
+      :srcset='srcSet'
+      :webp-srcset='webpSrcset'
+      :sizes='sizes'
+      width='100%'
+    />`
+  }), {
+    info: {
+      summary:
+        `Example of rendering an image using srcset & sizes attributes.`
+    }
+  })
   
   .add('Video', () => ({
     components: { Visual },
@@ -119,25 +145,6 @@ storiesOf('Assets', module)
   }), { info: { summary: 
     `Loads autoplaying, looping video.` 
   }})
-  
-  .add('Responsive src', () => ({
-    components: { Visual },
-    props: {
-      image: { default: object('image', {
-        500: poster,
-        1920: image,
-      }) },
-    },
-    template: `<visual
-      :aspect='640/360' 
-      background='cover'
-      :image='image'
-    />`
-  }), { info: { summary: 
-    `Reize your browser to load different image assets. Note, the breakpoints
-    are relative to Vue Visual's width, no the viewport`
-  }})
-
 
 storiesOf('Size', module)
 

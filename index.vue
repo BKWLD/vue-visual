@@ -2,40 +2,34 @@
 
 <template lang='pug'>
 
+//- Root container
 .vv-visual(
 	:class='containerClasses'
-	:style='containerStyles')
+	:style='dimensionStyles')
 	
 	//- Set the aspect ratio
 	.vv-aspect-shim(v-if='aspect' :style='{ paddingTop: aspectPadding }')
 	
 	//- Image asset. The wrapper constainer is needed for the object-fit polyfill
 	.vv-wrapper(v-if='image && shouldLoad')
-		transition(name='vv-fade')
-			picture(v-show='imageLoaded')
+		transition(name='vv-fade'): picture(v-show='imageLoaded')
 
-				//- Webp sources
-				//- source(
-				//- 	v-if='webpSrcset' 
-				//- 	type='image/webp' 
-				//- 	:srcset='webpSrcset'
-				//- 	:sizes='sizes')
+			//- Webp sources
+			source(
+				v-if='webpSrcset' 
+				type='image/webp' 
+				:srcset='webpSrcset'
+				:sizes='sizes')
 
-				//- The main image asset
-				img.vv-asset.vv-image(
-					:src='image'
-					:alt='alt'
-					@load='onAssetLoad("image")')
-
-
-		//- v-lazy-image.image(
-		//- 	ref='image'
-		//- 	:src='image'
-		//- 	:srcset='srcset'
-		//- 	:sizes='sizes'
-		//- 	:style='assetStyles'
-		//- 	:alt='alt'
-		//- 	@load='onLoad')
+			//- The main img asset
+			img.vv-asset.vv-image(
+				ref='image'
+				:src='image'
+				:srcset='srcset'
+				:sizes='sizes'
+				:alt='alt'
+				:style='assetStyles'
+				@load='onAssetLoad("image")')
 
 </template>
 
@@ -90,11 +84,12 @@ export default
 	computed:
 
 		# Make the shim padding style
-		aspectPadding: -> "#{1 / @aspect * 100}%" if @aspect
+		aspectPadding: -> "#{1 / @aspect * 100}%" if @hasAspect
+		hasAspect: -> !!@aspect
 
 		# Classes that get added to the visual container
 		containerClasses: -> 
-			'vv-has-aspect': !!@aspect
+			'vv-has-aspect': @hasAspect
 			'vv-image-loaded': @imageLoaded
 			'vv-video-loaded': @videoLoaded
 			'vv-loaded': @allLoaded
@@ -106,15 +101,21 @@ export default
 			return true
 
 		# Styles that get added to the parent container
-		containerStyles: ->
+		dimensionStyles: ->
 			width: @autoUnit @width
 			height: @autoUnit @height
 			'max-width': @autoUnit @maxWidth
 
 		# Styles that go on the asset tags
-		assetStyles: ->
+		assetStyles: -> {
 			objectFit: @backgroundSize
 			objectPosition: @backgroundPosition
+
+			# If there isn't an aspect ratio, apply the container dimensions to
+			# the asset as well. Necessary becauase the asset won't naturally match
+			# the container div.
+			...(unless @hasAspect then @dimensionStyles else {})
+		}
 	
 	watch:
 
@@ -122,17 +123,26 @@ export default
 		image: -> @imageLoaded = false
 		video: -> @videoLoaded = false
 
-		# When an asset loads, apply the polyfill
-		imageLoaded: (loaded) -> @applyPolyfill 'image' if loaded
-		videoLoaded: (loaded) -> @applyPolyfill 'video' if loaded
+		# Trigger side effects of assets loading
+		imageLoaded: (loaded) -> 
+			if loaded
+				@applyObjectFitPolyfill 'image' 
+				@$emit 'loaded:image'
+		videoLoaded: (loaded) -> 
+			if loaded
+				@applyObjectFitPolyfill 'video' 
+				@$emit 'loaded:video'
+		allLoaded: (loaded) -> 
+			if loaded
+				@$emit 'loaded'
 	
 	methods:
 
 		# Handle an asset being loaded
 		onAssetLoad: (assetType) -> @["#{assetType}Loaded"] = true
 
-		# Enable the polyfill if it was loaded
-		applyPolyfill: (assetType) -> 
+		# Enable the objectFitPolyfill if it was loaded
+		applyObjectFitPolyfill: (assetType) -> 
 			return unless window.objectFitPolyfill
 			@$refs[assetType].dataset.objectFit = @backgroundSize
 			@$refs[assetType].dataset.objectPosition = @backgroundPosition
@@ -140,6 +150,11 @@ export default
 
 		# Support plain numbers for px units
 		autoUnit: (val) -> if val?.match /^\d+$/ then "#{val}px" else val
+
+		# External API
+		load: -> @shouldLoad = true
+		play: -> # TODO
+		pause: -> # TODO
 
 </script>
 
