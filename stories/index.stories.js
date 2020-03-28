@@ -257,7 +257,7 @@ storiesOf('Loading', module)
       width: props.width(),
       aspect: props.aspect(),
       transition: props.transition(),
-      background: props.background(),
+      backgroundSize: props.backgroundSize(),
     },
     methods: {
       onLoadEvent: (event) => action(event)()
@@ -270,7 +270,7 @@ storiesOf('Loading', module)
       :aspect='aspect'
       :fallback='fallback'
       :transition='transition'
-      :background='background'
+      :background-size='backgroundSize'
       :autoplay='autoplay' muted
       :loop='loop'
       @loading='onLoadEvent("loading")'
@@ -327,7 +327,7 @@ storiesOf('Loading', module)
       poster: { default: text('poster', poster) },
       image: { default: text('image', image) },
       aspect: props.aspect(),
-      background: props.background(),
+      backgroundSize: props.backgroundSize(),
       transition: props.transition(),
     },
     methods: {
@@ -342,7 +342,7 @@ storiesOf('Loading', module)
       :image='image'
       :aspect='aspect'
       :transition='transition'
-      :background='background'
+      :background-size='backgroundSize'
       in-viewport-root='[class^=".src-components-Docs-container"]'
       @poster-loading='onLoadEvent("poster-loading")'
       @poster-loaded='onLoadEvent("poster-loaded")'

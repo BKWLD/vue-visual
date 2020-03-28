@@ -56,4 +56,6 @@ export default
 			window.objectFitPolyfill @$refs[assetType].$el
 
 		# Support plain numbers for px units
-		autoUnit: (val) -> if val?.match /^\d+$/ then "#{val}px" else val
+		autoUnit: (val) -> 
+			return unless val
+			if String(val).match /^\d+$/ then "#{val}px" else val
