@@ -1,271 +1,177 @@
+<!-- Vue Visual -->
+
 <template lang='pug'>
 
 .vv-visual(
-	:style='containerStyles'
-	:class='containerClasses')
+	:class='containerClasses'
+	:style='containerStyles')
+	
+	//- Set the aspect ratio
+	.vv-aspect-shim(v-if='aspect' :style='{ paddingTop: aspectPadding }')
+	
+	//- Image asset. The wrapper constainer is needed for the object-fit polyfill
+	.vv-wrapper(v-if='image && shouldLoad')
+		transition(name='vv-fade')
+			picture(v-show='imageLoaded')
 
-	//- Prop aspect-based sizing open
-	.vv-shim(
-		v-if='showShim'
-		:style='{ paddingTop: aspectPadding }'
-		:class='shimClasses')
+				//- Webp sources
+				//- source(
+				//- 	v-if='webpSrcset' 
+				//- 	type='image/webp' 
+				//- 	:srcset='webpSrcset'
+				//- 	:sizes='sizes')
 
-	//- Optional prepending slot
-	.vv-slot-prepend(v-if='$slots.prepend')
-		slot(name='prepend')
+				//- The main image asset
+				img.vv-asset.vv-image(
+					:src='image'
+					:alt='alt'
+					@load='onAssetLoad("image")')
 
-	//- Poster asset
-	transition(:name='assetPropVal("poster", "transition")')
-		.vv-transition.vv-poster-transition(
-			v-if='posterShouldRender'
-			:class='transitionClasses')
-			img.vv-asset.vv-poster(
-				v-if='!background'
-				:src='posterSrc'
-				:class='assetClasses'
-				:alt='alt')
-			.vv-asset.vv-poster(
-				v-else-if='background'
-				:style='backgroundStyles("poster")'
-				:class='assetClasses'
-				:aria-label='alt')
 
-	//- Image asset
-	transition(:name='assetPropVal("image", "transition")')
-		.vv-transition.vv-image-transition(
-			v-if='imageShouldRender'
-			:class='transitionClasses')
-			img.vv-asset.vv-image(
-				v-if='!background'
-				:src='imageSrc'
-				:class='assetClasses'
-				:alt='alt')
-			.vv-asset.vv-image(
-				v-else-if='background'
-				:style='backgroundStyles("image")'
-				:class='assetClasses'
-				:aria-label='alt')
-
-	//- Fallback asset
-	transition(:name='assetPropVal("video", "transition")')
-		.vv-transition.vv-fallback-transition(
-			v-if='fallbackShouldRender'
-			:class='transitionClasses')
-			img.vv-asset.vv-fallback(
-				v-if='!background'
-				:src='fallbackSrc'
-				:class='assetClasses'
-				:alt='alt')
-			.vv-asset.vv-fallback(
-				v-else-if='background'
-				:style='backgroundStyles("fallback")'
-				:class='assetClasses'
-				:aria-label='alt')
-
-	//- Video asset
-	//- Rendering a video asset effectively loads it; setting preload to false
-	//- has cause issues in some browser. So the v-if here is based on load
-	//- and we keep it display:none until ready to transition in.
-	transition(:name='assetPropVal("video", "transition")')
-		.vv-transition.vv-video-transition(
-			v-show='videoShouldRender'
-			v-if='videoShouldLoad'
-			:class='transitionClasses')
-
-			//- The video tag
-			video.vv-asset.vv-video(
-				:class='assetClasses'
-				:controls='controls'
-				:loop='loop'
-				:muted='muted'
-				playsinline
-				ref='video'
-				preload='auto'
-				:aria-label='alt')
-
-				//- Video sources list
-				source(
-					v-for='url in videoSources'
-					key='url'
-					:src='url'
-					:type='mime(url)')
-
-	//- The main content slot
-	.vv-slot(
-		v-if='filledSlot'
-		:class='slotClasses')
-		slot
-
-	//- Insert the spinner using dynamic components
-	transition(:name='assetPropVal("loader", "transition")')
-		component.vv-loader(
-			v-if='showLoader'
-			:is='loaderComponent')
+		//- v-lazy-image.image(
+		//- 	ref='image'
+		//- 	:src='image'
+		//- 	:srcset='srcset'
+		//- 	:sizes='sizes'
+		//- 	:style='assetStyles'
+		//- 	:alt='alt'
+		//- 	@load='onLoad')
 
 </template>
 
 <!-- ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– -->
 
 <script lang='coffee'>
-
-# Deps
-import ucfirst from './src/utils/ucfirst'
-
-# Mixins
-import accessibility from './src/accessibility'
-import assets from './src/assets'
-import loading from './src/loading'
-import size from './src/size'
-import style from './src/style'
-import transition from './src/transition'
-import video from './src/video'
-import viewport from './src/viewport'
-
-# The component definition
 export default
-	name: 'VueVisual'
 
-	# The src code has been broken up into modules to make it eaier to read
-	mixins: [
-		accessibility, assets, loading, size, 
-		style, transition, video, viewport,
-	]
+	data: -> 
+		shouldLoad: @autoLoad
+		imageLoaded: false
+		videoLoaded: false
 
-	# Shared utility methods
+	props:
+
+		# Size
+		width: Number|String
+		height: Number|String
+		aspect: Number
+		maxWidth: Number
+		
+		# Presentation
+		backgroundSize: 
+			type: String
+			default: 'cover'
+		backgroundPosition: 
+			type: String
+			default: '50% 50%'
+
+		# Image asset
+		image: String
+		srcset: String
+		webpSrcset: String
+		sizes: String
+		alt: String
+
+		# Video asset
+		video: String
+		
+		# Loading
+		lazyLoad: Boolean
+		autoLoad: 
+			type: Boolean
+			default: true
+		transition: 
+			type: String
+			default: 'vv-fade'
+
+		# Accessibility
+		alt: String
+
+	computed:
+
+		# Make the shim padding style
+		aspectPadding: -> "#{1 / @aspect * 100}%" if @aspect
+
+		# Classes that get added to the visual container
+		containerClasses: -> 
+			'vv-has-aspect': !!@aspect
+			'vv-image-loaded': @imageLoaded
+			'vv-video-loaded': @videoLoaded
+			'vv-loaded': @allLoaded
+
+		# Determine whether all assets have been loaded
+		allLoaded: ->
+			return false if @image and not @imageLoaded
+			return false if @video and not @videoLoaded
+			return true
+
+		# Styles that get added to the parent container
+		containerStyles: ->
+			width: @autoUnit @width
+			height: @autoUnit @height
+			'max-width': @autoUnit @maxWidth
+
+		# Styles that go on the asset tags
+		assetStyles: ->
+			objectFit: @backgroundSize
+			objectPosition: @backgroundPosition
+	
+	watch:
+
+		# If the asset srcs change, reset the loading state
+		image: -> @imageLoaded = false
+		video: -> @videoLoaded = false
+
+		# When an asset loads, apply the polyfill
+		imageLoaded: (loaded) -> @applyPolyfill 'image' if loaded
+		videoLoaded: (loaded) -> @applyPolyfill 'video' if loaded
+	
 	methods:
 
-		# Get value of a prop that has an asset-level override.  For instance,
-		# `render` may be overrode by `renderPoster`
-		assetPropVal: (asset, prop) ->
+		# Handle an asset being loaded
+		onAssetLoad: (assetType) -> @["#{assetType}Loaded"] = true
 
-			# For some props, fallback uses the video prop
-			if asset == 'fallback' and prop in ['load', 'transition']
-				asset = 'video'
+		# Enable the polyfill if it was loaded
+		applyPolyfill: (assetType) -> 
+			return unless window.objectFitPolyfill
+			@$refs[assetType].dataset.objectFit = @backgroundSize
+			@$refs[assetType].dataset.objectPosition = @backgroundPosition
+			window.objectFitPolyfill @$refs[assetType].$el
 
-			# Make the prop attribute, ie: renderPoster
-			assetProp = prop + ucfirst(asset)
-
-			# Default to general prop if not defined
-			@[assetProp] ? @[prop]
-
-	# Merge config as prop defaults
-	setDefaults: (config) -> @props[key].default = val for key, val of config
+		# Support plain numbers for px units
+		autoUnit: (val) -> if val?.match /^\d+$/ then "#{val}px" else val
 
 </script>
 
 <!-- ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– -->
 
+<!-- Intentionally unscoped so they can be more easily overriden -->
 <style lang='stylus'>
 
-/**
- * Styles are all single selectors that don't use inheritance so that
- * Visuals that reside within Visuals don't inherit parent parent values
- * inadvertently.  I didn't want to use direct descendent selectors because
- * overriding would be a pain.
- */
-
-// Display using inline-block like an img or video tag
+// Default container sizes
 .vv-visual
-	display inline-block
-	font-size 0 // Don't let line-height inflate size and prepare for pseudo-center
-
-	// For background-cover videos
-	overflow hidden
 	position relative
+	line-height 0
+	overflow hidden
 
-// If aspect or if it has a background, dispaly block
-.vv-block
-	display block
-
-// If a width was set, make assets fill to it
-.vv-has-width
-	width 100%
-
-// If a height was set, make assets fill to it
-.vv-has-height
-	height 100%
-
-// This shim props open aspect-based sizes
-.vv-shim
+// Uses to prop block open when an aspect is passed in
+.vv-aspect-shim
 	display inline-block
 	height 100%
 
-// Fill the container
-.vv-fill
-	display block
-	position absolute
-	top 0
-	bottom 0
-	left 0
-	right 0
-
-// Using width and height here so that <img>s will fill their container
-.vv-fill-asset
-	position absolute // Needed for <img>
-	width 100%
-	height 100%
-
-// Don't tile assets using background positioning
-.vv-asset[class*='vv-background-']
-	background-repeat no-repeat
-
-// Apply background-size properties
-.vv-background-cover
-	background-size cover
-.vv-background-contain
-	background-size contain
-
-// Apply background effecs to videos
-.vv-video
-
-	// Center the video
-	&.vv-background-cover
-	&.vv-background-contain
+// Expand the image if using an aspect-shim
+.vv-has-aspect
+	.vv-wrapper, .vv-asset
 		position absolute
-		top 50%
-		left 50%
-		transform translate(-50%, -50%)
+		left 0
+		top 0
+		right 0
+		bottom 0
 
-	// Apply letterboxing effect
-	&.vv-background-cover.vv-video-pillarbox
-	&.vv-background-contain.vv-video-letterbox
-		width calc(100% + 1px) // Cover rounding errors
-		height auto
-
-	// Apply pillarboxing effect
-	&.vv-background-cover.vv-video-letterbox
-	&.vv-background-contain.vv-video-pillarbox
-		width auto
-		height calc(100% + 1px) // Cover rounding errors
-
-// Slot containrs
-.vv-slot, .vv-slot-prepend
-	font-size 1rem // Restore font size
-	position relative // Layer above position:absolute backgrounds
-	display inline-block // Prep for vetical centering
-
-// Add vertical align rules
-.vv-align-bottom
-	vertical-align bottom
-.vv-align-middle
-	vertical-align middle
-.vv-align-top
-	vertical-align top
-
-// Add horizontal align rules
-.vv-align-left
-	text-align left
-.vv-align-center
-	text-align center
-.vv-align-right
-	text-align right
-
-// The standard fading transition
-.vv-fade-enter
-	opacity 0
-.vv-fade-enter-active
+// A simple, defualt, transition
+.vv-fade-enter-active, .vv-fade-leave-active
 	transition opacity .3s
-.vv-fade-leave-active
-	transition-delay .31s
+.vv-fade-enter, .vv-fade-leave-to
+	opacity 0
 
 </style>
