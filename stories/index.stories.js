@@ -34,13 +34,13 @@ const props = {
     max: 1280,
     step: 10
   })}},
-  backgroundSize: () => { return { default: options('background-size', {
+  objectSize: () => { return { default: options('object-size', {
       'cover': 'cover',
       'contain': 'contain',
       'none': ''
     }, 'cover', { display: 'inline-radio' }
   )}},
-  backgroundPosition: () => { return { default: options('background-position', {
+  objectPosition: () => { return { default: options('object-position', {
       'center center': 'center center',
       'top left': 'top left',
       'bottom right': 'bottom right'
@@ -156,14 +156,14 @@ storiesOf('Size', module)
     props: {
       width: { default: number('width', 400, { range: true, min: 200, max: 600}) },
       height: { default: number('height', 300, { range: true, min: 200, max: 600}) },
-      backgroundSize: props.backgroundSize(),
+      objectSize: props.objectSize(),
       image: { default: text('image', image) },
     },
     template: `<visual 
       :image='image'
       :width='width'
       :height='height'
-      :background-size='backgroundSize'
+      :object-size='objectSize'
     />`
   }), { info: { summary: 
     `Load an image into a container with a fixed size.`
@@ -173,13 +173,13 @@ storiesOf('Size', module)
     components: { Visual },
     props: {
       aspect: props.aspect(),
-      backgroundSize: props.backgroundSize(),
+      objectSize: props.objectSize(),
       image: { default: text('image', image) },
     },
     template: `<visual 
       :image='image'
       :aspect='aspect'
-      :background-size='backgroundSize'
+      :object-size='objectSize'
     />`
   }), { info: { summary: 
     `Load an image into an image with a fixed aspect ratio.`
@@ -190,8 +190,8 @@ storiesOf('Style', module)
   .add('Background', () => ({
     components: { Visual },
     props: {
-      backgroundSize: props.backgroundSize(),
-      backgroundPosition: props.backgroundPosition(),
+      objectSize: props.objectSize(),
+      objectPosition: props.objectPosition(),
       aspect: props.aspect(3),
       media: props.media(),
       image: { default: text('image', image) },
@@ -199,14 +199,14 @@ storiesOf('Style', module)
     },
     template: `<visual
       :aspect='aspect'
-      :background-size='backgroundSize'
-      :background-position='backgroundPosition'
+      :object-size='objectSize'
+      :object-position='objectPosition'
       :image='media == "image" ? image : null'
       :video='media == "video" ? video : null' 
       autoplay muted loop
     />`
   }), { info: { summary: 
-    `Examples of background options. Note how a "background-size:cover" effect can be applied to videos as well as images.` 
+    `Examples of background options. Note how a "object-size:cover" effect can be applied to videos as well as images.` 
   }})
   
   .add('Slot', () => ({
@@ -254,7 +254,7 @@ storiesOf('Loading', module)
       width: props.width(),
       aspect: props.aspect(),
       transition: props.transition(),
-      backgroundSize: props.backgroundSize(),
+      objectSize: props.objectSize(),
     },
     methods: {
       onLoadEvent: (event) => action(event)()
@@ -265,7 +265,7 @@ storiesOf('Loading', module)
       :width='width'
       :aspect='aspect'
       :transition='transition'
-      :background-size='backgroundSize'
+      :object-size='objectSize'
       autoplay muted loop
       :placeholder-color='placeholderColor'
       @loaded='onLoadEvent("loaded")'
@@ -275,7 +275,7 @@ storiesOf('Loading', module)
     />`
   }), { info: { summary: 
     `The image will be displayed until the video is ready. Using an aspect, 
-    placeholder and background-size so there is no pop in during the transition. Check out the Actions tab for the loading events that are fired.`
+    placeholder and object-size so there is no pop in during the transition. Check out the Actions tab for the loading events that are fired.`
   }})
   
   .add('Manual', () => ({

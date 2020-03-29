@@ -49,9 +49,9 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Style
 
-- `background-size (string)` - *Default `cover`.* Like the CSS property.
+- `object-size (string)` - *Default `cover`.* Like the CSS property.
 
-- `background-position (string)` - *Default `center center`.*  Like the CSS property.
+- `object-position (string)` - *Default `center center`.*  Like the CSS property.
 
 - `align (string)` - *Default `center middle`.*.  Used in conjunction with slots to position the slot content.  May be any combination of one horizontal (`left`, `center`, `right`) and one vertical (`top`, `middle`, `bottom`) choice, space-delimited.
 

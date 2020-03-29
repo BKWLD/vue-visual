@@ -14,10 +14,10 @@ export default
 		expand: Boolean
 
 		# Layout
-		backgroundSize: 
+		objectSize: 
 			type: String
 			default: 'cover'
-		backgroundPosition: 
+		objectPosition: 
 			type: String
 			default: '50% 50%'
 
@@ -35,8 +35,8 @@ export default
 
 		# Styles that go on the asset tags
 		assetStyles: -> {
-			objectFit: @backgroundSize
-			objectPosition: @backgroundPosition
+			@objectSize
+			@objectPosition
 
 			# If there isn't an aspect ratio, apply the container dimensions to
 			# the asset as well. Necessary becauase the asset won't naturally match
@@ -54,8 +54,8 @@ export default
 		# Enable the objectFitPolyfill if it was loaded
 		applyObjectFitPolyfill: (assetType) -> 
 			return unless window.objectFitPolyfill
-			@$refs[assetType].dataset.objectFit = @backgroundSize
-			@$refs[assetType].dataset.objectPosition = @backgroundPosition
+			@$refs[assetType].dataset.objectFit = @objectSize
+			@$refs[assetType].dataset.objectPosition = @objectPosition
 			window.objectFitPolyfill @$refs[assetType].$el
 
 		# Support plain numbers for px units
