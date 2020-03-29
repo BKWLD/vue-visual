@@ -7,7 +7,7 @@ import {
   number, 
   text, 
   boolean, 
-  object,
+  color,
   optionsKnob as options,
 } from '@storybook/addon-knobs'
 
@@ -147,6 +147,41 @@ storiesOf('Assets', module)
     </div>`
   }), { info: { summary: 
     `Loads autoplaying, looping video.` 
+  }})
+
+  .add('Image and Video', () => ({
+    components: { Visual },
+    props: {
+      image: { default: text('image', image) },
+      video: { default: text('video', video) },
+    },
+    template: `<div>
+      <visual 
+        :image='image'  
+        :video='video' 
+        muted autoplay loop
+        width='100%' />
+    </div>`
+  }), { info: { summary: 
+    `The image will be displayed until the video is ready.` 
+  }})
+
+  .add('Placeholder', () => ({
+    components: { Visual },
+    props: {
+      image: { default: text('image', image) },
+      placeholderColor: { default: color('placeholderColor', '#333') },
+      aspect: props.aspect(),
+    },
+    template: `<div>
+      <visual 
+        :image='image'  
+        :placeholder-color='placeholderColor'
+        :aspect='aspect'
+        width='100%' />
+    </div>`
+  }), { info: { summary: 
+    `Placeholder works best when there is a known aspect ratio.` 
   }})
 
 storiesOf('Size', module)

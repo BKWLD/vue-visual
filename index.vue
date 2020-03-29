@@ -12,28 +12,35 @@
 		v-if='hasAspect' 
 		:style='{ paddingTop: aspectPadding }'
 		:class='shimAlignClasses')
+
+	//- Show a placeholder shape until an asset is loaded
+	transition(name='vv-fade')
+		.vv-placeholder(
+			v-if='placeholderColor && !imageLoaded && !videoLoaded'
+			:style='{ backgroundColor: placeholderColor }')
 	
 	//- Image asset
 	//- The wrapper constainer is needed for the object-fit polyfill
 	.vv-wrapper(v-if='image && shouldLoad')
-		transition(name='vv-fade'): picture(v-show='imageLoaded')
+		transition(name='vv-fade')
+			picture(v-show='imageLoaded && !videoLoaded')
 
-			//- Webp sources
-			source(
-				v-if='webpSrcset' 
-				type='image/webp' 
-				:srcset='webpSrcset'
-				:sizes='sizes')
+				//- Webp sources
+				source(
+					v-if='webpSrcset' 
+					type='image/webp' 
+					:srcset='webpSrcset'
+					:sizes='sizes')
 
-			//- Img tag /w srcset support
-			img.vv-asset.vv-image(
-				ref='image'
-				:src='image'
-				:srcset='srcset'
-				:sizes='sizes'
-				:alt='alt'
-				:style='assetStyles'
-				@load='onAssetLoad("image")')
+				//- Img tag /w srcset support
+				img.vv-asset.vv-image(
+					ref='image'
+					:src='image'
+					:srcset='srcset'
+					:sizes='sizes'
+					:alt='alt'
+					:style='assetStyles'
+					@load='onAssetLoad("image")')
 	
 	//- Video asset
 	.vv-wrapper(v-if='video && shouldLoad')
@@ -44,8 +51,8 @@
 				v-show='videoLoaded'
 				ref='video'
 				playsinline
-				:preload='autoload'
-				:autoplay='autoplay'
+				preload='autoload ? "auto" : "none"'
+				autoplay='autoplay'
 				:loop='loop'
 				:muted='muted'
 				:controls='controls'
@@ -83,6 +90,7 @@ export default
 
 	props:
 		alt: String
+		placeholderColor: String
 
 	computed:
 
@@ -93,7 +101,6 @@ export default
 			@loadsAssetsContainerClasses
 		]
 		
-
 </script>
 
 <!-- ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -121,6 +128,14 @@ export default
 		width 100%
 		height 100%
 
+// Fill the space with a placeholder shape
+.vv-placeholder
+	position absolute
+	left 0
+	top 0
+	width 100%
+	height 100%
+
 // Slot containrs
 .vv-slot
 	font-size 1rem // Restore font size
@@ -146,6 +161,8 @@ export default
 // A simple, defualt, transition
 .vv-fade-enter-active, .vv-fade-leave-active
 	transition opacity .3s
+.vv-fade-leave-active
+	position absolute // Crossfade when new asset is revealed
 .vv-fade-enter, .vv-fade-leave-to
 	opacity 0
 
