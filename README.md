@@ -1,7 +1,9 @@
 # Vue Visual [![npm](https://img.shields.io/npm/v/vue-visual.svg)](https://www.npmjs.com/package/vue-visual) [![Build Status](https://img.shields.io/travis/BKWLD/vue-visual.svg)](https://travis-ci.org/BKWLD/vue-visual)
 
-Vue 2 image and video loader supporting lazy loading, cover videos, and more!  
-Examples at https://bkwld.github.io/vue-visual.
+Vue 2 image and video loader supporting lazy loading.  Visual 2.x is a simplification of Version 1.x with a greater reliance on modern browser features (IntersectionObserver, object-fit, srcset, sizes, etc).
+
+
+**Examples at https://bkwld.github.io/vue-visual.**
 
 
 ## Installation
@@ -9,320 +11,19 @@ Examples at https://bkwld.github.io/vue-visual.
 1. Install the package: `npm install --save vue-visual` or `yarn add vue-visual`
 2. Register the component:
 	```js
-	Vue = require('vue')
-	VueVisual = require('vue-visual')
-	Vue.component('visual', VueVisual)
-
-	// Assuming you are using webpack, require the CSS file
-	require('vue-visual/index.css')
+	import Vue from 'vue'
+	import Visual from 'vue-visual'
+	Vue.component('visual', Visual)
+	import 'vue-visual/index.css'
 	```
-3. If not using Webpack, copy the css contents from `index.css` to your stylesheet.
-4. See "Usage" for examples
-
-Also, if you plan to use viewport-reacting features, like `load='visible'`, this package uses the [vue-in-viewport-mixin package](https://github.com/BKWLD/vue-in-viewport-mixin) which, in turn, uses the IntersectionObserver API.  You may need to [polyfill this](https://github.com/w3c/IntersectionObserver/tree/master/polyfill).
+3. These polyfills are recommended for older browsers:
+	- [IntersectionObserver](https://github.com/w3c/IntersectionObserver/tree/master/polyfill)
+	- [ObjectFit](https://github.com/constancecchen/object-fit-polyfill)
 
 
 ## Usage
 
-### Create a simple image tag [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/assets--image)
-
-```
-<visual image='image.png'></visual>
-```
-
-This renders:
-
-```html
-<div class='vv-visual'>
-	<img image="image.png" class='vv-asset vv-image'>
-</div>
-```
-
-You may also specify the width and height:
-
-```
-<visual image='image.png' width='350' height='150'></visual>
-```
-
-This renders:
-
-```html
-<div class='vv-visual' style='width: 350px; height: 150px;'>
-	<img image="image.png" class='vv-asset vv-image'>
-</div>
-```
-
-The width and height are applied to the container as well so that loader graphics or other element that are inserted through the `<slot>` can make use of those dimensions.  The Visual stylesheet will add `width: 100%; height: 100%` to the img so that it fills the container.
-
-
-### Lazy load a simple image tag
-
-```
-<visual
-	image='image.png'
-	load='visible'
-	in-viewport-root-margin='-10% 0%'>
-</visual>
-```
-
-This initially renders:
-
-```html
-<div class='vue-visual'></div>
-```
-
-Then, when the `visual` comes `10%` into the viewport, it starts loading:
-
-```html
-<div class='vue-visual vv-loading'></div>
-```
-
-And finally, upon load:
-
-```html
-<div class='vue-visual vv-loaded'>
-	<img image="image.png" class='vv-asset vv-image'>
-</div>
-```
-
-
-### Use a low rez poster image [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/loading--progressive)
-
-```
-<visual
-	poster='low-rez.png'
-	image='image.png'
-	load='visible'>
-</visual>
-```
-
-In ths case, the poster image will be loaded when the Visual enters the viewport.  Then, once it's finished loading, the main image will be loaded.  To load a poster immediately and only lazy load the image:
-
-```
-<visual
-	poster='low-rez.png'
-	image='image.png'
-	load='visible'
-	:load-poster='true'>
-</visual>
-```
-
-
-### Declare a Vue transition for when load finishes [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/loading--progressive)
-
-```
-<visual
-	image='image.png'
-	transition='vv-fade'>
-</visual>
-```
-
-The `<img>` will not be rendered until it loaded.  In addition, the asset is wrapped in a [Vue transition](http://vuejs.org/v2/guide/transitions.html) called `vv-fade`.  This is a real transition that ships with this component and makes newly-loaded assets fade in on top of previously loaded assets before they are removed.  It is a good default for background-image rendered assets (described later).
-
-```css
-.vv-fade-enter {
-	opacity: 0
-}
-.vv-fade-enter-active {
-	transition: opacity .3s
-}
-.vv-fade-leave-active {
-	transition-delay: .31s
-}
-```
-
-### Render image as a CSS background [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/style--background)
-
-```
-<visual image='image.png' background='cover'></visual>
-```
-
-This renders:
-
-```html
-<div class='vv-visual'>
-	<div
-		class='vv-asset vv-image vv-background-cover vv-fill-asset'
-		style='background: url("image.png");'>
-	</div>
-</div>
-```
-
-The `vv-background-cover` class adds `background-size: cover` to the asset.  Additionally, you may set `background` to `contain` for `background-size: contain`.
-
-
-### Use an aspect ratio for the size [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/style--background)
-
-It is often more useful in responsive layouts to set an aspect ratio for the Visual rather than a fixed width and height:
-
-```
-<visual
-	image='image.png'
-	background='cover'
-	aspect='16:9'>
-</visual>
-```
-
-This renders:
-
-```html
-<div class='vv-visual'>
-	<div class='vv-shim' style='padding-top: 56.25%'></div>
-	<div
-		class='vv-asset vv-image vv-background-cover vv-fill-asset'
-		style='background: url("image.png");'>
-	</div>
-</div>
-```
-
-You can also pass in a number for the aspect, like: `:aspect='16/9'`.
-
-
-### Render a video instead [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/assets--video)
-
-```
-<visual video='video.mp4'></visual>
-```
-
-This renders:
-
-```html
-<div class='vv-visual'>
-	<video>
-		<source image='video.mp4' type='video/mp4'>
-	</video>
-</div>
-```
-
-Many `<video>` attributes may be passed through:
-
-```
-<visual video='video.mp4' controls loop mute autoplay></visual>
-```
-
-You may also set autoplay to `visible` to make the video start playing only when it enters the viewport.  In addition, you may set `autopause` to `visible` to have it pause when you leave the viewport. 
-
-```
-<visual
-	video='video.mp4'
-	load='visible'
-	autoplay='visible'
-	autopause='visible'>
-</visual>
-```
-
-Videos may also be rendered using the same `background` settings.  Thus, you can end up with something like:
-
-```
-<visual
-	transition='vv-fade'
-	background='cover'
-	aspect='16:9'
-
-	poster='low-rez.png'
-	:load-poster='true'
-
-	image='image.png'
-	load='visible'
-
-	video='video.mp4'
-	load-video='visible'
-	autoplay='visible'
-	autopause='visible'
-	loop
-	muted>
-
-</visual>
-```
-
-This creates a Visual component with a 16:9 aspect ratio and immediately loads a low rez poster image.  Once it loads completely, it will fade in.  When the Visual enters the viewport, the `image` image will load in.  When it completes, it will fade in and, if the Visual is still in the viewport, the `video` will load.  Once enough has loaded that it can play without interruption, the video will fade in and begin playing (with looping) until it is scrolled out of the viewport.
-
-This package sets [playsinline](https://webkit.org/blog/6784/new-video-policies-for-ios/) automatically.  Note, to autoplay inline on Android, make sure to also set the `muted` attribute.
-
-
-### Show a fallback on non-autoplaying devices [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/assets--video)
-
-Mobile devices like iOS and Android phones do not support autoplaying videos.  You can supply a fallback image that is shown for devices that don't support autoplaying videos (or videos at all).  This is great when used with a preview gif of the video.
-
-```
-<visual
-	video='video.mp4'
-	fallback='fallback.gif'>
-</visual>
-```
-
-
-### Slot markup within the Visual [_(View Demo)_](https://bkwld.github.io/vue-visual/?path=/story/style--slot)
-
-```
-<visual
-	background='cover'
-	aspect='16:9'
-	image='image.png'
-	align='middle left'>
-
-	<h1>I am the title of a marquee</h1>
-	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-
-</visual>
-```
-
-This renders:
-
-```html
-<div class='vv-visual'>
-	<div class='vv-shim vv-align-middle' style='padding-top: 56.25%'></div>
-	<div
-		class='vv-asset vv-image vv-background-cover vv-fill-asset'
-		style='background: url("image.png");'>
-	</div>
-	<div class='vv-slot vv-align-middle vv-align-left'>
-		<h1>I am the title of a marquee</h1>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-	</div>
-</div>
-```
-
-Slotting in content is a great way to create marquees of websites with rich background assets.  The shim-based approach to aligning the slot content means that the slot content will stay centered in the Visual until the slot height is greater than the aspect radio (like as you reach a mobile viewport width), in which case the slot will prop the Visual open as needed.
-
-
-### Add a spinner graphic
-
-You can insert a spinner graphic that displays while loading like:
-
-```js
-// Register components
-Vue = require('vue')
-Vue.component('visual', require('vue-visual'))
-Vue.component('spinner', {
-	template: '<div class="spinner"></div>'
-})
-```
-```
-<visual
-	image='image.png'
-	loader='spinner'
-	transition-loader='vv-fade'>
-</visual>
-```
-
-It's up to you to style the spinner.  The component is added after the assets and the slot in the DOM.
-
-
-### Override vue-visual defaults
-
-Vue-visual was designed to mimic regular `<img>` and `<video>` tag behavior with it's base config.  It renders as `inline-block`, the asset loads immediately, the asset is shown at it's native size, etc.  However, it's more common that you will want to render assets using `background-size: cover`, lazy load, and fade in when they are ready.  To override the default, opt-in themed configuration, you can do the following:
-
-```js
-Vue = require('vue')
-Vue.component('visual', require('vue-visual')).options.setDefaults({
-	background: 'cover',
-	load: 'visible',
-	loadPoster: true,
-	transition: 'vv-fade'
-})
-```
-
+See [the Storybook](https://bkwld.github.io/vue-visual).
 
 ## Props
 
@@ -331,77 +32,48 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Assets
 
-- `image (string|object)` : An image to load.  If a string, the URL of an image.  If an object, a list of image URLs keyed to `max-width`-style breakpoints that are compared against the size of the Visual instance (rather than the window):
-	```
-	:image='{ 500: 'image-mobile.png', 768: 'image-tablet.png' }'
-	```
+- `image (string)` : The URL of an image to load.
 
-- `poster (string|object)` : An image that is loaded before `image`, `video`, or `fallback`.  See `image` for object schema.
-
-- `video (string|array)` : A video that is loaded after the image is loaded if the device supports video.    If a string, should be the URL to a source video.  If an array, a list of video URLs that will be added as difference `<source>`s.
-
-- `fallback (string|object)` : An image that is loaded after the `image` when the user's device doesn't support video or doesn't support auto-playing video and `require-autoplay` is truthy.  See `image` for object schema.
-
-- `require-autoplay (boolean)` - *Default: `true`.* If `false`, the `fallback` is shown only if the user's device lacks video support.  If `true`, the `fallback`, will be shown also when a device cannot autoplay videos (like most mobile phones).
-
-- `assetMutator (function)` - Provide a function that can be used to transform the values passed to the asset props (`image`, `poster`, `video`, or `fallback`).  This function is passed the arguments "asset" (a string like "image", "poster", etc), "src" (the value passed to one of the asset props), and "vm" (a Visual component instance).
-
+- `video (string|array)` : A video that is loaded after the image is loaded if the device supports video. If a string, should be the URL to a source video.  If an array, a list of video URLs that will be added as difference `<source>`s.
 
 #### Size
 
-- `width (number|string)` : This width will be applied to the container, `.visual`, div.
+- `width (number|string)` : This width will be applied to the container div. If a number, it's assumed to be a px value.
 
 - `height (number|string)` : See `width`
 
-- `aspect (number|string)` : Force the Visual to a specific aspect ratio.  This works by making the asset `position:absolute` and then using an inner div with a `padding-top` set to a percentage.  Can be set as a number like `:aspect='16/9'` or as a string like `aspect='16:9'`.  May also use any of the asset properties (`poster`, `image`, `video`, `fallback`) to use the native aspect ratio of the asset.  Note, these values cannot be read until the asset has loaded, so the Visual will be dimension-less until load has completed.
+- `aspect (number)` : Force the Visual to a specific aspect ratio.  This works by making the asset `position:absolute` and then using an inner div with a `padding-top` set to a percentage.
 
-- `fill (boolean)` : Make the Visual fill it's container via CSS using absolute positioning.
+- `expand (boolean)` : Make the Visual fill it's container via CSS using absolute positioning.
 
 
 #### Style
 
-- `background (string)` - May be `cover` or `contain`. When set, image assets as a CSS `background-image` with either `background-size: cover` or `background-size: contain` depending on the value of the prop. Video assets will be made to mimic this display style by using javascript to transform the offset of the asset, masking clipped regions with `overflow: hidden`.
+- `background-size (string)` - *Default `cover`.* Like the CSS property.
 
-- `background-position (string)` - *Default `center center`.*  This sets the CSS `background-position` when the Visual is using `background` rendering.  The effect will also be applied to Videos.
+- `background-position (string)` - *Default `center center`.*  Like the CSS property.
 
 - `align (string)` - *Default `center middle`.*.  Used in conjunction with slots to position the slot content.  May be any combination of one horizontal (`left`, `center`, `right`) and one vertical (`top`, `middle`, `bottom`) choice, space-delimited.
 
 
 #### Loading
 
-- `load (string|boolean)` - *Default: `true`.*  If `true`, assets are loaded in order, immediately.  In other words, once the `poster` has loaded, the `image` will load, and then either the `video` or `fallback`.  If set to `false`, you must call `loadAsset(asset)` on the component to initiate loading.  If set to `visible`, assets won't be loaded until the Visual enters the viewport.  Different loading values can be set for each asset type:
-	- `load-poster (string|boolean)`
-	- `load-image (string|boolean)`
-	- `load-video (string|boolean)` - Also applies to the `fallback`
+- `autoload (boolean)` - *Default: `true`.*  If `true`, assets are loaded immediately unless `lazyload``.
 
-- `loader (string|object)` - A Vue component that will be mounted and appended to `.vv-visual`.  If a string, the identifier of a Component already registered with `Vue.component()`.  If an object, a Vue component object.
+- `lazyload (boolean)` - Waits until the Visual enters the viewport to trigger loading.  Overrides, `autoload`.
 
-- `loader-throttle (number)` - *Default: `100`.*  How many milliseconds to throttle the check for whether to show the loader.  This prevents the loader from showing when a load is very quick.
+- `intersection-options (object)` - IntersectionObserver options. Used with `lazyload` and `autopause`.
 
+- `placeholder-color` - Sets a background color behind the assets.  Most useful in conjunction with an `aspect` value.
 
-#### Viewport
-
-This package consumes the [vue-in-viewport-mixin package](https://github.com/BKWLD/vue-in-viewport-mixin).  As a result, all of it's props are available and modify all behavior involving `visible` behavior.  Here are the most commonly used props:
-
-- `in-viewport-root-margin` - Specify the [IntersectionObserver rootMargin](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver#Parameters).  For example, set to "-20% 0%" to delay the `inViewport.now` from switching state until your component is 20% of the viewport height into the page.
-
-- `in-viewport-root` - Specify the [IntersectionObserver root](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/IntersectionObserver#Parameters).  Defaults to the browser viewport.
-
-
-#### Transition
-
-- `transition (string)` -  A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied to the `v-if` directives that are applied to assets that have `load` setting.  The Visual component ships with a `vv-fade` transition that fades in assets over previously loaded assets.  Different transition values can be set for each asset type (as well as the loader):
-	- `transition-poster (string)`
-	- `transition-image (string)`
-	- `transition-video (string)` - Also applies to the `fallback`
-	- `transition-loader (string)`
+- `transition (string)` -  A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied when an asset is loaded.
 
 
 #### Video
 
-- `autoplay (boolean,string)` - If `true`, begins playing immediately.  If `visible`, begins playing when the Visual enters the viewport.
+- `autoplay (boolean)` - If `true`, begins playing immediately.
 
-- `autopause  (string)` - If `visible`, begins playing when the Visual enters the viewport.
+- `autopause (boolean)` - If `true`, begins playing when the Visual enters the viewport and stops when it leaves.  Overrides `autoplay`.
 
 - `loop (boolean)` - Sets `<video>` `loop`
 
@@ -419,32 +91,18 @@ This package consumes the [vue-in-viewport-mixin package](https://github.com/BKW
 
 - `default`: Markup is added after the assets and before the loader
 
-- `prepend`: Markup is added before the assets
-
 
 ## Methods
 
 #### Instance
 
-- `loadAsset(asset)` - Initiate loading if the Visual had the `load` prop set to false.  Specify an asset to load a specific asset.
+- `load()` - Manually initiate loading.
 
 - `play()` - Tell `video` to play.
 
 - `pause()` - Tell `video` to pause.
 
 - `restart()` - Tell `video` to restart playback from beginning.
-
-- `togglePlayback(bool = null)` - Call without an argument to toggle between playing and paused.  Or call with `true` to play and `false` to pause.
-
-
-#### Component
-
-- `setDefaults(config)` - Change the default prop values for all future-instantiated components.
-	```
-	Vue.component('visual').options.method({
-		transition: 'vv-fade',
-	})
-	```
 
 
 ## Contributing
