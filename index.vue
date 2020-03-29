@@ -46,13 +46,14 @@
 	.vv-wrapper(v-if='video && shouldLoad')
 		transition(:name='transition')
 
-			//- Video tag
+			//- Video tag. 
+			//- Preload because it is only rendered if it's load time.
 			video.vv-asset.vv-video(
 				v-show='videoLoaded'
 				ref='video'
 				playsinline
-				preload='autoload ? "auto" : "none"'
-				autoplay='autoplay'
+				preload='auto'
+				:autoplay='shouldAutoplay'
 				:loop='loop'
 				:muted='muted'
 				:controls='controls'
@@ -75,6 +76,7 @@
 <script lang='coffee'>
 import fitsAssets from './concerns/fits-assets.coffee'
 import loadsAssets from './concerns/loads-assets.coffee'
+import observesViewport from './concerns/observes-viewport'
 import slotsContent from './concerns/slots-content.coffee'
 import supportsImages from './concerns/supports-images'
 import supportsVideos from './concerns/supports-videos'
@@ -83,6 +85,7 @@ export default
 	mixins: [
 		fitsAssets
 		loadsAssets
+		observesViewport
 		slotsContent
 		supportsImages
 		supportsVideos

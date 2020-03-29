@@ -6,6 +6,7 @@ export default
 	props:
 		video: String | Array
 		autoplay: Boolean
+		autopause: Boolean
 		loop: Boolean
 		muted: Boolean
 		controls: Boolean
@@ -22,6 +23,17 @@ export default
 					when 'mp4' then 'video/mp4'
 					when 'webm' then 'video/webm'
 					when 'ogg' then 'video/ogg'
+
+		# Don't autoplay if set to autopause. We don't want to autoplay when a 
+		# video is offscreen
+		shouldAutoplay: -> @autoplay and not @autopause
+
+	watch: 
+
+		# If autopausing, play toggle playback based on viewport status
+		inViewport: (visible) ->
+			return unless @autopause
+			if visible then @play() else @pause()
 
 	methods:
 

@@ -26,11 +26,6 @@
     "url": "https://github.com/BKWLD/vue-visual/issues"
   },
   "homepage": "https://github.com/BKWLD/vue-visual#readme",
-  "dependencies": {
-    "is-numeric": "^0.0.5",
-    "lodash": ">= 4.17.11",
-    "vue-in-viewport-mixin": "^2.0.0"
-  },
   "devDependencies": {
     "@babel/core": "^7.4.3",
     "@babel/preset-env": "^7.4.3",

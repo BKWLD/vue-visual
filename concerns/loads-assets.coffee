@@ -4,9 +4,6 @@ Logic related to loading assets
 export default
 
 	props:
-
-		# Loading
-		lazyload: Boolean
 		autoload: 
 			type: Boolean
 			default: true
@@ -15,7 +12,7 @@ export default
 			default: 'vv-fade'
 
 	data: -> 
-		shouldLoad: @autoload
+		shouldLoad: @autoload and not @lazyload
 		imageLoaded: false
 		videoLoaded: false
 

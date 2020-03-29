@@ -149,41 +149,6 @@ storiesOf('Assets', module)
     `Loads autoplaying, looping video.` 
   }})
 
-  .add('Image and Video', () => ({
-    components: { Visual },
-    props: {
-      image: { default: text('image', image) },
-      video: { default: text('video', video) },
-    },
-    template: `<div>
-      <visual 
-        :image='image'  
-        :video='video' 
-        muted autoplay loop
-        width='100%' />
-    </div>`
-  }), { info: { summary: 
-    `The image will be displayed until the video is ready.` 
-  }})
-
-  .add('Placeholder', () => ({
-    components: { Visual },
-    props: {
-      image: { default: text('image', image) },
-      placeholderColor: { default: color('placeholderColor', '#333') },
-      aspect: props.aspect(),
-    },
-    template: `<div>
-      <visual 
-        :image='image'  
-        :placeholder-color='placeholderColor'
-        :aspect='aspect'
-        width='100%' />
-    </div>`
-  }), { info: { summary: 
-    `Placeholder works best when there is a known aspect ratio.` 
-  }})
-
 storiesOf('Size', module)
 
   .add('Fixed size', () => ({
@@ -248,7 +213,7 @@ storiesOf('Style', module)
     components: { Visual },
     props: {
       align: props.align(),
-      aspect: props.aspect(0.5),
+      aspect: props.aspect(1),
       image: { default: text('image', image) },
     },
     template: `<visual 
@@ -283,12 +248,9 @@ storiesOf('Loading', module)
   .add('Progressive', () => ({
     components: { Visual },
     props: {
-      poster: { default: text('poster', poster) },
       image: { default: text('image', image) },
       video: { default: text('video', video) },
-      fallback: { default: text('fallback', fallback) },
-      autoplay: { default: boolean('autoplay', true) },
-      loop: { default: boolean('loop', true) },
+      placeholderColor: { default: color('placeholderColor', '#333') },
       width: props.width(),
       aspect: props.aspect(),
       transition: props.transition(),
@@ -298,33 +260,22 @@ storiesOf('Loading', module)
       onLoadEvent: (event) => action(event)()
     },
     template: `<visual
-      :poster='poster'
       :image='image'
       :video='video'
       :width='width'
       :aspect='aspect'
-      :fallback='fallback'
       :transition='transition'
       :background-size='backgroundSize'
-      :autoplay='autoplay' muted
-      :loop='loop'
-      @loading='onLoadEvent("loading")'
+      autoplay muted loop
+      :placeholder-color='placeholderColor'
       @loaded='onLoadEvent("loaded")'
-      @poster-loading='onLoadEvent("poster-loading")'
-      @poster-loaded='onLoadEvent("poster-loaded")'
-      @image-loading='onLoadEvent("image-loading")'
-      @image-loaded='onLoadEvent("image-loaded")'
-      @video-loading='onLoadEvent("video-loading")'
-      @video-loaded='onLoadEvent("video-loaded")'
-      @fallback-loading='onLoadEvent("fallback-loading")'
-      @fallback-loaded='onLoadEvent("fallback-loaded")'
+      @loaded:image='onLoadEvent("loaded:image")'
+      @loaded:video='onLoadEvent("loaded:video")'
+      
     />`
   }), { info: { summary: 
-    `Vue Visual loads the poster first, then the image, then the video and only 
-    loads the fallback if the device doesn't support videos. Using an aspect and
-    background cover so there is no pop in during the transition. Check out the 
-    Actions tab for the loading events that are fired and the order in which
-    they were triggered.`
+    `The image will be displayed until the video is ready. Using an aspect, 
+    placeholder and background-size so there is no pop in during the transition. Check out the Actions tab for the loading events that are fired.`
   }})
   
   .add('Manual', () => ({
@@ -334,7 +285,7 @@ storiesOf('Loading', module)
       transition: props.transition(),
     },
     methods: {
-      load: function() { this.$refs.visual.loadAsset('image') },
+      load: function() { this.$refs.visual.load() },
       onLoadEvent: function(event) { action(event)() },
     },
     template: `<div>
@@ -343,11 +294,12 @@ storiesOf('Loading', module)
       </div>
       <visual 
         ref='visual'
-        :load='false'
+        :autoload='false'
         :image='image'
         :transition='transition'
-        @loading='onLoadEvent("loading")'
+        width='100%'
         @loaded='onLoadEvent("loaded")'
+        @loaded:image='onLoadEvent("loaded:image")'
       />
     </div>`
   }), { info: { summary: 
@@ -355,38 +307,59 @@ storiesOf('Loading', module)
     view loading events.`
   }})
   
-  .add('In Viewport', () => ({
+  .add('Lazy Load', () => ({
     components: { Visual },
     props: {
       marginTop: { default: text('CSS margin-top', '100vh') },
-      poster: { default: text('poster', poster) },
       image: { default: text('image', image) },
       aspect: props.aspect(),
-      backgroundSize: props.backgroundSize(),
       transition: props.transition(),
     },
     methods: {
       onLoadEvent: function(event) { action(event)() },
     },
-    template: `<visual 
-      :style='{ marginTop: marginTop }'
-      ref='visual'
-      load='visible'
-      :loadPoster='true'
-      :poster='poster'
-      :image='image'
-      :aspect='aspect'
-      :transition='transition'
-      :background-size='backgroundSize'
-      in-viewport-root='[class^=".src-components-Docs-container"]'
-      @poster-loading='onLoadEvent("poster-loading")'
-      @poster-loaded='onLoadEvent("poster-loaded")'
-      @image-loading='onLoadEvent("image-loading")'
-      @image-loaded='onLoadEvent("image-loaded")'
-    />`
+    template: `
+        <visual 
+          :style='{ marginTop: marginTop }'
+          ref='visual'
+          lazyload
+          :image='image'
+          :aspect='aspect'
+          :transition='transition'
+          :intersection-options='{ root: "#root > *", }'
+          @loaded:image='onLoadEvent("loaded:image")'
+          @loaded:video='onLoadEvent("loaded:video")'
+        />`
   }), { info: { summary: 
-    `Load the poster image immediately but only load the image when some
-    distance into the viewport. You can check the network inspector or view the
-    Actions tab to verify that the image asset doesn't load until Visual is 
-    scrolled into the viewport.`
+    `Load the image only once the visual is moved into the viewport. You can 
+    check the network inspector or view the Actions tab to verify that the 
+    image asset doesn't load until Visual is scrolled into the viewport.`
+  }})
+
+  .add('Auto Pause', () => ({
+    components: { Visual },
+    props: {
+      marginTop: { default: text('CSS margin-top', '100vh') },
+      video: { default: text('video', video) },
+    },
+    mounted: function() {
+      const video = this.$refs.visual.$el.querySelector('video')
+      video.addEventListener('pause', () => { action('pause')() })
+      video.addEventListener('play', () => { action('play')() })
+    },
+    methods: {
+      onLoadEvent: function(event) { action(event)() },
+    },
+    template: `
+        <visual 
+          :style='{ marginTop: marginTop }'
+          ref='visual'
+          autoplay autopause loop muted
+          width='100%'
+          :video='video'
+          :intersection-options='{ root: "#root > *", }'
+        />`
+  }), { info: { summary: 
+    `Auto pause videos when they leave the viewport. Check the Actions tab for
+    a log of when pausing occurs.`
   }})
