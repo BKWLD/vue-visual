@@ -1,69 +1,29 @@
-/**
- * Styles are all single selectors that don't use inheritance so that
- * Visuals that reside within Visuals don't inherit parent parent values
- * inadvertently.  I didn't want to use direct descendent selectors because
- * overriding would be a pain.
- */
 .vv-visual {
-  display: inline-block;
-  font-size: 0;
-  overflow: hidden;
   position: relative;
+  overflow: hidden;
+  font-size: 0;
 }
-.vv-block {
-  display: block;
-}
-.vv-has-width {
+.vv-expand,
+.vv-has-aspect .vv-wrapper,
+.vv-has-aspect .vv-asset {
+  position: absolute;
+  left: 0;
+  top: 0;
   width: 100%;
-}
-.vv-has-height {
   height: 100%;
 }
-.vv-shim {
+.vv-aspect-shim {
   display: inline-block;
   height: 100%;
 }
-.vv-fill {
-  display: block;
+.vv-placeholder {
   position: absolute;
-  top: 0;
-  bottom: 0;
   left: 0;
-  right: 0;
-}
-.vv-fill-asset {
-  position: absolute;
+  top: 0;
   width: 100%;
   height: 100%;
 }
-.vv-asset[class*='vv-background-'] {
-  background-repeat: no-repeat;
-}
-.vv-background-cover {
-  background-size: cover;
-}
-.vv-background-contain {
-  background-size: contain;
-}
-.vv-video.vv-background-cover,
-.vv-video.vv-background-contain {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.vv-video.vv-background-cover.vv-video-pillarbox,
-.vv-video.vv-background-contain.vv-video-letterbox {
-  width: calc(100% + 1px);
-  height: auto;
-}
-.vv-video.vv-background-cover.vv-video-letterbox,
-.vv-video.vv-background-contain.vv-video-pillarbox {
-  width: auto;
-  height: calc(100% + 1px);
-}
-.vv-slot,
-.vv-slot-prepend {
+.vv-slot {
   font-size: 1rem;
   position: relative;
   display: inline-block;
@@ -86,13 +46,15 @@
 .vv-align-right {
   text-align: right;
 }
-.vv-fade-enter {
-  opacity: 0;
-}
-.vv-fade-enter-active {
+.vv-fade-enter-active,
+.vv-fade-leave-active {
   transition: opacity 0.3s;
 }
 .vv-fade-leave-active {
-  transition-delay: 0.31s;
+  position: absolute;
+}
+.vv-fade-enter,
+.vv-fade-leave-to {
+  opacity: 0;
 }
 
