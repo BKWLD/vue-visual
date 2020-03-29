@@ -55,7 +55,9 @@ export default
 	methods:
 
 		# Handle an asset being loaded
-		onAssetLoad: (assetType) -> @["#{assetType}Loaded"] = true
+		onAssetLoad: (assetType) -> 
+			console.log 'loaded', assetType
+			@["#{assetType}Loaded"] = true
 
 		# Manually start loading
 		load: -> @shouldLoad = true

@@ -37,23 +37,26 @@
 	
 	//- Video asset
 	.vv-wrapper(v-if='video && shouldLoad')
+		transition(name='vv-fade')
 
-		//- Video tag
-		video.vv-asset.vv-video(
-			ref='video'
-			playsinline
-			:preload='autoload'
-			:autoplay='autoplay'
-			:loop='loop'
-			:muted='muted'
-			:controls='controls'
-			:aria-label='alt'
-			:style='assetStyles')
-			source(
-				v-for='{src, type} in videoSources'
-				:key='type'
-				:src='src'
-				:type='type')
+			//- Video tag
+			video.vv-asset.vv-video(
+				v-show='videoLoaded'
+				ref='video'
+				playsinline
+				:preload='autoload'
+				:autoplay='autoplay'
+				:loop='loop'
+				:muted='muted'
+				:controls='controls'
+				:aria-label='alt'
+				:style='assetStyles'
+				@canplaythrough='onAssetLoad("video")')
+				source(
+					v-for='{src, type} in videoSources'
+					:key='type'
+					:src='src'
+					:type='type')
 	
 	//- Render content after the assets
 	.vv-slot(:class='slotAlignClasses'): slot
