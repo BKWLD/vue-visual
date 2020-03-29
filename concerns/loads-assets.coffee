@@ -7,6 +7,8 @@ export default
 		autoload: 
 			type: Boolean
 			default: true
+		lazyload: Boolean
+		placeholderColor: String
 		transition: 
 			type: String
 			default: 'vv-fade'

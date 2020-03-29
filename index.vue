@@ -91,9 +91,7 @@ export default
 		supportsVideos
 	]
 
-	props:
-		alt: String
-		placeholderColor: String
+	props: alt: String
 
 	computed:
 

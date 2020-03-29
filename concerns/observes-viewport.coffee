@@ -5,7 +5,6 @@ needs are simpler and I want more control.
 export default
 
 	props:
-		lazyload: Boolean
 		intersectionOptions: 
 			type: Object
 			default: -> {}
