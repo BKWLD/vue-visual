@@ -14,7 +14,7 @@
 		:class='shimAlignClasses')
 
 	//- Show a placeholder shape until an asset is loaded
-	transition(name='vv-fade')
+	transition(:name='transition')
 		.vv-placeholder(
 			v-if='placeholderColor && !imageLoaded && !videoLoaded'
 			:style='{ backgroundColor: placeholderColor }')
@@ -22,7 +22,7 @@
 	//- Image asset
 	//- The wrapper constainer is needed for the object-fit polyfill
 	.vv-wrapper(v-if='image && shouldLoad')
-		transition(name='vv-fade')
+		transition(:name='transition')
 			picture(v-show='imageLoaded && !videoLoaded')
 
 				//- Webp sources
@@ -44,7 +44,7 @@
 	
 	//- Video asset
 	.vv-wrapper(v-if='video && shouldLoad')
-		transition(name='vv-fade')
+		transition(:name='transition')
 
 			//- Video tag
 			video.vv-asset.vv-video(
