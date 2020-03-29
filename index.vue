@@ -117,6 +117,14 @@ export default
 	overflow hidden
 	font-size 0 // For slot alignment and clearing of line-height
 
+// Fill the parent
+.vv-expand
+	position absolute
+	left 0
+	top 0
+	width 100%
+	height 100%
+
 // Uses to prop block open when an aspect is passed in
 .vv-aspect-shim
 	display inline-block
@@ -125,11 +133,7 @@ export default
 // Expand the image if using an aspect-shim
 .vv-has-aspect
 	.vv-wrapper, .vv-asset
-		position absolute
-		left 0
-		top 0
-		width 100%
-		height 100%
+		@extend .vv-expand
 
 // Fill the space with a placeholder shape
 .vv-placeholder

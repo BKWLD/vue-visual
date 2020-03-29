@@ -11,6 +11,7 @@ export default
 		height: Number|String
 		aspect: Number
 		maxWidth: Number
+		expand: Boolean
 
 		# Layout
 		backgroundSize: 
@@ -44,7 +45,9 @@ export default
 		}
 
 		# Container classes
-		fitsAssetsContainerClasses: -> 'vv-has-aspect': @hasAspect
+		fitsAssetsContainerClasses: -> 
+			'vv-has-aspect': @hasAspect
+			'vv-expand': @expand
 
 	methods:
 
