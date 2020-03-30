@@ -109,3 +109,17 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 - Boot up the Storybook with `yarn storybook` and use that as your HMR friendly dev environment
 - Use `npm version ...` to build, tag, and update the poblished storybook
+
+## Changes from 1.x
+
+- Dropped props:
+  - `poster`
+  - `fallback`
+  - per-asset variants for `load`, etc
+- Prop changes
+  - `background` ➡ `object-size`
+  - `background-position` ➡ `object-position`
+  - `fill` ➡ `expand`
+- Not testing for video support on device
+- Video playing state not stored in Vue state
+- Image and video loaded simultenously, not in series
