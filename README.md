@@ -107,5 +107,5 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 ## Contributing
 
-- Run the examples server with `PORT=3000 node examples/server` and go to an example to see the source for the E2E tests.  Like http://localhost:3000/basic/.
-- Run `yarn test` to run E2E tests.
+- Boot up the Storybook with `yarn storybook` and use that as your HMR friendly dev environment
+- Use `npm version ...` to build, tag, and update the poblished storybook
