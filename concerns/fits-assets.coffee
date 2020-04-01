@@ -14,7 +14,7 @@ export default
 		expand: Boolean
 
 		# Layout
-		objectSize: 
+		objectFit: 
 			type: String
 			default: 'cover'
 		objectPosition: 
@@ -35,7 +35,7 @@ export default
 
 		# Styles that go on the asset tags
 		assetStyles: -> {
-			@objectSize
+			@objectFit
 			@objectPosition
 
 			# If there isn't an aspect ratio, apply the container dimensions to
@@ -54,7 +54,7 @@ export default
 		# Enable the objectFitPolyfill if it was loaded
 		applyObjectFitPolyfill: (assetType) -> 
 			return unless window.objectFitPolyfill
-			@$refs[assetType].dataset.objectFit = @objectSize
+			@$refs[assetType].dataset.objectFit = @objectFit
 			@$refs[assetType].dataset.objectPosition = @objectPosition
 			window.objectFitPolyfill @$refs[assetType].$el
 

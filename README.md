@@ -49,7 +49,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Style
 
-- `object-size (string)` - *Default `cover`.* Like the CSS property.
+- `object-fit (string)` - *Default `cover`.* Like the CSS property.
 
 - `object-position (string)` - *Default `center center`.*  Like the CSS property.
 
@@ -117,7 +117,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
   - `fallback`
   - per-asset variants for `load`, etc
 - Prop changes
-  - `background` ➡ `object-size`
+  - `background` ➡ `object-fit`
   - `background-position` ➡ `object-position`
   - `fill` ➡ `expand`
 - Not testing for video support on device

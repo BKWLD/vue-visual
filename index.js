@@ -274,7 +274,7 @@ using object-fit.
     maxWidth: Number,
     expand: Boolean,
     // Layout
-    objectSize: {
+    objectFit: {
       type: String,
       default: 'cover'
     },
@@ -307,7 +307,7 @@ using object-fit.
       // the asset as well. Necessary becauase the asset won't naturally match
       // the container div.
       return _objectSpread({
-        objectSize: this.objectSize,
+        objectFit: this.objectFit,
         objectPosition: this.objectPosition
       }, !this.hasAspect ? this.dimensionStyles : {});
     },
@@ -326,7 +326,7 @@ using object-fit.
         return;
       }
 
-      this.$refs[assetType].dataset.objectFit = this.objectSize;
+      this.$refs[assetType].dataset.objectFit = this.objectFit;
       this.$refs[assetType].dataset.objectPosition = this.objectPosition;
       return window.objectFitPolyfill(this.$refs[assetType].$el);
     },
