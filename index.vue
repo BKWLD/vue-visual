@@ -81,6 +81,7 @@ import slotsContent from './concerns/slots-content.coffee'
 import supportsImages from './concerns/supports-images'
 import supportsVideos from './concerns/supports-videos'
 export default
+	name: 'VueVisual'
 
 	mixins: [
 		fitsAssets
