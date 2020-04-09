@@ -123,3 +123,4 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 - Not testing for video support on device
 - Video playing state not stored in Vue state
 - Image and video loaded simultenously, not in series
+- Removed `setDefaults` for setting default options.  I recommend writing a functional Vue component that sets the defaults you want for your project.  I plan to add some examples of these for different CMSs in the future.
