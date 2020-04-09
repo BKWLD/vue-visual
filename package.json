@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "version": "npm run build && git add -A",
-    "postversion": "git push --follow-tags && yarn storybook:build",
+    "postversion": "git push --follow-tags && yarn storybook:deploy",
     "storybook": "start-storybook -p 6006",
     "storybook:build": "build-storybook",
     "storybook:deploy": "storybook-to-ghpages"

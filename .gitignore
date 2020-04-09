@@ -12,3 +12,4 @@ node_modules
 test/e2e/reports
 test/e2e/screenshots
 selenium-debug.log
+/storybook-static
