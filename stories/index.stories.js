@@ -1,7 +1,7 @@
 // Storybook includes
 import { storiesOf, addDecorator } from '@storybook/vue'
 import { withInfo, setDefaults as infoDefaults } from 'storybook-addon-vue-info'
-import { action } from '@storybook/addon-actions';
+import { action } from '@storybook/addon-actions'
 import { 
   withKnobs, 
   number, 
@@ -65,16 +65,14 @@ const props = {
 }
 
 // Import Visual
-import Visual from '../index.vue';
+import Visual from '../index.vue'
 
 // Import assets
-import poster from './assets/poster.jpg';
-import image from './assets/image.jpg';
-import image320 from './assets/image-320.jpg';
-import imageWebP from './assets/image.webp';
-import imageWebP320 from './assets/image-320.webp';
-import video from './assets/video.mp4';
-import fallback from './assets/fallback.gif';
+import image from './assets/image.jpg'
+import image320 from './assets/image-320.jpg'
+import imageWebP from './assets/image.webp'
+import imageWebP320 from './assets/image-320.webp'
+import video from './assets/video.mp4'
 
 // Containner of all stories
 storiesOf('Assets', module)
@@ -225,7 +223,7 @@ storiesOf('Style', module)
         color: white; 
         padding: 10px;
         margin: 0;
-        text-shadow: 0 2px 20px rgba(0,0,0,.8)
+        text-shadow: 0 2px 20px rgba(0,0,0,.8);
       '>
         Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum 
         nibh, ut fermentum massa justo sit amet risus. Donec id elit non mi 
