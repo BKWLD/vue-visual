@@ -123,6 +123,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 - Not testing for video support on device
 - Video playing state not stored in Vue state
 - Image and video loaded simultenously, not in series
-- Removed `setDefaults` for setting default options.  See [custom-defaults]('examples/custom-defaults.js) for an example of how to implement this functionality using a functional component.
+- Removed `setDefaults` for setting default options.  See [custom-defaults](examples/custom-defaults.js) for an example of how to implement this functionality using a functional component.
 
 [migrate-1.x.coffee](examples/migrate-1.x.coffee) shows an example of a functional component that migrates the old API to the new API.
+
