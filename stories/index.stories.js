@@ -180,7 +180,24 @@ storiesOf('Size', module)
       :object-fit='objectFit'
     />`
   }), { info: { summary: 
-    `Load an image into an image with a fixed aspect ratio.`
+    `Load an image into a container with a fixed aspect ratio.`
+  }})
+
+  .add('Expand', () => ({
+    components: { Visual },
+    props: {
+      objectFit: props.objectFit(),
+      image: { default: text('image', image) },
+    },
+    template: `<div style='width: 300px; height: 300px; position: relative;'>
+      <visual 
+        expand
+        :image='image'
+        :object-fit='objectFit'
+      />
+    </div>`
+  }), { info: { summary: 
+    `Expand the Visual to fill its container.`
   }})
 
 storiesOf('Style', module)

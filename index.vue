@@ -131,8 +131,8 @@ export default
 	display inline-block
 	height 100%
 
-// Expand the image if using an aspect-shim
-.vv-has-aspect
+// Expand the image if using an aspect-shim or if expanding the container
+.vv-has-aspect, .vv-expand
 	.vv-wrapper, .vv-asset
 		@extend .vv-expand
 
