@@ -42,7 +42,7 @@ Vue.component 'visual',
 		inViewportThreshold: Number|Array
 
 	functional: true
-	render: (create, { props, data }) ->
+	render: (create, { props, data, children }) ->
 
 		# Clone the props
 		props = { ...props }
@@ -89,4 +89,4 @@ Vue.component 'visual',
 		].forEach (key) -> delete props[key]
 		
 		# Create Visual 2.x instance
-		create Visual, {...data, props }
+		create Visual, {...data, props, children }

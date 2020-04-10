@@ -8,7 +8,7 @@ import Visual from 'vue-visual';
 Vue.component('visual', {
 	name: 'VueVisual',
 	functional: true,
-	render: function(create, {props, data}) {
+	render: function(create, {props, data, children}) {
 		return create(Visual, {
 			...data,
 			props: {
@@ -19,6 +19,6 @@ Vue.component('visual', {
 				
 				...props
 			}
-		});
+		}, children);
 	}
 });
