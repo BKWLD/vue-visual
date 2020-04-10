@@ -5,7 +5,9 @@
 }
 .vv-expand,
 .vv-has-aspect .vv-wrapper,
-.vv-has-aspect .vv-asset {
+.vv-expand .vv-wrapper,
+.vv-has-aspect .vv-asset,
+.vv-expand .vv-asset {
   position: absolute;
   left: 0;
   top: 0;

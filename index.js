@@ -238,12 +238,14 @@ var render = function() {
             1
           )
         : _vm._e(),
-      _c(
-        "div",
-        { staticClass: "vv-slot", class: _vm.slotAlignClasses },
-        [_vm._t("default")],
-        2
-      )
+      _vm.$slots.default
+        ? _c(
+            "div",
+            { staticClass: "vv-slot", class: _vm.slotAlignClasses },
+            [_vm._t("default")],
+            2
+          )
+        : _vm._e()
     ],
     1
   )
@@ -659,6 +661,7 @@ Logic related video playback
 
 
 /* harmony default export */ var lib_vue_loader_options_indexvue_type_script_lang_coffee_ = ({
+  name: 'VueVisual',
   mixins: [fits_assets_coffee, loads_assets_coffee, observes_viewport_coffee, slots_content_coffee, supports_images_coffee, supports_videos_coffee],
   props: {
     alt: String
