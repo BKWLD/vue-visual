@@ -67,7 +67,9 @@
 					:type='type')
 	
 	//- Render content after the assets
-	.vv-slot(:class='slotAlignClasses'): slot
+	.vv-slot(
+		v-if='$slots.default'
+		:class='slotAlignClasses'): slot
 
 </template>
 
