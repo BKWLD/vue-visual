@@ -34,6 +34,10 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 - `image (string)` : The URL of an image to load.
 
+- `srcset (string)` : An `img` [srcset](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-srcset), used in addition to the `image`.  Both are recommended.
+
+- `webp-srcset (string)` : A `srcset` that will be added to a `source` inside of a `picture` element with a `type` of `image/webp`.
+
 - `video (string|array)` : A video that is loaded after the image is loaded if the device supports video. If a string, should be the URL to a source video.  If an array, a list of video URLs that will be added as difference `<source>`s.
 
 #### Size
@@ -41,6 +45,8 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 - `width (number|string)` : This width will be applied to the container div. If a number, it's assumed to be a px value.
 
 - `height (number|string)` : See `width`
+
+- `sizes (string)` : Specify the `img` `sizes` attribute.
 
 - `aspect (number)` : Force the Visual to a specific aspect ratio.  This works by making the asset `position:absolute` and then using an inner div with a `padding-top` set to a percentage.
 
