@@ -297,11 +297,13 @@ using object-fit.
     },
     // Styles that get added to the parent container
     dimensionStyles: function dimensionStyles() {
-      return {
-        width: this.autoUnit(this.width),
-        height: this.autoUnit(this.height),
-        'max-width': this.autoUnit(this.maxWidth)
-      };
+      return _objectSpread({}, this.width ? {
+        width: this.autoUnit(this.width)
+      } : {}, {}, this.height ? {
+        height: this.autoUnit(this.height)
+      } : {}, {}, this.maxWidth ? {
+        maxWidth: this.autoUnit(this.maxWidth)
+      } : {});
     },
     // Styles that go on the asset tags
     assetStyles: function assetStyles() {
@@ -334,10 +336,6 @@ using object-fit.
     },
     // Support plain numbers for px units
     autoUnit: function autoUnit(val) {
-      if (!val) {
-        return;
-      }
-
       if (String(val).match(/^\d+$/)) {
         return "".concat(val, "px");
       } else {
