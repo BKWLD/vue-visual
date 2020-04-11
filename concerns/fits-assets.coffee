@@ -28,10 +28,11 @@ export default
 		hasAspect: -> !!@aspect
 
 		# Styles that get added to the parent container
-		dimensionStyles: ->
-			width: @autoUnit @width
-			height: @autoUnit @height
-			'max-width': @autoUnit @maxWidth
+		dimensionStyles: -> {
+			...(if @width then width: @autoUnit @width else {})
+			...(if @height then height: @autoUnit @height else {})
+			...(if @maxWidth then maxWidth: @autoUnit @maxWidth else {})
+		}
 
 		# Styles that go on the asset tags
 		assetStyles: -> {
@@ -59,6 +60,4 @@ export default
 			window.objectFitPolyfill @$refs[assetType].$el
 
 		# Support plain numbers for px units
-		autoUnit: (val) -> 
-			return unless val
-			if String(val).match /^\d+$/ then "#{val}px" else val
+		autoUnit: (val) -> if String(val).match /^\d+$/ then "#{val}px" else val

@@ -200,6 +200,20 @@ storiesOf('Size', module)
     `Expand the Visual to fill its container.`
   }})
 
+  .add('Max Width', () => ({
+    components: { Visual },
+    props: {
+      maxWidth: { default: number('maxWidth', 400, { range: true, min: 200, max: 600}) },
+      image: { default: text('image', image) },
+    },
+    template: ` <visual 
+      :max-width='maxWidth'
+      :image='image'
+    />`
+  }), { info: { summary: 
+    `Expand the Visual to fill its container.`
+  }})
+
 storiesOf('Style', module)
 
   .add('Background', () => ({
