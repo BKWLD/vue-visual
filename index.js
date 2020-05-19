@@ -326,13 +326,17 @@ using object-fit.
   methods: {
     // Enable the objectFitPolyfill if it was loaded
     applyObjectFitPolyfill: function applyObjectFitPolyfill(assetType) {
+      var _this = this;
+
       if (!window.objectFitPolyfill) {
         return;
       }
 
       this.$refs[assetType].dataset.objectFit = this.objectFit;
       this.$refs[assetType].dataset.objectPosition = this.objectPosition;
-      return window.objectFitPolyfill(this.$refs[assetType].$el);
+      return setTimeout(function () {
+        return window.objectFitPolyfill(_this.$refs[assetType].$el);
+      }, 0);
     },
     // Support plain numbers for px units
     autoUnit: function autoUnit(val) {
