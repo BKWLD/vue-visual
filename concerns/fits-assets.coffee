@@ -57,7 +57,7 @@ export default
 			return unless window.objectFitPolyfill
 			@$refs[assetType].dataset.objectFit = @objectFit
 			@$refs[assetType].dataset.objectPosition = @objectPosition
-			window.objectFitPolyfill @$refs[assetType].$el
-
+			setTimeout (=> window.objectFitPolyfill @$refs[assetType].$el), 0
+			
 		# Support plain numbers for px units
 		autoUnit: (val) -> if String(val).match /^\d+$/ then "#{val}px" else val
