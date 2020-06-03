@@ -9,7 +9,7 @@
 	
 	//- Set the aspect ratio
 	.vv-aspect-shim(
-		v-if='hasAspect' 
+		v-if='hasAspect && !expand' 
 		:style='{ paddingTop: aspectPadding }'
 		:class='shimAlignClasses')
 
