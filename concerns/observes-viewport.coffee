@@ -11,12 +11,9 @@ export default
 
 	data: -> inViewport: false
 
-	mounted: ->
-		return unless @shouldObserve and IntersectionObserver?
-		@observer = new IntersectionObserver @onInViewport, 
-			@makeIntersectionOptions()
-		@observer.observe @$el
-
+	# Start observing on init
+	mounted: -> @startObserving()
+		
 	computed:
 
 		# Conditions where the viewport is watched
@@ -32,6 +29,14 @@ export default
 
 	methods:
 
+		# Start observing if appropriate
+		startObserving: -> 
+			return unless @shouldObserve and IntersectionObserver?
+			return if @observer # Don't make multiple observers
+			@observer = new IntersectionObserver @onInViewport, 
+				@makeIntersectionOptions()
+			@observer.observe @$el
+
 		# Parse interesection options
 		makeIntersectionOptions: ->
 			options = @intersectionOptions
@@ -42,4 +47,6 @@ export default
 		# Store when in viewport
 		onInViewport: (entries) ->
 			@inViewport = entries[0].isIntersecting
-			@observer?.disconnect() if @inViewport and @shouldObserveOnce
+			if @inViewport and @shouldObserveOnce
+				@observer?.disconnect() 
+				delete @observer
