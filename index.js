@@ -122,7 +122,7 @@ var render = function() {
       style: _vm.dimensionStyles
     },
     [
-      _vm.hasAspect
+      _vm.hasAspect && !_vm.expand
         ? _c("div", {
             staticClass: "vv-aspect-shim",
             class: _vm.shimAlignClasses,
@@ -153,7 +153,8 @@ var render = function() {
                         value: _vm.imageLoaded && !_vm.videoLoaded,
                         expression: "imageLoaded && !videoLoaded"
                       }
-                    ]
+                    ],
+                    key: _vm.image
                   },
                   [
                     _vm.webpSrcset
@@ -205,6 +206,7 @@ var render = function() {
                         expression: "videoLoaded"
                       }
                     ],
+                    key: _vm.video,
                     ref: "video",
                     staticClass: "vv-asset vv-video",
                     style: _vm.assetStyles,
@@ -451,13 +453,9 @@ needs are simpler and I want more control.
       inViewport: false
     };
   },
+  // Start observing on init
   mounted: function mounted() {
-    if (!(this.shouldObserve && typeof IntersectionObserver !== "undefined" && IntersectionObserver !== null)) {
-      return;
-    }
-
-    this.observer = new IntersectionObserver(this.onInViewport, this.makeIntersectionOptions());
-    return this.observer.observe(this.$el);
+    return this.startObserving();
   },
   computed: {
     // Conditions where the viewport is watched
@@ -478,6 +476,20 @@ needs are simpler and I want more control.
     }
   },
   methods: {
+    // Start observing if appropriate
+    startObserving: function startObserving() {
+      if (!(this.shouldObserve && typeof IntersectionObserver !== "undefined" && IntersectionObserver !== null)) {
+        return;
+      }
+
+      if (this.observer) {
+        // Don't make multiple observers
+        return;
+      }
+
+      this.observer = new IntersectionObserver(this.onInViewport, this.makeIntersectionOptions());
+      return this.observer.observe(this.$el);
+    },
     // Parse interesection options
     makeIntersectionOptions: function makeIntersectionOptions() {
       var options;
@@ -495,7 +507,11 @@ needs are simpler and I want more control.
       this.inViewport = entries[0].isIntersecting;
 
       if (this.inViewport && this.shouldObserveOnce) {
-        return (ref = this.observer) != null ? ref.disconnect() : void 0;
+        if ((ref = this.observer) != null) {
+          ref.disconnect();
+        }
+
+        return delete this.observer;
       }
     }
   }
