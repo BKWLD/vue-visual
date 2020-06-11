@@ -29,6 +29,7 @@
   font-size: 1rem;
   position: relative;
   display: inline-block;
+  max-width: 100%;
 }
 .vv-align-bottom {
   vertical-align: bottom;
