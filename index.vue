@@ -145,11 +145,12 @@ export default
 	width 100%
 	height 100%
 
-// Slot containrs
+// Slot container
 .vv-slot
 	font-size 1rem // Restore font size
 	position relative // Layer above position:absolute backgrounds
 	display inline-block // Prep for vetical centering
+	max-width 100% // Prevent wrapping lines pushing slot below shim
 
 // Add vertical align rules
 .vv-align-bottom
