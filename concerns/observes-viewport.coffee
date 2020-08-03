@@ -5,7 +5,7 @@ needs are simpler and I want more control.
 export default
 
 	props:
-		intersectionOptions: 
+		intersectionOptions:
 			type: Object
 			default: -> {}
 
@@ -13,7 +13,7 @@ export default
 
 	# Start observing on init
 	mounted: -> @startObserving()
-		
+
 	computed:
 
 		# Conditions where the viewport is watched
@@ -30,10 +30,10 @@ export default
 	methods:
 
 		# Start observing if appropriate
-		startObserving: -> 
+		startObserving: ->
 			return unless @shouldObserve and IntersectionObserver?
 			return if @observer # Don't make multiple observers
-			@observer = new IntersectionObserver @onInViewport, 
+			@observer = new IntersectionObserver @onInViewport,
 				@makeIntersectionOptions()
 			@observer.observe @$el
 
@@ -48,5 +48,5 @@ export default
 		onInViewport: (entries) ->
 			@inViewport = entries[0].isIntersecting
 			if @inViewport and @shouldObserveOnce
-				@observer?.disconnect() 
+				@observer?.disconnect()
 				delete @observer
