@@ -45,8 +45,8 @@ export default
 			return options
 
 		# Store when in viewport
-		onInViewport: (entries) ->
-			@inViewport = entries[0].isIntersecting
+		onInViewport: ([..., entry]) ->
+			@inViewport = entry.isIntersecting
 			if @inViewport and @shouldObserveOnce
 				@observer?.disconnect()
 				delete @observer
