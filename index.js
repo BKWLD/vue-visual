@@ -130,7 +130,7 @@ var render = function() {
           })
         : _vm._e(),
       _c("transition", { attrs: { name: _vm.transition } }, [
-        _vm.placeholderColor && !_vm.imageLoaded && !_vm.videoLoaded
+        _vm.placeholderColor && !_vm.showImage
           ? _c("div", {
               staticClass: "vv-placeholder",
               style: { backgroundColor: _vm.placeholderColor }
@@ -150,8 +150,8 @@ var render = function() {
                       {
                         name: "show",
                         rawName: "v-show",
-                        value: _vm.imageLoaded && !_vm.videoLoaded,
-                        expression: "imageLoaded && !videoLoaded"
+                        value: _vm.showImage,
+                        expression: "showImage"
                       }
                     ],
                     key: _vm.image
@@ -602,6 +602,24 @@ Logic related rendering images
     srcset: String,
     webpSrcset: String,
     sizes: String
+  },
+  computed: {
+    // Determines whether the image should be shown via v-show
+    showImage: function showImage() {
+      switch (false) {
+        // Switch to video instance
+        case !this.videoLoaded:
+          return false;
+        // Image has finished loading
+
+        case !this.imageLoaded:
+          return true;
+        // We're not lazyloading, so show asap
+
+        case !!this.lazyload:
+          return true;
+      }
+    }
   }
 });
 // CONCATENATED MODULE: ./concerns/supports-videos.coffee

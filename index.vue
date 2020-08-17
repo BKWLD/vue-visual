@@ -16,14 +16,14 @@
 	//- Show a placeholder shape until an asset is loaded
 	transition(:name='transition')
 		.vv-placeholder(
-			v-if='placeholderColor && !imageLoaded && !videoLoaded'
+			v-if='placeholderColor && !showImage'
 			:style='{ backgroundColor: placeholderColor }')
 
 	//- Image asset
 	//- The wrapper constainer is needed for the object-fit polyfill
 	.vv-wrapper(v-if='image && shouldLoad')
 		transition(:name='transition')
-			picture(:key='image' v-show='imageLoaded && !videoLoaded')
+			picture(:key='image' v-show='showImage')
 
 				//- Webp sources
 				source(
