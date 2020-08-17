@@ -96,6 +96,8 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 ## Slots
 
 - `default`: Markup is added after the assets and before the loader
+- `image-source`: Adds `<source>` tags to the `<picture>` element.
+- `video-source`: Adds `<source>` tags to the `<video>` element.
 
 
 ## Methods

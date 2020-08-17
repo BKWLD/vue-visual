@@ -32,6 +32,9 @@
 					:srcset='webpSrcset'
 					:sizes='sizes')
 
+				//- Slotted sources
+				slot(name='image-source')
+
 				//- Img tag /w srcset support
 				img.vv-asset.vv-image(
 					ref='image'
@@ -61,12 +64,17 @@
 				:aria-label='alt'
 				:style='assetStyles'
 				@canplaythrough='onAssetLoad("video")')
+
+				//- Generated sources
 				source(
 					v-for='{src, type} in videoSources'
 					:key='type'
 					:src='src'
 					:type='type')
-	
+
+				//- Slotted sources
+				slot(name='video-source')
+
 	//- Render content after the assets
 	.vv-slot(
 		v-if='$slots.default'
