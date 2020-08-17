@@ -166,6 +166,7 @@ var render = function() {
                           }
                         })
                       : _vm._e(),
+                    _vm._t("image-source"),
                     _c("img", {
                       ref: "image",
                       staticClass: "vv-asset vv-image",
@@ -182,7 +183,8 @@ var render = function() {
                         }
                       }
                     })
-                  ]
+                  ],
+                  2
                 )
               ])
             ],
@@ -225,15 +227,18 @@ var render = function() {
                       }
                     }
                   },
-                  _vm._l(_vm.videoSources, function(ref) {
-                    var src = ref.src
-                    var type = ref.type
-                    return _c("source", {
-                      key: type,
-                      attrs: { src: src, type: type }
-                    })
-                  }),
-                  0
+                  [
+                    _vm._l(_vm.videoSources, function(ref) {
+                      var src = ref.src
+                      var type = ref.type
+                      return _c("source", {
+                        key: type,
+                        attrs: { src: src, type: type }
+                      })
+                    }),
+                    _vm._t("video-source")
+                  ],
+                  2
                 )
               ])
             ],
