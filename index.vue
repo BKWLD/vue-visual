@@ -6,10 +6,10 @@
 .vv-visual(
 	:class='containerClasses'
 	:style='dimensionStyles')
-	
+
 	//- Set the aspect ratio
 	.vv-aspect-shim(
-		v-if='hasAspect && !expand' 
+		v-if='hasAspect && !expand'
 		:style='{ paddingTop: aspectPadding }'
 		:class='shimAlignClasses')
 
@@ -18,7 +18,7 @@
 		.vv-placeholder(
 			v-if='placeholderColor && !imageLoaded && !videoLoaded'
 			:style='{ backgroundColor: placeholderColor }')
-	
+
 	//- Image asset
 	//- The wrapper constainer is needed for the object-fit polyfill
 	.vv-wrapper(v-if='image && shouldLoad')
@@ -27,8 +27,8 @@
 
 				//- Webp sources
 				source(
-					v-if='webpSrcset' 
-					type='image/webp' 
+					v-if='webpSrcset'
+					type='image/webp'
 					:srcset='webpSrcset'
 					:sizes='sizes')
 
@@ -41,12 +41,12 @@
 					:alt='alt'
 					:style='assetStyles'
 					@load='onAssetLoad("image")')
-	
+
 	//- Video asset
 	.vv-wrapper(v-if='video && shouldLoad')
 		transition(:name='transition')
 
-			//- Video tag. 
+			//- Video tag.
 			//- Preload because it is only rendered if it's load time.
 			video.vv-asset.vv-video(
 				:key='video'
@@ -105,7 +105,7 @@ export default
 			@fitsAssetsContainerClasses
 			@loadsAssetsContainerClasses
 		]
-		
+
 </script>
 
 <!-- ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– -->
