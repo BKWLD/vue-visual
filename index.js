@@ -614,10 +614,6 @@ Logic related rendering images
 
         case !this.imageLoaded:
           return true;
-        // We're not lazyloading, so show asap
-
-        case !!this.lazyload:
-          return true;
       }
     }
   }

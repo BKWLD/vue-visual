@@ -19,5 +19,3 @@ export default
 			# Image has finished loading
 			when @imageLoaded then return true
 
-			# We're not lazyloading, so show asap
-			when not @lazyload then return true
