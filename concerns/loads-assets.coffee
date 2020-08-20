@@ -18,6 +18,9 @@ export default
 		imageLoaded: false
 		videoLoaded: false
 
+	# Set loaded to true immediately if loaded before the load event fires
+	mounted: -> @imageLoaded = true if @$refs?.image?.complete
+
 	computed:
 
 		# Determine whether all assets have been loaded
