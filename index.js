@@ -379,6 +379,14 @@ Logic related to loading assets
       videoLoaded: false
     };
   },
+  // Set loaded to true immediately if loaded before the load event fires
+  mounted: function mounted() {
+    var ref, ref1;
+
+    if ((ref = this.$refs) != null ? (ref1 = ref.image) != null ? ref1.complete : void 0 : void 0) {
+      return this.imageLoaded = true;
+    }
+  },
   computed: {
     // Determine whether all assets have been loaded
     allLoaded: function allLoaded() {
