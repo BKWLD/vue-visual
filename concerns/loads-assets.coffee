@@ -4,16 +4,16 @@ Logic related to loading assets
 export default
 
 	props:
-		autoload: 
+		autoload:
 			type: Boolean
 			default: true
 		lazyload: Boolean
 		placeholderColor: String
-		transition: 
+		transition:
 			type: String
 			default: 'vv-fade'
 
-	data: -> 
+	data: ->
 		shouldLoad: @autoload and not @lazyload
 		imageLoaded: false
 		videoLoaded: false
@@ -25,7 +25,7 @@ export default
 			return false if @image and not @imageLoaded
 			return false if @video and not @videoLoaded
 			return true
-		
+
 		# Container classes
 		loadsAssetsContainerClasses: ->
 			'vv-image-loaded': @imageLoaded
@@ -39,15 +39,15 @@ export default
 		video: -> @videoLoaded = false
 
 		# Trigger side effects of assets loading
-		imageLoaded: (loaded) -> 
+		imageLoaded: (loaded) ->
 			if loaded
-				@applyObjectFitPolyfill 'image' 
+				@applyObjectFitPolyfill 'image'
 				@$emit 'loaded:image'
-		videoLoaded: (loaded) -> 
+		videoLoaded: (loaded) ->
 			if loaded
-				@applyObjectFitPolyfill 'video' 
+				@applyObjectFitPolyfill 'video'
 				@$emit 'loaded:video'
-		allLoaded: (loaded) -> 
+		allLoaded: (loaded) ->
 			if loaded
 				@$emit 'loaded'
 
