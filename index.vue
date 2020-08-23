@@ -112,7 +112,7 @@ export default
 			@slotsContentContainerClasses
 			@fitsAssetsContainerClasses
 			@loadsAssetsContainerClasses
-		]
+		].filter (val) -> !!val
 
 </script>
 
