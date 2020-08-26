@@ -6,6 +6,8 @@
 .vv-expand,
 .vv-has-aspect .vv-wrapper,
 .vv-expand .vv-wrapper,
+.vv-has-aspect .vv-picture,
+.vv-expand .vv-picture,
 .vv-has-aspect .vv-asset,
 .vv-expand .vv-asset {
   position: absolute;
@@ -55,6 +57,7 @@
 }
 .vv-fade-leave-active {
   position: absolute;
+  transition-delay: 0.3s;
 }
 .vv-fade-enter,
 .vv-fade-leave-to {

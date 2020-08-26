@@ -154,7 +154,8 @@ var render = function() {
                         expression: "showImage"
                       }
                     ],
-                    key: _vm.image
+                    key: _vm.image,
+                    staticClass: "vv-picture"
                   },
                   [
                     _vm.webpSrcset
@@ -733,7 +734,9 @@ Logic related video playback
   computed: {
     // Classes that get added to the visual container
     containerClasses: function containerClasses() {
-      return [this.slotsContentContainerClasses, this.fitsAssetsContainerClasses, this.loadsAssetsContainerClasses];
+      return [this.slotsContentContainerClasses, this.fitsAssetsContainerClasses, this.loadsAssetsContainerClasses].filter(function (val) {
+        return !!val;
+      });
     }
   }
 });
