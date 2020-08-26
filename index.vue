@@ -23,7 +23,7 @@
 	//- The wrapper constainer is needed for the object-fit polyfill
 	.vv-wrapper(v-if='image && shouldLoad')
 		transition(:name='transition')
-			picture(:key='image' v-show='showImage')
+			picture.vv-picture(:key='image' v-show='showImage')
 
 				//- Webp sources
 				source(
@@ -142,7 +142,7 @@ export default
 
 // Expand the image if using an aspect-shim or if expanding the container
 .vv-has-aspect, .vv-expand
-	.vv-wrapper, .vv-asset
+	.vv-wrapper, .vv-picture, .vv-asset
 		@extend .vv-expand
 
 // Fill the space with a placeholder shape
