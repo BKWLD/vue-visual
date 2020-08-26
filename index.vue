@@ -181,6 +181,7 @@ export default
 	transition opacity .3s
 .vv-fade-leave-active
 	position absolute // Crossfade when new asset is revealed
+	transition-delay 0.3s // Let video transition ontop
 .vv-fade-enter, .vv-fade-leave-to
 	opacity 0
 
