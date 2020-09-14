@@ -102,14 +102,9 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 ## Methods
 
-#### Instance
-
 - `load()` - Manually initiate loading.
-
 - `play()` - Tell `video` to play.
-
 - `pause()` - Tell `video` to pause.
-
 - `restart()` - Tell `video` to restart playback from beginning.
 
 ## Events
