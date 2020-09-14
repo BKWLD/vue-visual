@@ -112,6 +112,12 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 - `restart()` - Tell `video` to restart playback from beginning.
 
+## Events
+
+- `loaded:image` - Image asset has finished loading
+- `loaded:video` - Video asset has finished loading
+- `loaded` - All assets hvae loaded
+
 
 ## Contributing
 
