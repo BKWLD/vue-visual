@@ -18,8 +18,11 @@ export default
 		imageLoaded: false
 		videoLoaded: false
 
-	# Set loaded to true immediately if loaded before the load event fires
-	mounted: -> @imageLoaded = true if @$refs?.image?.complete
+	mounted: -> 
+		# Set loaded to true immediately if loaded before the load event fires
+		@imageLoaded = true if @$refs?.image?.complete
+		# Set loaded to true immediately if loaded before the canplaythrough event fires
+		@videoLoaded = true if @$refs?.video?.readyState > 3
 
 	computed:
 
