@@ -14,10 +14,10 @@ export default
 		expand: Boolean
 
 		# Layout
-		objectFit: 
+		objectFit:
 			type: String
 			default: 'cover'
-		objectPosition: 
+		objectPosition:
 			type: String
 			default: '50% 50%'
 
@@ -46,14 +46,14 @@ export default
 		}
 
 		# Container classes
-		fitsAssetsContainerClasses: -> 
+		fitsAssetsContainerClasses: ->
 			'vv-has-aspect': @hasAspect
 			'vv-expand': @expand
 
 	methods:
 
 		# Enable the objectFitPolyfill if it was loaded
-		applyObjectFitPolyfill: (assetType) -> 
+		applyObjectFitPolyfill: (assetType) ->
 			return unless window.objectFitPolyfill
 			@$refs[assetType].dataset.objectFit = @objectFit
 			@$refs[assetType].dataset.objectPosition = @objectPosition
