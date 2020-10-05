@@ -343,7 +343,13 @@ using object-fit.
       this.$refs[assetType].dataset.objectFit = this.objectFit;
       this.$refs[assetType].dataset.objectPosition = this.objectPosition;
       return setTimeout(function () {
-        return window.objectFitPolyfill(_this.$refs[assetType].$el);
+        var el, ref;
+
+        if (!(el = (ref = _this.$refs[assetType]) != null ? ref.$el : void 0)) {
+          return;
+        }
+
+        return window.objectFitPolyfill(el);
       }, 0);
     },
     // Support plain numbers for px units
@@ -380,16 +386,15 @@ Logic related to loading assets
       videoLoaded: false
     };
   },
+  // Set loaded to true immediately if loaded before the load event fires
   mounted: function mounted() {
     var ref, ref1, ref2, ref3;
 
     if ((ref = this.$refs) != null ? (ref1 = ref.image) != null ? ref1.complete : void 0 : void 0) {
-      // Set loaded to true immediately if loaded before the load event fires
       this.imageLoaded = true;
     }
 
     if (((ref2 = this.$refs) != null ? (ref3 = ref2.video) != null ? ref3.readyState : void 0 : void 0) > 3) {
-      // Set loaded to true immediately if loaded before the canplaythrough event fires
       return this.videoLoaded = true;
     }
   },
