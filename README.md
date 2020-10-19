@@ -64,7 +64,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Loading
 
-- `autoload (boolean)` - *Default: `true`.*  If `true`, assets are loaded immediately unless `lazyload``.
+- `autoload (boolean)` - *Default: `true`.*  If `true`, assets are loaded immediately unless `lazyload`.
 
 - `lazyload (boolean)` - Waits until the Visual enters the viewport to trigger loading.  Overrides, `autoload`.
 
