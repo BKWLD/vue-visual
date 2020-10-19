@@ -53,7 +53,7 @@
 			//- Preload because it is only rendered if it's load time.
 			video.vv-asset.vv-video(
 				:key='video'
-				v-show='videoLoaded'
+				v-show='showVideo'
 				ref='video'
 				playsinline
 				preload='auto'

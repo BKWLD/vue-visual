@@ -72,7 +72,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 - `placeholder-color` - Sets a background color behind the assets.  Most useful in conjunction with an `aspect` value.
 
-- `transition (string)` -  A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied when an asset is loaded.
+- `transition (string, boolean)` -  *Default: `'vv-fade'`.*  A [Vue transition](http://vuejs.org/v2/guide/transitions.html) name that is applied when an asset is loaded. Set to an empty string to immediately render assets rather than waiting for loading.
 
 
 #### Video

@@ -205,8 +205,8 @@ var render = function() {
                       {
                         name: "show",
                         rawName: "v-show",
-                        value: _vm.videoLoaded,
-                        expression: "videoLoaded"
+                        value: _vm.showVideo,
+                        expression: "showVideo"
                       }
                     ],
                     key: _vm.video,
@@ -629,6 +629,9 @@ Logic related rendering images
         // Switch to video instance
         case !this.videoLoaded:
           return false;
+
+        case !(!this.transition && !this.video):
+          return true;
         // Image has finished loading
 
         case !this.imageLoaded:
@@ -680,10 +683,21 @@ Logic related video playback
         };
       });
     },
-    // Don't autoplay if set to autopause. We don't want to autoplay when a 
+    // Don't autoplay if set to autopause. We don't want to autoplay when a
     // video is offscreen
     shouldAutoplay: function shouldAutoplay() {
       return this.autoplay && !this.autopause;
+    },
+    // When to render the video instance
+    showVideo: function showVideo() {
+      switch (false) {
+        case !!this.transition:
+          return true;
+        // Render when loaded
+
+        case !this.videoLoaded:
+          return true;
+      }
     }
   },
   watch: {

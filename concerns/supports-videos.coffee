@@ -12,23 +12,32 @@ export default
 		controls: Boolean
 
 	computed:
-	
+
 		# Make an easily parsed list of video soruces
 		videoSources: ->
 			return unless @video
 			sources = if Array.isArray @video then @video else [@video]
-			sources.map (url) -> 
+			sources.map (url) ->
 				src: url
 				type: switch url.match(/\.(\w+)$/)?[1] # Check file ext
 					when 'mp4' then 'video/mp4'
 					when 'webm' then 'video/webm'
 					when 'ogg' then 'video/ogg'
 
-		# Don't autoplay if set to autopause. We don't want to autoplay when a 
+		# Don't autoplay if set to autopause. We don't want to autoplay when a
 		# video is offscreen
 		shouldAutoplay: -> @autoplay and not @autopause
 
-	watch: 
+		# When to render the video instance
+		showVideo: -> switch
+
+			# Render immediately if no transition
+			when !@transition then true
+
+			# Render when loaded
+			when @videoLoaded then true
+
+	watch:
 
 		# If autopausing, play toggle playback based on viewport status
 		inViewport: (visible) ->
@@ -38,7 +47,7 @@ export default
 	methods:
 
 		# Load (if not already) and start playing
-		play: -> 
+		play: ->
 			@load()
 			@$nextTick => @$refs.video?.play()
 
@@ -46,6 +55,6 @@ export default
 		pause: -> @$refs.video?.pause()
 
 		# Play the video from the beginning
-		restart: -> 
+		restart: ->
 			@$refs.video?.currentTime = 0
 			@play()
