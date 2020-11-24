@@ -20,8 +20,8 @@ export default
 
 	# Set loaded to true immediately if loaded before the load event fires
 	mounted: ->
-		@imageLoaded = true if @$refs?.image?.complete
-		@videoLoaded = true if @$refs?.video?.readyState > 3
+		@imageLoaded = true if @$refs.image?.complete
+		@videoLoaded = true if @$refs.video?.readyState > 3
 
 	computed:
 
@@ -58,8 +58,12 @@ export default
 
 	methods:
 
-		# Handle an asset being loaded
-		onAssetLoad: (assetType) -> @["#{assetType}Loaded"] = true
+		# Handle an asset being loaded. If the element was removed before the load
+		# finished, don't continue.  I've seen this in edge cases but not sure
+		# what scenario actually lead to that case.
+		onAssetLoad: (assetType) ->
+			return unless @$refs[assetType]
+			@["#{assetType}Loaded"] = true
 
 		# Manually start loading
 		load: -> @shouldLoad = true
