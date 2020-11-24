@@ -388,13 +388,13 @@ Logic related to loading assets
   },
   // Set loaded to true immediately if loaded before the load event fires
   mounted: function mounted() {
-    var ref, ref1, ref2, ref3;
+    var ref, ref1;
 
-    if ((ref = this.$refs) != null ? (ref1 = ref.image) != null ? ref1.complete : void 0 : void 0) {
+    if ((ref = this.$refs.image) != null ? ref.complete : void 0) {
       this.imageLoaded = true;
     }
 
-    if (((ref2 = this.$refs) != null ? (ref3 = ref2.video) != null ? ref3.readyState : void 0 : void 0) > 3) {
+    if (((ref1 = this.$refs.video) != null ? ref1.readyState : void 0) > 3) {
       return this.videoLoaded = true;
     }
   },
@@ -448,8 +448,14 @@ Logic related to loading assets
     }
   },
   methods: {
-    // Handle an asset being loaded
+    // Handle an asset being loaded. If the element was removed before the load
+    // finished, don't continue.  I've seen this in edge cases but not sure
+    // what scenario actually lead to that case.
     onAssetLoad: function onAssetLoad(assetType) {
+      if (!this.$refs[assetType]) {
+        return;
+      }
+
       return this["".concat(assetType, "Loaded")] = true;
     },
     // Manually start loading
