@@ -63,6 +63,9 @@
 				:controls='controls'
 				:aria-label='alt'
 				:style='assetStyles'
+				tabindex='0'
+				@keyup.enter='togglePause'
+				@keyup.space='togglePause'
 				@canplaythrough='onAssetLoad("video")')
 
 				//- Generated sources
@@ -113,6 +116,12 @@ export default
 			@fitsAssetsContainerClasses
 			@loadsAssetsContainerClasses
 		].filter (val) -> !!val
+	
+	methods:
+		togglePause: (e) -> 
+			if e.target.paused 
+			then e.target.play() 
+			else e.target.pause()
 
 </script>
 
