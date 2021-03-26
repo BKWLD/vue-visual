@@ -56,5 +56,11 @@ export default
 
 		# Play the video from the beginning
 		restart: ->
-			@$refs.video?.currentTime = 0
+			@reset()
 			@play()
+
+		# Reset playhead to the beginning
+		reset: -> @seek 0
+
+		# Set playhead time to certin value
+		seek: (time) -> @$refs.video?.currentTime = time
