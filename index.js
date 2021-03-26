@@ -738,13 +738,17 @@ Logic related video playback
     },
     // Play the video from the beginning
     restart: function restart() {
-      var ref;
-
-      if ((ref = this.$refs.video) != null) {
-        ref.currentTime = 0;
-      }
-
+      this.reset();
       return this.play();
+    },
+    // Reset playhead to the beginning
+    reset: function reset() {
+      return this.seek(0);
+    },
+    // Set playhead time to certin value
+    seek: function seek(time) {
+      var ref;
+      return (ref = this.$refs.video) != null ? ref.currentTime = time : void 0;
     }
   }
 });
