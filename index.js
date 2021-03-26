@@ -738,11 +738,12 @@ Logic related video playback
     },
     // Play the video from the beginning
     restart: function restart() {
-      this.reset();
+      this.seek(0);
       return this.play();
     },
-    // Reset playhead to the beginning
+    // Reset playhead to the beginning and pause
     reset: function reset() {
+      this.pause();
       return this.seek(0);
     },
     // Set playhead time to certin value
