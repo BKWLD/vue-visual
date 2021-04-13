@@ -53,7 +53,8 @@ export default
 
 		# Pause playback
 		pause: ->
-			await @playPromise if @playPromise
+			try await @playPromise if @playPromise
+			catch e then console.error e
 			@$refs.video?.pause()
 
 		# Play the video from the beginning
