@@ -738,28 +738,40 @@ Logic related video playback
     // Pause playback
     pause: function () {
       var _pause = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var ref;
+        var e, ref;
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
+                _context.prev = 0;
+
                 if (!this.playPromise) {
-                  _context.next = 3;
+                  _context.next = 4;
                   break;
                 }
 
-                _context.next = 3;
+                _context.next = 4;
                 return this.playPromise;
 
-              case 3:
+              case 4:
+                _context.next = 10;
+                break;
+
+              case 6:
+                _context.prev = 6;
+                _context.t0 = _context["catch"](0);
+                e = _context.t0;
+                console.error(e);
+
+              case 10:
                 return _context.abrupt("return", (ref = this.$refs.video) != null ? ref.pause() : void 0);
 
-              case 4:
+              case 11:
               case "end":
                 return _context.stop();
             }
           }
-        }, _callee, this);
+        }, _callee, this, [[0, 6]]);
       }));
 
       function pause() {
