@@ -49,10 +49,12 @@ export default
 		# Load (if not already) and start playing
 		play: ->
 			@load()
-			@$nextTick => @$refs.video?.play()
+			@$nextTick => @playPromise = @$refs.video?.play()
 
 		# Pause playback
-		pause: -> @$refs.video?.pause()
+		pause: ->
+			await @playPromise if @playPromise
+			@$refs.video?.pause()
 
 		# Play the video from the beginning
 		restart: ->
