@@ -647,10 +647,6 @@ Logic related rendering images
   }
 });
 // CONCATENATED MODULE: ./concerns/supports-videos.coffee
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
 /*
 Logic related video playback
 */
@@ -731,55 +727,31 @@ Logic related video playback
 
       this.load();
       return this.$nextTick(function () {
-        var ref;
-        return _this.playPromise = (ref = _this.$refs.video) != null ? ref.play() : void 0;
+        var e, ref;
+
+        try {
+          return _this.playPromise = (ref = _this.$refs.video) != null ? ref.play() : void 0;
+        } catch (error) {
+          e = error;
+          return console.error(e);
+        }
       });
     },
     // Pause playback
-    pause: function () {
-      var _pause = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-        var e, ref;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.prev = 0;
+    pause: function pause() {
+      var _this2 = this;
 
-                if (!this.playPromise) {
-                  _context.next = 4;
-                  break;
-                }
+      var ref;
 
-                _context.next = 4;
-                return this.playPromise;
-
-              case 4:
-                _context.next = 10;
-                break;
-
-              case 6:
-                _context.prev = 6;
-                _context.t0 = _context["catch"](0);
-                e = _context.t0;
-                console.error(e);
-
-              case 10:
-                return _context.abrupt("return", (ref = this.$refs.video) != null ? ref.pause() : void 0);
-
-              case 11:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, this, [[0, 6]]);
-      }));
-
-      function pause() {
-        return _pause.apply(this, arguments);
+      if (this.playPromise) {
+        return this.playPromise.then(function () {
+          var ref;
+          return (ref = _this2.$refs.video) != null ? ref.pause() : void 0;
+        });
+      } else {
+        return (ref = this.$refs.video) != null ? ref.pause() : void 0; // For browsers that don't return a promise
       }
-
-      return pause;
-    }(),
+    },
     // Play the video from the beginning
     restart: function restart() {
       this.seek(0);
