@@ -49,14 +49,15 @@ export default
 		# Load (if not already) and start playing
 		play: ->
 			@load()
-			try @$nextTick => @playPromise = @$refs.video?.play()
-			catch e then console.error e
+			@$nextTick =>
+				try @playPromise = @$refs.video?.play()
+				catch e then console.error e
 
 		# Pause playback
 		pause: ->
 			if @playPromise
 			then @playPromise.then => @$refs.video?.pause()
-			else @$refs.video?.pause()
+			else @$refs.video?.pause() # For browsers that don't return a promise
 
 		# Play the video from the beginning
 		restart: ->
