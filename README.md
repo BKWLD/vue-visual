@@ -42,9 +42,11 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Size
 
-- `width (number|string)` : This width will be applied to the container div. If a number, it's assumed to be a px value.
+- `width (number|string)` : This width will be applied to the asset element. If a number, it's assumed to be a px value.
 
 - `height (number|string)` : See `width`
+
+- `max-width (number|string)` : This value will be applied to the asset element as the css `max-width`. If a number, it's assumed to be a px value.
 
 - `sizes (string)` : Specify the `img` `sizes` attribute.
 

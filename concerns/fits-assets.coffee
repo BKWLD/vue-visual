@@ -9,8 +9,8 @@ export default
 		# Size
 		width: Number|String
 		height: Number|String
+		maxWidth: Number|String
 		aspect: Number
-		maxWidth: Number
 		expand: Boolean
 
 		# Layout
