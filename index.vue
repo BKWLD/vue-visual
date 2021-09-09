@@ -20,8 +20,8 @@
 			:style='{ backgroundColor: placeholderColor }')
 
 	//- Image asset
-	//- The wrapper constainer is needed for the object-fit polyfill
-	.vv-wrapper(v-if='image && shouldLoad')
+	//- The wrapper container is needed for the object-fit polyfill
+	.vv-wrapper(v-if='shouldRenderImage')
 		transition(:name='transition')
 			picture.vv-picture(:key='image' v-show='showImage')
 
@@ -43,10 +43,11 @@
 					:sizes='sizes'
 					:alt='alt'
 					:style='assetStyles'
+					:loading='imgLoadingAttr'
 					@load='onAssetLoad("image")')
 
 	//- Video asset
-	.vv-wrapper(v-if='video && shouldLoad')
+	.vv-wrapper(v-if='shouldRenderVideo')
 		transition(:name='transition')
 
 			//- Video tag.

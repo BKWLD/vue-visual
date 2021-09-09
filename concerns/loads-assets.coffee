@@ -8,6 +8,9 @@ export default
 			type: Boolean
 			default: true
 		lazyload: Boolean
+		nativeLazyload:
+			type: Boolean
+			default: true
 		placeholderColor: String
 		transition:
 			type: String
@@ -36,6 +39,18 @@ export default
 			'vv-image-loaded': @imageLoaded
 			'vv-video-loaded': @videoLoaded
 			'vv-loaded': @allLoaded
+
+		# Should we use native lazyloading (if it's supported on the device)
+		shouldNativeLazyload: -> @lazyload and @nativeLazyload
+
+		# Make the img loading attribute value
+		imgLoadingAttr: -> 'lazy' if @shouldNativeLazyload
+
+		# Should we render the img tag, which will trigger loading
+		shouldRenderImage: -> @image and @shouldLoad or @shouldNativeLazyload
+
+		# Should we render the video tag, which will trigger loading
+		shouldRenderVideo: -> @video and @shouldLoad
 
 	watch:
 
