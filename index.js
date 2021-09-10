@@ -99,7 +99,7 @@ module.exports =
 /* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_stylus_loader_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
 /* harmony import */ var _node_modules_mini_css_extract_plugin_dist_loader_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_stylus_loader_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_mini_css_extract_plugin_dist_loader_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_stylus_loader_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0__);
 /* unused harmony reexport * */
- /* unused harmony default export */ var _unused_webpack_default_export = (_node_modules_mini_css_extract_plugin_dist_loader_js_node_modules_css_loader_dist_cjs_js_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_stylus_loader_index_js_node_modules_vue_loader_lib_index_js_vue_loader_options_index_vue_vue_type_style_index_0_lang_stylus___WEBPACK_IMPORTED_MODULE_0___default.a); 
+
 
 /***/ }),
 /* 2 */
@@ -137,7 +137,7 @@ var render = function() {
             })
           : _vm._e()
       ]),
-      _vm.image && _vm.shouldLoad
+      _vm.shouldRenderImage
         ? _c(
             "div",
             { staticClass: "vv-wrapper" },
@@ -176,7 +176,8 @@ var render = function() {
                         src: _vm.image,
                         srcset: _vm.srcset,
                         sizes: _vm.sizes,
-                        alt: _vm.alt
+                        alt: _vm.alt,
+                        loading: _vm.imgLoadingAttr
                       },
                       on: {
                         load: function($event) {
@@ -192,7 +193,7 @@ var render = function() {
             1
           )
         : _vm._e(),
-      _vm.video && _vm.shouldLoad
+      _vm.shouldRenderVideo
         ? _c(
             "div",
             { staticClass: "vv-wrapper" },
@@ -265,7 +266,7 @@ render._withStripped = true
 // CONCATENATED MODULE: ./index.vue?vue&type=template&id=6de5ab34&lang=pug&
 
 // CONCATENATED MODULE: ./concerns/fits-assets.coffee
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
@@ -280,8 +281,8 @@ using object-fit.
     // Size
     width: Number | String,
     height: Number | String,
+    maxWidth: Number | String,
     aspect: Number,
-    maxWidth: Number,
     expand: Boolean,
     // Layout
     objectFit: {
@@ -305,11 +306,11 @@ using object-fit.
     },
     // Styles that get added to the parent container
     dimensionStyles: function dimensionStyles() {
-      return _objectSpread({}, this.width ? {
+      return _objectSpread(_objectSpread(_objectSpread({}, this.width ? {
         width: this.autoUnit(this.width)
-      } : {}, {}, this.height ? {
+      } : {}), this.height ? {
         height: this.autoUnit(this.height)
-      } : {}, {}, this.maxWidth ? {
+      } : {}), this.maxWidth ? {
         maxWidth: this.autoUnit(this.maxWidth)
       } : {});
     },
@@ -373,6 +374,10 @@ Logic related to loading assets
       default: true
     },
     lazyload: Boolean,
+    nativeLazyload: {
+      type: Boolean,
+      default: true
+    },
     placeholderColor: String,
     transition: {
       type: String,
@@ -418,6 +423,24 @@ Logic related to loading assets
         'vv-video-loaded': this.videoLoaded,
         'vv-loaded': this.allLoaded
       };
+    },
+    // Should we use native lazyloading (if it's supported on the device)
+    shouldNativeLazyload: function shouldNativeLazyload() {
+      return this.lazyload && this.nativeLazyload;
+    },
+    // Make the img loading attribute value
+    imgLoadingAttr: function imgLoadingAttr() {
+      if (this.shouldNativeLazyload) {
+        return 'lazy';
+      }
+    },
+    // Should we render the img tag, which will trigger loading
+    shouldRenderImage: function shouldRenderImage() {
+      return this.image && this.shouldLoad || this.shouldNativeLazyload;
+    },
+    // Should we render the video tag, which will trigger loading
+    shouldRenderVideo: function shouldRenderVideo() {
+      return this.video && this.shouldLoad;
     }
   },
   watch: {
@@ -469,11 +492,11 @@ function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArra
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(n); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
@@ -493,17 +516,32 @@ var slice = [].slice;
   },
   data: function data() {
     return {
-      inViewport: false
+      inViewport: false,
+      supportsNativeLazyload: null
     };
   },
   // Start observing on init
   mounted: function mounted() {
+    this.supportsNativeLazyload = 'loading' in HTMLImageElement.prototype;
     return this.startObserving();
   },
   computed: {
     // Conditions where the viewport is watched
     shouldObserve: function shouldObserve() {
-      return this.lazyload || this.autopause;
+      switch (false) {
+        // If using native lazyload and there is no video, we don't need to
+        // make an explicit intersection observer
+        case !(this.nativeLazyload && this.supportsNativeLazyload && !this.video):
+          return false;
+        // Otherwise, if explicitly enabled, add an observer
+
+        case !this.lazyload:
+          return true;
+        // Or, if using the autopause feature, we need an observer
+
+        case !this.autopause:
+          return true;
+      }
     },
     // Conditions where we observe only once
     shouldObserveOnce: function shouldObserveOnce() {
@@ -641,6 +679,11 @@ Logic related rendering images
         // Image has finished loading
 
         case !this.imageLoaded:
+          return true;
+        // If using native lazyloading we need to render the image immediately
+        // so it can be lazyloaded
+
+        case !(this.shouldNativeLazyload && this.supportsNativeLazyload):
           return true;
       }
     }
@@ -861,7 +904,12 @@ function normalizeComponent (
     options._ssrRegister = hook
   } else if (injectStyles) {
     hook = shadowMode
-      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
+      ? function () {
+        injectStyles.call(
+          this,
+          (options.functional ? this.parent : this).$root.$options.shadowRoot
+        )
+      }
       : injectStyles
   }
 
