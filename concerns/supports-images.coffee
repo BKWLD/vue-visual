@@ -23,3 +23,6 @@ export default
 			# Image has finished loading
 			when @imageLoaded then true
 
+			# If using native lazyloading we need to render the image immediately
+			# so it can be lazyloaded
+			when @shouldNativeLazyload and @supportsNativeLazyload then true

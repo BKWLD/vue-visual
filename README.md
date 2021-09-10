@@ -70,7 +70,7 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 - `lazyload (boolean)` - Waits until the Visual enters the viewport to trigger loading.  Overrides `autoload`.
 
-- `native-lazyload (boolean)` - *Default: `true`.*  If `true`, [the native `loading`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-loading) attribute is used rather than `IntersectionOserver` to trigger lazy loading of images. This not actually enable lazyloading, you'll still need to set `lazyload` to true for that.
+- `native-lazyload (boolean)` - *Default: `true`.*  If `true`, [the native `loading`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-loading) attribute is used rather than `IntersectionOserver` to trigger lazy loading of images. This not actually enable lazyloading, you'll still need to set `lazyload` to true for that.  Also, this will disable the `transition` of the `image` since the `img` needs to not be `display:none` for the browser to detect that it's in the viewport.
 
 - `intersection-options (object)` - IntersectionObserver options. Used with `lazyload` and `autopause`.
 
