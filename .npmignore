@@ -15,3 +15,4 @@ test
 # Storybook
 /.storybook
 /stories
+/storybook-static
