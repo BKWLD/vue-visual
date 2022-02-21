@@ -23,7 +23,7 @@
 	//- The wrapper constainer is needed for the object-fit polyfill
 	.vv-wrapper(v-if='image && shouldLoad')
 		transition(:name='transition')
-			picture.vv-picture(:key='image' v-show='showImage')
+			picture.vv-picture(v-show='showImage')
 
 				//- Webp sources
 				source(
@@ -52,7 +52,6 @@
 			//- Video tag.
 			//- Preload because it is only rendered if it's load time.
 			video.vv-asset.vv-video(
-				:key='video'
 				v-show='showVideo'
 				ref='video'
 				playsinline
