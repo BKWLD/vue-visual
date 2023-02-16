@@ -630,15 +630,15 @@ Logic related rendering images
     // Determines whether the image should be shown via v-show
     showImage: function showImage() {
       switch (false) {
+        // Image has finished loading
+        case !this.imageLoaded:
+          return true;
         // Switch to video instance
+
         case !this.videoLoaded:
           return false;
 
         case !(!this.transition && !this.video):
-          return true;
-        // Image has finished loading
-
-        case !this.imageLoaded:
           return true;
       }
     }
