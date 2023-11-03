@@ -624,7 +624,35 @@ Logic related rendering images
     image: String,
     srcset: String,
     webpSrcset: String,
-    sizes: String
+    sizes: String,
+    preload: Boolean
+  },
+  head: function head() {
+    var srcset;
+    srcset = this.webpSrcset || this.srcset;
+
+    if (this.preload && this.srcset) {
+      return {
+        link: [{
+          rel: 'preload',
+          as: 'image',
+          imagesrcset: this.webpSrcset || this.srcset,
+          href: this.image,
+          imagesizes: this.sizes
+        }]
+      };
+    } else if (this.preload && this.image) {
+      return {
+        link: [{
+          rel: 'preload',
+          as: 'image',
+          href: this.image,
+          imagesizes: this.sizes
+        }]
+      };
+    } else {
+      return {};
+    }
   },
   computed: {
     // Determines whether the image should be shown via v-show

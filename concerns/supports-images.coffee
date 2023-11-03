@@ -7,6 +7,27 @@ export default
 		srcset: String
 		webpSrcset: String
 		sizes: String
+		preload: Boolean
+
+	head: -> 
+		srcset = @webpSrcset || @srcset
+
+		if @preload and @srcset then return link: [{
+			rel: 'preload'
+			as: 'image'	
+			imagesrcset: @webpSrcset || @srcset
+			href: @image
+			imagesizes: @sizes
+		}] 
+
+		else if @preload and @image then return link: [{
+			rel: 'preload',
+			as: 'image',
+			href: @image
+			imagesizes: @sizes
+		}]
+
+		else return {}
 
 	computed:
 
@@ -22,4 +43,3 @@ export default
 
 			# Image has finished loading
 			when @imageLoaded then true
-
