@@ -624,7 +624,36 @@ Logic related rendering images
     image: String,
     srcset: String,
     webpSrcset: String,
-    sizes: String
+    sizes: String,
+    preload: Boolean
+  },
+  // Add preload link tags
+  head: function head() {
+    var imagesrcset, preloadTag;
+
+    if (!(this.preload && this.image)) {
+      return;
+    } // Create base link attributes
+
+
+    preloadTag = {
+      rel: 'preload',
+      as: 'image',
+      href: this.image
+    }; // Add srcset support
+
+    if (imagesrcset = this.webpSrcset || this.srcset) {
+      preloadTag = Object.assign(preloadTag, {
+        imagesrcset: imagesrcset,
+        imagesizes: this.sizes || '' // Prevent "undefined" value
+
+      });
+    }
+
+    return {
+      // Add link tag
+      link: [preloadTag]
+    };
   },
   computed: {
     // Determines whether the image should be shown via v-show

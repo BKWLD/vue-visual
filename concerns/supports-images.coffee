@@ -7,6 +7,27 @@ export default
 		srcset: String
 		webpSrcset: String
 		sizes: String
+		preload: Boolean
+
+	# Add preload link tags
+	head: ->
+		return unless @preload and @image
+
+		# Create base link attributes
+		preloadTag =
+			rel: 'preload'
+			as: 'image'
+			href: @image
+
+		# Add srcset support
+		if imagesrcset = @webpSrcset || @srcset
+		then preloadTag = Object.assign preloadTag, {
+			imagesrcset
+			imagesizes: @sizes || '' # Prevent "undefined" value
+		}
+
+		# Add link tag
+		return link: [ preloadTag ]
 
 	computed:
 
@@ -22,4 +43,3 @@ export default
 
 			# Image has finished loading
 			when @imageLoaded then true
-

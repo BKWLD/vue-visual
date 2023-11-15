@@ -66,9 +66,11 @@ A list of the [component properties](http://vuejs.org/v2/guide/components.html#P
 
 #### Loading
 
+- `preload (boolean)` - Requires Nuxt framework.  If `true` will add `<link rel="preload"/>` tags to the `<head>` for the image assets.
+
 - `autoload (boolean)` - *Default: `true`.*  If `true`, assets are loaded immediately unless `lazyload`.
 
-- `lazyload (boolean)` - Waits until the Visual enters the viewport to trigger loading.  Overrides, `autoload`.
+- `lazyload (boolean)` - Waits until the Visual enters the viewport to trigger loading.  Overrides `autoload`.
 
 - `intersection-options (object)` - IntersectionObserver options. Used with `lazyload` and `autopause`.
 
