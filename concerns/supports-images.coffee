@@ -9,25 +9,26 @@ export default
 		sizes: String
 		preload: Boolean
 
-	head: -> 
-		srcset = @webpSrcset || @srcset
+	# Add preload link tags
+	head: ->
+		return unless @preload and @image
 
-		if @preload and @srcset then return link: [{
+		# Create base link attributes
+		preloadTag =
 			rel: 'preload'
-			as: 'image'	
-			imagesrcset: @webpSrcset || @srcset
+			as: 'image'
 			href: @image
-			imagesizes: @sizes
-		}] 
 
-		else if @preload and @image then return link: [{
-			rel: 'preload',
-			as: 'image',
-			href: @image
-			imagesizes: @sizes
-		}]
+		# Add srcset support
+		if imagesrcset = @webpSrcset || @srcset
+		then preloadTag = {
+			...preloadTag
+			imagesrcset
+			imagesizes: @sizes || '' # Prevent "undefined" value
+		}
 
-		else return {}
+		# Add link tag
+		return link: [ preloadTag ]
 
 	computed:
 
