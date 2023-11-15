@@ -616,12 +616,6 @@ Logic related to rendering slotted content
   }
 });
 // CONCATENATED MODULE: ./concerns/supports-images.coffee
-function supports_images_coffee_ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
-
-function supports_images_coffee_objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { supports_images_coffee_ownKeys(Object(source), true).forEach(function (key) { supports_images_coffee_defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { supports_images_coffee_ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function supports_images_coffee_defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 /*
 Logic related rendering images
 */
@@ -649,7 +643,7 @@ Logic related rendering images
     }; // Add srcset support
 
     if (imagesrcset = this.webpSrcset || this.srcset) {
-      preloadTag = supports_images_coffee_objectSpread(supports_images_coffee_objectSpread({}, preloadTag), {}, {
+      preloadTag = Object.assign(preloadTag, {
         imagesrcset: imagesrcset,
         imagesizes: this.sizes || '' // Prevent "undefined" value
 

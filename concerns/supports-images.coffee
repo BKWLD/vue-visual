@@ -21,8 +21,7 @@ export default
 
 		# Add srcset support
 		if imagesrcset = @webpSrcset || @srcset
-		then preloadTag = {
-			...preloadTag
+		then preloadTag = Object.assign preloadTag, {
 			imagesrcset
 			imagesizes: @sizes || '' # Prevent "undefined" value
 		}
