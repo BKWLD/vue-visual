@@ -18,7 +18,9 @@ export default
 			return unless @video
 			sources = if Array.isArray @video then @video else [@video]
 			sources.map (url) ->
-				src: url
+				console.log 'val is ', val
+				val = url + "#t=0.1"
+				src: val
 				type: switch url.match(/\.(\w+)$/)?[1] # Check file ext
 					when 'mp4' then 'video/mp4'
 					when 'webm' then 'video/webm'
