@@ -698,7 +698,7 @@ Logic related video playback
       sources = Array.isArray(this.video) ? this.video : [this.video];
       return sources.map(function (url) {
         return {
-          src: url,
+          src: url + "#t=0.1",
           type: function () {
             var ref;
 
