@@ -68,7 +68,7 @@
 				source(
 					v-for='{src, type} in videoSources'
 					:key='type'
-					:src='src'
+					:src='src + `#t=01`'
 					:type='type')
 
 				//- Slotted sources

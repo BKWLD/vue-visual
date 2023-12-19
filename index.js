@@ -232,7 +232,7 @@ var render = function() {
                       var type = ref.type
                       return _c("source", {
                         key: type,
-                        attrs: { src: src, type: type }
+                        attrs: { src: src + "#t=01", type: type }
                       })
                     }),
                     _vm._t("video-source")
