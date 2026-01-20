@@ -9,6 +9,7 @@ export default
 			default: true
 		lazyload: Boolean
 		placeholderColor: String
+		maintainPlaceholder: Boolean
 		transition:
 			type: String
 			default: 'vv-fade'

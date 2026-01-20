@@ -130,13 +130,19 @@ var render = function() {
           })
         : _vm._e(),
       _c("transition", { attrs: { name: _vm.transition } }, [
-        _vm.placeholderColor && !_vm.showImage
+        _vm.placeholderColor && !_vm.showImage && !_vm.maintainPlaceholder
           ? _c("div", {
               staticClass: "vv-placeholder",
               style: { backgroundColor: _vm.placeholderColor }
             })
           : _vm._e()
       ]),
+      _vm.placeholderColor && !_vm.showImage && _vm.maintainPlaceholder
+        ? _c("div", {
+            staticClass: "vv-placeholder",
+            style: { backgroundColor: _vm.placeholderColor }
+          })
+        : _vm._e(),
       _vm.image && _vm.shouldLoad
         ? _c(
             "div",
@@ -372,6 +378,7 @@ Logic related to loading assets
     },
     lazyload: Boolean,
     placeholderColor: String,
+    maintainPlaceholder: Boolean,
     transition: {
       type: String,
       default: 'vv-fade'
