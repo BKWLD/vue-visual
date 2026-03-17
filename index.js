@@ -399,7 +399,7 @@ Logic related to loading assets
   },
   computed: {
     actualLazyLoad: function actualLazyLoad() {
-      if (this.priority) {
+      if (this.preload) {
         return false;
       } else {
         return this.lazyload;
@@ -822,21 +822,6 @@ Logic related video playback
       } else {
         return null;
       }
-    },
-    preloadLinks: function preloadLinks() {
-      var links;
-      links = [];
-
-      if (!(this.preload && this.renderPreloadHeadLinks && this.image)) {
-        return links;
-      }
-
-      links.push({
-        rel: 'preload',
-        as: 'image',
-        href: this.image
-      });
-      return links;
     }
   }
 });
