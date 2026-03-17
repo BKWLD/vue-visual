@@ -1,6 +1,6 @@
 <!-- Vue Visual -->
 
-<template lang='pug'>
+<template lang="pug">
 
 //- Root container
 .vv-visual(
@@ -43,6 +43,7 @@
 					:sizes='sizes'
 					:alt='alt'
 					:style='assetStyles'
+					:fetchpriority="fetchPriority"
 					@load='onAssetLoad("image")')
 
 	//- Video asset
@@ -83,13 +84,14 @@
 
 <!-- ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– -->
 
-<script lang='coffee'>
+<script lang="coffee">
 import fitsAssets from './concerns/fits-assets.coffee'
 import loadsAssets from './concerns/loads-assets.coffee'
 import observesViewport from './concerns/observes-viewport'
 import slotsContent from './concerns/slots-content.coffee'
 import supportsImages from './concerns/supports-images'
 import supportsVideos from './concerns/supports-videos'
+import preload from './concerns/preload'
 export default
 	name: 'VueVisual'
 
@@ -100,6 +102,7 @@ export default
 		slotsContent
 		supportsImages
 		supportsVideos
+		preload
 	]
 
 	props: alt: String
@@ -112,13 +115,12 @@ export default
 			@fitsAssetsContainerClasses
 			@loadsAssetsContainerClasses
 		].filter (val) -> !!val
-
 </script>
 
 <!-- ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– -->
 
 <!-- Intentionally unscoped so they can be more easily overriden -->
-<style lang='stylus'>
+<style lang="stylus">
 
 // Default container sizes
 .vv-visual
@@ -183,5 +185,4 @@ export default
 	transition-delay 0.3s // Let video transition ontop
 .vv-fade-enter, .vv-fade-leave-to
 	opacity 0
-
 </style>

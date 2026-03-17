@@ -14,7 +14,7 @@ export default
 			default: 'vv-fade'
 
 	data: ->
-		shouldLoad: @autoload and not @lazyload
+		shouldLoad: @autoload and not @actualLazyLoad
 		imageLoaded: false
 		videoLoaded: false
 
@@ -24,6 +24,8 @@ export default
 		@videoLoaded = true if @$refs.video?.readyState > 3
 
 	computed:
+
+		actualLazyLoad: -> if @preload then false else @lazyload
 
 		# Determine whether all assets have been loaded
 		allLoaded: ->

@@ -175,7 +175,8 @@ var render = function() {
                         src: _vm.image,
                         srcset: _vm.srcset,
                         sizes: _vm.sizes,
-                        alt: _vm.alt
+                        alt: _vm.alt,
+                        fetchpriority: _vm.fetchPriority
                       },
                       on: {
                         load: function($event) {
@@ -379,7 +380,7 @@ Logic related to loading assets
   },
   data: function data() {
     return {
-      shouldLoad: this.autoload && !this.lazyload,
+      shouldLoad: this.autoload && !this.actualLazyLoad,
       imageLoaded: false,
       videoLoaded: false
     };
@@ -397,6 +398,13 @@ Logic related to loading assets
     }
   },
   computed: {
+    actualLazyLoad: function actualLazyLoad() {
+      if (this.priority) {
+        return false;
+      } else {
+        return this.lazyload;
+      }
+    },
     // Determine whether all assets have been loaded
     allLoaded: function allLoaded() {
       if (this.image && !this.imageLoaded) {
@@ -698,7 +706,6 @@ Logic related video playback
       sources = Array.isArray(this.video) ? this.video : [this.video];
       return sources.map(function (url) {
         var val;
-        console.log('val is ', val);
         val = url + "#t=0.1";
         return {
           src: val,
@@ -799,7 +806,42 @@ Logic related video playback
     }
   }
 });
+// CONCATENATED MODULE: ./concerns/preload.coffee
+/* harmony default export */ var preload_coffee = ({
+  props: {
+    preload: Boolean,
+    renderPreloadHeadLinks: {
+      type: Boolean,
+      default: true
+    }
+  },
+  computed: {
+    fetchPriority: function fetchPriority() {
+      if (this.preload) {
+        return 'high';
+      } else {
+        return null;
+      }
+    },
+    preloadLinks: function preloadLinks() {
+      var links;
+      links = [];
+
+      if (!(this.preload && this.renderPreloadHeadLinks && this.image)) {
+        return links;
+      }
+
+      links.push({
+        rel: 'preload',
+        as: 'image',
+        href: this.image
+      });
+      return links;
+    }
+  }
+});
 // CONCATENATED MODULE: ./node_modules/babel-loader/lib!./node_modules/coffee-loader!./node_modules/vue-loader/lib??vue-loader-options!./index.vue?vue&type=script&lang=coffee&
+
 
 
 
@@ -808,7 +850,7 @@ Logic related video playback
 
 /* harmony default export */ var lib_vue_loader_options_indexvue_type_script_lang_coffee_ = ({
   name: 'VueVisual',
-  mixins: [fits_assets_coffee, loads_assets_coffee, observes_viewport_coffee, slots_content_coffee, supports_images_coffee, supports_videos_coffee],
+  mixins: [fits_assets_coffee, loads_assets_coffee, observes_viewport_coffee, slots_content_coffee, supports_images_coffee, supports_videos_coffee, preload_coffee],
   props: {
     alt: String
   },
