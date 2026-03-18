@@ -380,7 +380,7 @@ Logic related to loading assets
   },
   data: function data() {
     return {
-      shouldLoad: this.autoload && !this.actualLazyLoad,
+      shouldLoad: this.autoload && !this.lazyload,
       imageLoaded: false,
       videoLoaded: false
     };
@@ -398,13 +398,6 @@ Logic related to loading assets
     }
   },
   computed: {
-    actualLazyLoad: function actualLazyLoad() {
-      if (this.preload) {
-        return false;
-      } else {
-        return this.lazyload;
-      }
-    },
     // Determine whether all assets have been loaded
     allLoaded: function allLoaded() {
       if (this.image && !this.imageLoaded) {
