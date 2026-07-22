@@ -16,8 +16,13 @@
 	//- Show a placeholder shape until an asset is loaded
 	transition(:name='transition')
 		.vv-placeholder(
-			v-if='placeholderColor && !showImage'
+			v-if='placeholderColor && !showImage && !maintainPlaceholder'
 			:style='{ backgroundColor: placeholderColor }')
+
+	//- This keeps the placeholder present
+	.vv-placeholder(
+		v-if='placeholderColor && !showImage && maintainPlaceholder'
+		:style='{ backgroundColor: placeholderColor }')
 
 	//- Image asset
 	//- The wrapper constainer is needed for the object-fit polyfill
